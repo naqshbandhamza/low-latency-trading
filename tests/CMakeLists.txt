@@ -13,3 +13,29 @@ target_link_libraries(
         common
         Catch2::Catch2WithMain
 )
+
+
+add_executable(
+    strong_type_tests
+    types/StrongTypeTest.cpp
+)
+
+target_link_libraries(
+    strong_type_tests
+    PRIVATE
+        common
+        Catch2::Catch2WithMain
+)
+
+
+add_executable(
+    price_type_tests
+    types/PriceTest.cpp
+)
+
+target_link_libraries(
+    price_type_tests
+    PRIVATE
+        common
+        Catch2::Catch2WithMain
+)
