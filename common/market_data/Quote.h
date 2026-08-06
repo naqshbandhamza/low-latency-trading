@@ -5,11 +5,11 @@
 #include "market_data/Level.h"
 #include "types/SequenceNumber.h"
 #include "types/Timestamp.h"
+#include "market_data/Instrument.h"
 
 namespace llt
 {
 
-using Instrument = std::string;
 
 class Quote
 {
