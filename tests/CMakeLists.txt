@@ -1,3 +1,5 @@
+
+
 find_package(Catch2 3 REQUIRED)
 
 
@@ -14,6 +16,9 @@ target_link_libraries(
         Catch2::Catch2WithMain
 )
 
+include(Catch)
+catch_discover_tests(logger_tests)
+
 
 add_executable(
     strong_type_tests
@@ -27,6 +32,8 @@ target_link_libraries(
         Catch2::Catch2WithMain
 )
 
+include(Catch)
+catch_discover_tests(strong_type_tests)
 
 add_executable(
     price_type_tests
@@ -40,6 +47,9 @@ target_link_libraries(
         Catch2::Catch2WithMain
 )
 
+include(Catch)
+catch_discover_tests(price_type_tests)
+
 add_executable(
     level_tests
     market_data/LevelTest.cpp
@@ -52,6 +62,10 @@ target_link_libraries(
         Catch2::Catch2WithMain
 )
 
+include(Catch)
+catch_discover_tests(level_tests)
+
+
 add_executable(
     quote_tests
     market_data/QuoteTest.cpp
@@ -63,3 +77,37 @@ target_link_libraries(
         common
         Catch2::Catch2WithMain
 )
+
+include(Catch)
+catch_discover_tests(quote_tests)
+
+add_executable(
+    trade_tests
+    market_data/TradeTest.cpp
+)
+
+target_link_libraries(
+    trade_tests
+    PRIVATE
+        common
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+catch_discover_tests(trade_tests)
+
+add_executable(
+    market_event_tests
+    market_data/MarketEventTest.cpp
+)
+
+target_link_libraries(
+    market_event_tests
+    PRIVATE
+        common
+        Catch2::Catch2WithMain
+)
+
+
+include(Catch)
+catch_discover_tests(market_event_tests)
