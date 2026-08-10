@@ -4,7 +4,7 @@ add_library(feed_handler STATIC
 
 
 target_link_libraries(feed_handler
-    PUBLIC
+    PRIVATE
         common
 )
 
