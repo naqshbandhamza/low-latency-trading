@@ -55,3 +55,26 @@ TEST_CASE("Ring buffer cannot pop from empty buffer")
 
     REQUIRE_FALSE(result.has_value());
 }
+
+TEST_CASE("Ring buffer wraps around")
+{
+    llt::SpscRingBuffer<int, 4> queue;
+
+    REQUIRE(queue.push(1));
+    REQUIRE(queue.push(2));
+    REQUIRE(queue.push(3));
+    REQUIRE(queue.push(4));
+
+    REQUIRE(queue.pop().value() == 1);
+    REQUIRE(queue.pop().value() == 2);
+
+    REQUIRE(queue.push(5));
+    REQUIRE(queue.push(6));
+
+    REQUIRE(queue.pop().value() == 3);
+    REQUIRE(queue.pop().value() == 4);
+    REQUIRE(queue.pop().value() == 5);
+    REQUIRE(queue.pop().value() == 6);
+
+    REQUIRE(queue.empty());
+}
