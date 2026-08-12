@@ -108,6 +108,21 @@ target_link_libraries(
         Catch2::Catch2WithMain
 )
 
-
 include(Catch)
 catch_discover_tests(market_event_tests)
+
+
+add_executable(
+    spsc_ringbuffer_tests
+    ring_buffer/SpscRingBufferTest.cpp
+)
+
+target_link_libraries(
+    spsc_ringbuffer_tests
+    PRIVATE
+        common
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+catch_discover_tests(spsc_ringbuffer_tests)
