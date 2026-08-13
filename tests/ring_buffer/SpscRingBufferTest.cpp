@@ -4,7 +4,7 @@
 
 TEST_CASE("Ring buffer starts empty")
 {
-    llt::SpscRingBuffer<int, 4> queue;
+    llt::SpscRingBuffer<int, 5> queue;
 
     REQUIRE(queue.empty());
     REQUIRE_FALSE(queue.full());
@@ -13,7 +13,7 @@ TEST_CASE("Ring buffer starts empty")
 
 TEST_CASE("Ring buffer pushes and pops")
 {
-    llt::SpscRingBuffer<int, 4> queue;
+    llt::SpscRingBuffer<int, 5> queue;
 
     REQUIRE(queue.push(10));
     REQUIRE(queue.push(20));
@@ -35,7 +35,7 @@ TEST_CASE("Ring buffer pushes and pops")
 
 TEST_CASE("Ring buffer detects full state")
 {
-    llt::SpscRingBuffer<int, 2> queue;
+    llt::SpscRingBuffer<int, 3> queue;
 
     REQUIRE(queue.push(10));
     REQUIRE(queue.push(20));
@@ -49,7 +49,7 @@ TEST_CASE("Ring buffer detects full state")
 
 TEST_CASE("Ring buffer cannot pop from empty buffer")
 {
-    llt::SpscRingBuffer<int, 2> queue;
+    llt::SpscRingBuffer<int, 3> queue;
 
     auto result = queue.pop();
 
@@ -58,7 +58,7 @@ TEST_CASE("Ring buffer cannot pop from empty buffer")
 
 TEST_CASE("Ring buffer wraps around")
 {
-    llt::SpscRingBuffer<int, 4> queue;
+    llt::SpscRingBuffer<int, 5> queue;
 
     REQUIRE(queue.push(1));
     REQUIRE(queue.push(2));

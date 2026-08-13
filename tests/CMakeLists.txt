@@ -126,3 +126,21 @@ target_link_libraries(
 
 include(Catch)
 catch_discover_tests(spsc_ringbuffer_tests)
+
+
+
+
+add_executable(
+    SpscRingBufferConcurrencyTest
+    ring_buffer/SpscRingBufferConcurrencyTest.cpp
+)
+
+target_link_libraries(
+    SpscRingBufferConcurrencyTest
+    PRIVATE
+        common
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+catch_discover_tests(SpscRingBufferConcurrencyTest)
