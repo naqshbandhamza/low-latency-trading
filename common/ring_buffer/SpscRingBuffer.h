@@ -41,7 +41,7 @@ public:
         );
 
         return true;
-    }
+    }  
 
     [[nodiscard]]
     std::optional<T> pop()
