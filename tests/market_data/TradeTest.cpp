@@ -5,7 +5,8 @@
 TEST_CASE("Trade stores all fields")
 {
     llt::Trade trade(
-        "TXFU6",
+        // "TXFU6",
+        llt::Instrument("TXFU6"),
         llt::SequenceNumber(100),
         llt::Timestamp(123456789),
         llt::Price(234500),
@@ -13,7 +14,7 @@ TEST_CASE("Trade stores all fields")
         llt::Side::Buy
     );
 
-    REQUIRE(trade.instrument() == "TXFU6");
+    REQUIRE(trade.instrument() == llt::Instrument("TXFU6"));
     REQUIRE(trade.sequence() == llt::SequenceNumber(100));
     REQUIRE(trade.timestamp() == llt::Timestamp(123456789));
     REQUIRE(trade.price() == llt::Price(234500));

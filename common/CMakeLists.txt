@@ -1,5 +1,6 @@
 add_library(common STATIC
     logging/ConsoleLogger.cpp
+    market_data/UdpMarketDataSource.cpp
 )
 
 target_include_directories(common

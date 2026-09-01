@@ -5,7 +5,8 @@
 TEST_CASE("Quote stores all fields")
 {
     llt::Quote quote(
-        "TXFU6",
+        // "TXFU6",
+        llt::Instrument("TXFU6"),
         llt::SequenceNumber(42),
         llt::Timestamp(1000000),
         llt::Level(
@@ -16,7 +17,7 @@ TEST_CASE("Quote stores all fields")
             llt::Quantity(12))
     );
 
-    REQUIRE(quote.instrument() == "TXFU6");
+    REQUIRE(quote.instrument() == llt::Instrument("TXFU6"));
 
     REQUIRE(quote.sequence() == llt::SequenceNumber(42));
 

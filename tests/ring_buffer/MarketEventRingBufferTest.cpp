@@ -11,7 +11,7 @@ TEST_CASE("SPSC ring buffer transports MarketEvent")
     > queue;
 
     llt::Quote quote(
-        "TXFU6",
+        llt::Instrument("TXFU6"),
         llt::SequenceNumber(100),
         llt::Timestamp(123456),
         llt::Level(
@@ -40,7 +40,7 @@ TEST_CASE("SPSC ring buffer transports MarketEvent")
         std::get<llt::Quote>(*event);
 
     REQUIRE(
-        receivedQuote.instrument() == "TXFU6"
+        receivedQuote.instrument() == llt::Instrument("TXFU6")
     );
 
     REQUIRE(
@@ -63,7 +63,7 @@ TEST_CASE("SPSC ring buffer transports Trade")
     > queue;
 
     llt::Trade trade(
-        "TXFU6",
+        llt::Instrument("TXFU6"),
         llt::SequenceNumber(200),
         llt::Timestamp(200000),
         llt::Price(234505),
@@ -87,7 +87,7 @@ TEST_CASE("SPSC ring buffer transports Trade")
         std::get<llt::Trade>(*event);
 
     REQUIRE(
-        receivedTrade.instrument() == "TXFU6"
+        receivedTrade.instrument() == llt::Instrument("TXFU6")
     );
 
     REQUIRE(

@@ -9,7 +9,7 @@
 TEST_CASE("MarketEvent can contain a Quote")
 {
     llt::Quote quote(
-        "TXFU6",
+        llt::Instrument("TXFU6"),
         llt::SequenceNumber(1),
         llt::Timestamp(1000),
         llt::Level(
@@ -30,7 +30,7 @@ TEST_CASE("MarketEvent can contain a Quote")
 TEST_CASE("MarketEvent can contain a Trade")
 {
     llt::Trade trade(
-        "TXFU6",
+        llt::Instrument("TXFU6"),
         llt::SequenceNumber(2),
         llt::Timestamp(2000),
         llt::Price(234505),
@@ -47,7 +47,7 @@ TEST_CASE("MarketEvent can contain a Trade")
 TEST_CASE("MarketEvent can be visited")
 {
     llt::Trade trade(
-        "TXFU6",
+        llt::Instrument("TXFU6"),
         llt::SequenceNumber(10),
         llt::Timestamp(5000),
         llt::Price(234500),

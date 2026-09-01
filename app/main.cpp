@@ -8,11 +8,5 @@ int main()
     llt::ConsoleLogger logger;
 
 
-    llt::FeedHandler feed(logger);
-
-
-    feed.start();
-
-
     return 0;
 }

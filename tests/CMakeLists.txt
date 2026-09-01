@@ -176,3 +176,62 @@ target_link_libraries(
 
 include(Catch)
 catch_discover_tests(MarketEventTest)
+
+
+
+add_executable(
+    FeedHandlerMockTest
+    feed_handler/FeedHandlerTest.cpp
+)
+
+target_link_libraries(
+    FeedHandlerMockTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+catch_discover_tests(FeedHandlerMockTest)
+
+
+
+
+
+add_executable(
+    UdpMarketDataSourceTest
+    market_data/UdpMarketDataSourceTest.cpp
+)
+
+target_link_libraries(
+    UdpMarketDataSourceTest
+    PRIVATE
+        common
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(UdpMarketDataSourceTest)
+
+
+
+
+
+add_executable(
+    UdpFeedHandlerTest
+    feed_handler/UdpFeedHandlerTest.cpp
+)
+
+target_link_libraries(
+    UdpFeedHandlerTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(UdpFeedHandlerTest)
