@@ -160,3 +160,19 @@ target_link_libraries(
 
 include(Catch)
 catch_discover_tests(AtomicTest)
+
+
+add_executable(
+    MarketEventTest
+    ring_buffer/MarketEventRingBufferTest.cpp
+)
+
+target_link_libraries(
+    MarketEventTest
+    PRIVATE
+        common
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+catch_discover_tests(MarketEventTest)

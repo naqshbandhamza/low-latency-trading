@@ -15,6 +15,7 @@ class Quote
 {
 public:
 
+
     Quote(
         Instrument instrument,
         SequenceNumber sequence,

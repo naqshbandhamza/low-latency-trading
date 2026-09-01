@@ -17,6 +17,8 @@ class Trade
 {
 public:
 
+
+
     Trade(
         Instrument instrument,
         SequenceNumber sequence,
