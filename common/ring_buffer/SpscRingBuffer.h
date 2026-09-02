@@ -18,8 +18,9 @@ namespace llt
                       "Capacity must be greater than zero");
 
     public:
+
         [[nodiscard]]
-        bool push(const T &value)
+        bool push(const T& value)
         {
             const std::size_t write =
                 writeIndex_.load(std::memory_order_relaxed);
@@ -35,11 +36,39 @@ namespace llt
                 return false;
             }
 
-            // buffer_[write] = value;
-            T *slot = ptr(write);
+            T* slot = ptr(write);
+            ::new (static_cast<void*>(slot)) T(value);
+            //std::construct_at(slot, value); available in c++ 20
+
+            writeIndex_.store(
+                next,
+                std::memory_order_release);
+
+            return true;
+        }
+
+        [[nodiscard]]
+        bool push(T&& value)
+        {
+            const std::size_t write =
+                writeIndex_.load(std::memory_order_relaxed);
+
+            const std::size_t next =
+                increment(write);
+
+            const std::size_t read =
+                readIndex_.load(std::memory_order_acquire);
+
+            if (next == read)
+            {
+                return false;
+            }
+
+            T* slot = ptr(write);
             ::new (static_cast<void*>(slot)) T(std::move(value));
             // std::construct_at(
-            //     slot, std::move(value));
+            //     slot,
+            //     std::move(value));
 
             writeIndex_.store(
                 next,
@@ -63,12 +92,10 @@ namespace llt
             }
 
             // T value = buffer_[read];
-
             // readIndex_.store(
             //     increment(read),
             //     std::memory_order_release
             // );
-
             // return value;
 
             T *slot = ptr(read);
@@ -130,12 +157,6 @@ namespace llt
             return Capacity - read + write;
         }
 
-        // T *ptr(std::size_t index) noexcept
-        // {
-        //     return std::launder(
-        //         reinterpret_cast<T *>(
-        //             storage_[index]));
-        // }
         T* ptr(std::size_t index) noexcept
         {
             return std::launder(
@@ -153,6 +174,7 @@ namespace llt
                 (void)pop();
             }
         }
+    
     private:
         [[nodiscard]]
         static constexpr std::size_t increment(
@@ -161,7 +183,6 @@ namespace llt
             return (index + 1) % Capacity;
         }
 
-    private:
         // std::array<T, Capacity> buffer_{};
         alignas(T)
             std::array<std::byte, sizeof(T) * Capacity> storage_{};

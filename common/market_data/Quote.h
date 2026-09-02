@@ -31,6 +31,30 @@ public:
     {
     }
 
+    Quote(const Quote&) = default;
+    Quote(Quote&&) noexcept = default;
+    // Copy constructor
+    // Quote(const Quote& other)
+    // : instrument_(other.instrument_)
+    // , sequence_(other.sequence_)
+    // , timestamp_(other.timestamp_)
+    // , bid_(other.bid_)
+    // , ask_(other.ask_)
+    // {
+    //     //std::cout<<"copy constrcutor quote";
+    // }
+
+    // // Move constructor
+    // Quote(Quote&& other) noexcept
+    // : instrument_(std::move(other.instrument_))
+    // , sequence_(std::move(other.sequence_))
+    // , timestamp_(std::move(other.timestamp_))
+    // , bid_(std::move(other.bid_))
+    // , ask_(std::move(other.ask_))
+    // {
+    //     //std::cout<<"move constrcutor quote";
+    // }
+
     [[nodiscard]]
     const Instrument& instrument() const noexcept
     {

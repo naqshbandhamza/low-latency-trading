@@ -12,6 +12,8 @@
 #include "logging/ILogger.h"
 #include "market_data/UdpMarketDataPacket.h"
 #include "market_data/UdpMarketDataSource.h"
+#include "market_data/SequenceRecovery.h"
+#include "MockMarketDataRecoverySource.h"
 
 namespace
 {
@@ -96,10 +98,18 @@ TEST_CASE(
 
     REQUIRE(sender >= 0);
 
+    MockMarketDataRecoverySource recoverySource;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        recoverySource
+    );
+
     llt::FeedHandler handler(
         logger,
         queue,
-        source
+        source,
+        recovery
     );
 
     std::thread feedHandlerThread(

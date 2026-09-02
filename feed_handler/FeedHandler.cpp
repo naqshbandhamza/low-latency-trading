@@ -1,6 +1,7 @@
 #include "FeedHandler.h"
-
+#include <string>
 #include <thread>
+#include <vector>
 
 namespace llt
 {
@@ -8,11 +9,13 @@ namespace llt
 FeedHandler::FeedHandler(
     ILogger& logger,
     MarketEventQueue& queue,
-    IMarketDataSource& source
+    IMarketDataSource& source,
+    ISequenceRecovery& recovery
 ) noexcept
     : logger_(logger)
     , queue_(queue)
     , source_(source)
+    , recovery_(recovery)
 {
 }
 
@@ -67,6 +70,70 @@ MarketEvent FeedHandler::createMarketEvent(
     );
 }
 
+// void FeedHandler::start(
+//     std::size_t eventCount
+// )
+// {
+//     logger_.info(
+//         "Feed handler started"
+//     );
+
+//     MarketDataMessage message;
+
+//     // for (
+//     //     std::size_t i = 0;
+//     //     i < eventCount;
+//     //     ++i
+//     // )
+//     // {
+//     //     if (!source_.receive(message))
+//     //     {
+//     //         continue;
+//     //     }
+
+//     //     checkSequence(
+//     //         message.sequence
+//     //     );        
+
+//     //     MarketEvent event =
+//     //         createMarketEvent(message);
+
+//     //     while (!queue_.push(std::move(event)))
+//     //     {
+//     //         std::this_thread::yield();
+//     //     }
+//     // }
+
+//     std::size_t receivedEvents = 0;
+
+//     while (receivedEvents < eventCount)
+//     {
+//         if (!source_.receive(message))
+//         {
+//             continue;
+//         }
+
+//         checkSequence(
+//             message.sequence
+//         );
+
+//         MarketEvent event =
+//             createMarketEvent(message);
+
+//         while (!queue_.push(std::move(event)))
+//         {
+//             std::this_thread::yield();
+//         }
+
+//         ++receivedEvents;
+//     }
+
+//     logger_.debug(
+//         "Feed handler stopped"
+//     );
+// }
+
+
 void FeedHandler::start(
     std::size_t eventCount
 )
@@ -77,29 +144,95 @@ void FeedHandler::start(
 
     MarketDataMessage message;
 
-    for (
-        std::size_t i = 0;
-        i < eventCount;
-        ++i
-    )
+    std::size_t receivedEvents = 0;
+
+    while (receivedEvents < eventCount)
     {
         if (!source_.receive(message))
         {
             continue;
         }
 
-        MarketEvent event =
-            createMarketEvent(message);
-
-        while (!queue_.push(std::move(event)))
+        if (!checkSequence(message.sequence))
         {
-            std::this_thread::yield();
+            break;
         }
+
+        processMessage(message);
+
+        ++receivedEvents;
     }
 
     logger_.debug(
         "Feed handler stopped"
     );
 }
+
+
+bool FeedHandler::checkSequence(
+    std::uint64_t sequence
+)
+{
+    if (!hasSequence_)
+    {
+        expectedSequence_ =
+            sequence + 1;
+
+        hasSequence_ = true;
+
+        return true;
+    }
+
+    if (sequence != expectedSequence_)
+    {
+        std::vector<MarketDataMessage> recoveredMessages;
+
+        const bool recovered =
+            recovery_.recover(
+                expectedSequence_,
+                sequence,
+                recoveredMessages
+            );
+
+        if (!recovered)
+        {
+            logger_.error(
+                "Market data sequence recovery failed"
+            );
+
+            return false;
+        }
+
+        for (
+            const auto& recoveredMessage
+            : recoveredMessages
+        )
+        {
+            processMessage(
+                recoveredMessage
+            );
+        }
+    }
+
+    expectedSequence_ =
+        sequence + 1;
+
+    return true;
+}
+
+
+void FeedHandler::processMessage(
+    const MarketDataMessage& message
+)
+{
+    MarketEvent event =
+        createMarketEvent(message);
+
+    while (!queue_.push(std::move(event)))
+    {
+        std::this_thread::yield();
+    }
+}
+
 
 } // namespace llt

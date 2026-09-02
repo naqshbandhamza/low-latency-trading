@@ -1,5 +1,7 @@
 #include <cstdint>
+#include <string>
 #include <string_view>
+#include <vector>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -7,7 +9,9 @@
 #include "logging/ILogger.h"
 #include "market_data/MarketEvent.h"
 #include "market_data/MockMarketDataSource.h"
-
+#include "market_data/SequenceRecovery.h"
+#include "MockSequenceRecovery.h"
+#include "MockMarketDataRecoverySource.h"
 
 namespace
 {
@@ -17,14 +21,139 @@ class TestLogger : public llt::ILogger
 public:
 
     void log(
-        llt::LogLevel,
-        std::string_view
+        llt::LogLevel level,
+        std::string_view message
     ) override
     {
+        if (level == llt::LogLevel::Warning)
+        {
+            ++warningCount;
+            lastWarning = std::string(message);
+        }
     }
+
+    std::size_t warningCount{0};
+
+    std::string lastWarning;
 };
 
 } // namespace
+
+
+// class TestSequenceRecovery
+//     : public llt::ISequenceRecovery
+// {
+// public:
+
+//     bool recover(
+//         std::uint64_t expectedSequence,
+//         std::uint64_t receivedSequence,
+//         std::vector<llt::MarketDataMessage>& recoveredMessages
+//     ) override
+//     {
+//         called = true;
+
+//         expected = expectedSequence;
+//         received = receivedSequence;
+
+//         recoveredMessages.clear();
+
+//         for (
+//             std::uint64_t sequence = expectedSequence;
+//             sequence < receivedSequence;
+//             ++sequence
+//         )
+//         {
+//             llt::MarketDataMessage message;
+
+//             message.type =
+//                 llt::MarketDataMessageType::Quote;
+
+//             message.sequence =
+//                 sequence;
+
+//             message.timestamp =
+//                 sequence;
+
+//             message.bidPrice =
+//                 234500;
+
+//             message.bidQuantity =
+//                 10;
+
+//             message.askPrice =
+//                 234510;
+
+//             message.askQuantity =
+//                 12;
+
+//             recoveredMessages.push_back(
+//                 message
+//             );
+//         }
+
+//         return true;
+//     }
+
+//     bool called{false};
+
+//     std::uint64_t expected{0};
+
+//     std::uint64_t received{0};
+// };
+
+
+class SequenceGapMarketDataSource
+    : public llt::IMarketDataSource
+{
+public:
+
+    bool receive(
+        llt::MarketDataMessage& message
+    ) noexcept override
+    {
+        if (index_ >= 3)
+        {
+            return false;
+        }
+
+        constexpr std::uint64_t sequences[] =
+        {
+            100,
+            101,
+            103
+        };
+
+        message.type =
+            llt::MarketDataMessageType::Quote;
+
+        message.sequence =
+            sequences[index_];
+
+        message.timestamp =
+            sequences[index_];
+
+        message.bidPrice =
+            234500;
+
+        message.bidQuantity =
+            10;
+
+        message.askPrice =
+            234510;
+
+        message.askQuantity =
+            12;
+
+        ++index_;
+
+        return true;
+    }
+
+private:
+
+    std::size_t index_{0};
+};
 
 
 TEST_CASE(
@@ -39,10 +168,18 @@ TEST_CASE(
 
     llt::MockMarketDataSource source;
 
+    MockMarketDataRecoverySource rsource;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        rsource
+    );
+
     llt::FeedHandler handler(
         logger,
         queue,
-        source
+        source,
+        recovery
     );
 
     handler.start(eventCount);
@@ -87,10 +224,18 @@ TEST_CASE(
 
     llt::MockMarketDataSource source;
 
+    MockMarketDataRecoverySource rsource;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        rsource
+    );
+
     llt::FeedHandler handler(
         logger,
         queue,
-        source
+        source,
+        recovery
     );
 
     handler.start(1);
@@ -148,10 +293,18 @@ TEST_CASE(
 
     llt::MockMarketDataSource source;
 
+    MockMarketDataRecoverySource rsource;
+
+    llt::SequenceRecovery recovery(
+        logger,
+       rsource
+    );
+
     llt::FeedHandler handler(
         logger,
         queue,
-        source
+        source,
+        recovery
     );
 
     // First event = Quote
@@ -197,4 +350,249 @@ TEST_CASE(
     );
 
     REQUIRE(queue.empty());
+}
+
+
+TEST_CASE(
+    "FeedHandler recovers missing sequence"
+)
+{
+    TestLogger logger;
+
+    llt::MarketEventQueue queue;
+
+    SequenceGapMarketDataSource source;
+
+    MockSequenceRecovery recovery;
+
+    llt::FeedHandler handler(
+        logger,
+        queue,
+        source,
+        recovery
+    );
+
+    handler.start(3);
+
+    REQUIRE(
+        recovery.called
+    );
+
+    REQUIRE(
+        recovery.expected == 102
+    );
+
+    REQUIRE(
+        recovery.received == 103
+    );
+
+    REQUIRE(
+        queue.size() == 4
+    );
+
+    const auto event100 = queue.pop();
+    const auto event101 = queue.pop();
+    const auto event102 = queue.pop();
+    const auto event103 = queue.pop();
+
+    REQUIRE(event100.has_value());
+    REQUIRE(event101.has_value());
+    REQUIRE(event102.has_value());
+    REQUIRE(event103.has_value());
+
+    REQUIRE(
+        std::visit(
+            [](const auto& event)
+            {
+                return event.sequence()
+                    == llt::SequenceNumber(100);
+            },
+            *event100
+        )
+    );
+
+    REQUIRE(
+        std::visit(
+            [](const auto& event)
+            {
+                return event.sequence()
+                    == llt::SequenceNumber(101);
+            },
+            *event101
+        )
+    );
+
+    REQUIRE(
+        std::visit(
+            [](const auto& event)
+            {
+                return event.sequence()
+                    == llt::SequenceNumber(102);
+            },
+            *event102
+        )
+    );
+
+    REQUIRE(
+        std::visit(
+            [](const auto& event)
+            {
+                return event.sequence()
+                    == llt::SequenceNumber(103);
+            },
+            *event103
+        )
+    );
+
+    REQUIRE(
+        queue.empty()
+    );
+}
+
+TEST_CASE(
+    "SequenceRecovery logs sequence gap"
+)
+{
+    TestLogger logger;
+
+    MockMarketDataRecoverySource source;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        source
+    );
+
+    std::vector<llt::MarketDataMessage> recoveredMessages;
+
+    const bool recovered =
+        recovery.recover(
+            102,
+            103,
+            recoveredMessages
+        );
+
+    REQUIRE(
+        recovered == true
+    );
+
+    REQUIRE(
+        source.called
+    );
+
+    REQUIRE(
+        source.from == 102
+    );
+
+    REQUIRE(
+        source.to == 102
+    );
+
+    REQUIRE(
+        recoveredMessages.size() == 1
+    );
+
+    REQUIRE(
+        recoveredMessages[0].sequence == 102
+    );
+
+    REQUIRE(
+        logger.warningCount == 1
+    );
+
+    REQUIRE(
+        logger.lastWarning
+        == "Sequence recovery required: expected=102 received=103"
+    );
+}
+
+
+
+TEST_CASE(
+    "FeedHandler stops when sequence recovery fails"
+)
+{
+    TestLogger logger;
+
+    llt::MarketEventQueue queue;
+
+    SequenceGapMarketDataSource source;
+
+    MockMarketDataRecoverySource recoverySource;
+
+    recoverySource.shouldRecover =
+        false;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        recoverySource
+    );
+
+    llt::FeedHandler handler(
+        logger,
+        queue,
+        source,
+        recovery
+    );
+
+    handler.start(3);
+
+    REQUIRE(
+        queue.size() == 2
+    );
+
+    const auto event100 =
+        queue.pop();
+
+    const auto event101 =
+        queue.pop();
+
+    REQUIRE(
+        event100.has_value()
+    );
+
+    REQUIRE(
+        event101.has_value()
+    );
+
+    REQUIRE(
+        std::visit(
+            [](const auto& event)
+            {
+                return event.sequence()
+                    == llt::SequenceNumber(100);
+            },
+            *event100
+        )
+    );
+
+    REQUIRE(
+        std::visit(
+            [](const auto& event)
+            {
+                return event.sequence()
+                    == llt::SequenceNumber(101);
+            },
+            *event101
+        )
+    );
+
+    REQUIRE(
+        queue.empty()
+    );
+
+    REQUIRE(
+        recoverySource.called
+    );
+
+    REQUIRE(
+        recoverySource.from == 102
+    );
+
+    REQUIRE(
+        recoverySource.to == 102
+    );
+
+    REQUIRE(
+        logger.warningCount == 1
+    );
 }

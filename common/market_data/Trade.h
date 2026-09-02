@@ -17,7 +17,8 @@ class Trade
 {
 public:
 
-
+    Trade(const Trade&) = default;
+    Trade(Trade&&) noexcept = default;
 
     Trade(
         Instrument instrument,

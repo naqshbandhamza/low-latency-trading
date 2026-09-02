@@ -1,11 +1,12 @@
 #pragma once
 
 #include <cstddef>
-
+#include <cstdint>
 #include "logging/ILogger.h"
 #include "market_data/IMarketDataSource.h"
 #include "market_data/MarketEvent.h"
 #include "ring_buffer/SpscRingBuffer.h"
+#include "market_data/ISequenceRecovery.h"
 
 namespace llt
 {
@@ -20,7 +21,8 @@ public:
     FeedHandler(
         ILogger& logger,
         MarketEventQueue& queue,
-        IMarketDataSource& source
+        IMarketDataSource& source,
+        ISequenceRecovery& recovery
     ) noexcept;
 
     void start(
@@ -33,11 +35,24 @@ private:
         const MarketDataMessage& message
     );
 
+    void processMessage(
+        const MarketDataMessage& message
+    );
+
+    bool checkSequence(
+        std::uint64_t sequence
+    );
+
 private:
 
     ILogger& logger_;
     MarketEventQueue& queue_;
     IMarketDataSource& source_;
+    ISequenceRecovery& recovery_;
+
+    std::uint64_t expectedSequence_{0};
+    bool hasSequence_{false};
+
 };
 
 } // namespace llt
