@@ -2,6 +2,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <limits>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -598,3 +599,222 @@ TEST_CASE(
         logger.warningCount == 1
     );
 }
+
+
+
+
+TEST_CASE(
+    "SequenceRecovery validates recovered sequence range"
+)
+{
+    TestLogger logger;
+
+    MockMarketDataRecoverySource source;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        source
+    );
+
+    std::vector<llt::MarketDataMessage> recoveredMessages;
+
+    const bool recovered =
+        recovery.recover(
+            102,
+            105,
+            recoveredMessages
+        );
+
+    REQUIRE(recovered);
+
+    REQUIRE(recoveredMessages.size() == 3);
+
+    REQUIRE(recoveredMessages[0].sequence == 102);
+    REQUIRE(recoveredMessages[1].sequence == 103);
+    REQUIRE(recoveredMessages[2].sequence == 104);
+}
+
+
+TEST_CASE(
+    "SequenceRecovery rejects incomplete recovered sequence"
+)
+{
+    TestLogger logger;
+
+    MockMarketDataRecoverySource source;
+
+    source.skipSequence = 103;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        source
+    );
+
+    std::vector<llt::MarketDataMessage> recoveredMessages;
+
+    const bool recovered =
+        recovery.recover(
+            102,
+            105,
+            recoveredMessages
+        );
+
+    REQUIRE(
+        recovered == false
+    );
+}
+
+
+
+TEST_CASE(
+    "SequenceRecovery rejects out-of-order recovered sequence"
+)
+{
+    TestLogger logger;
+
+    MockMarketDataRecoverySource source;
+
+    source.outOfOrder = true;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        source
+    );
+
+    std::vector<llt::MarketDataMessage> recoveredMessages;
+
+    const bool recovered =
+        recovery.recover(
+            102,
+            105,
+            recoveredMessages
+        );
+
+    REQUIRE(
+        recovered == false
+    );
+}
+
+TEST_CASE(
+    "SequenceRecovery rejects backward sequence"
+)
+{
+    TestLogger logger;
+
+    MockMarketDataRecoverySource source;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        source
+    );
+
+    std::vector<llt::MarketDataMessage> recoveredMessages;
+
+    const bool recovered =
+        recovery.recover(
+            105,
+            103,
+            recoveredMessages
+        );
+
+    REQUIRE(
+        recovered == false
+    );
+}
+
+
+
+
+TEST_CASE(
+    "SequenceRecovery rejects zero received sequence"
+)
+{
+    TestLogger logger;
+
+    MockMarketDataRecoverySource source;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        source
+    );
+
+    std::vector<llt::MarketDataMessage> recoveredMessages;
+
+    const bool recovered =
+        recovery.recover(
+            10,
+            0,
+            recoveredMessages
+        );
+
+    REQUIRE(
+        recovered == false
+    );
+
+    REQUIRE(
+        recoveredMessages.empty()
+    );
+
+    REQUIRE(
+        source.called == false
+    );
+}
+
+
+TEST_CASE(
+    "SequenceRecovery handles maximum sequence"
+)
+{
+    TestLogger logger;
+
+    MockMarketDataRecoverySource source;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        source
+    );
+
+    std::vector<llt::MarketDataMessage> recoveredMessages;
+
+    const std::uint64_t maxSequence =
+        std::numeric_limits<std::uint64_t>::max();
+
+    const bool recovered =
+        recovery.recover(
+            maxSequence - 2,
+            maxSequence,
+            recoveredMessages
+        );
+
+    REQUIRE(
+        recovered == true
+    );
+
+    REQUIRE(
+        source.called == true
+    );
+
+    REQUIRE(
+        source.from == maxSequence - 2
+    );
+
+    REQUIRE(
+        source.to == maxSequence - 1
+    );
+
+    REQUIRE(
+        recoveredMessages.size() == 2
+    );
+
+    REQUIRE(
+        recoveredMessages[0].sequence == maxSequence - 2
+    );
+
+    REQUIRE(
+        recoveredMessages[1].sequence == maxSequence - 1
+    );
+}
+
+
+
+
