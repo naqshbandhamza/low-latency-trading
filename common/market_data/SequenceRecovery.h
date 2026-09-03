@@ -3,11 +3,14 @@
 #include <vector>
 
 #include "ISequenceRecovery.h"
-#include "IMarketDataRecoverySource.h"
-#include "logging/ILogger.h"
+// #include "IMarketDataRecoverySource.h"
+// #include "logging/ILogger.h"
 
 namespace llt
 {
+
+class IMarketDataRecoverySource;
+class ILogger;
 
 class SequenceRecovery
     : public ISequenceRecovery

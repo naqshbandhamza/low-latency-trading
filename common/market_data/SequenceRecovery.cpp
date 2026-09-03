@@ -1,5 +1,7 @@
 #include "market_data/MarketDataMessage.h"
 #include "SequenceRecovery.h"
+#include "IMarketDataRecoverySource.h"
+#include "logging/ILogger.h"
 
 #include <string>
 
