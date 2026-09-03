@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "market_data/IMarketDataSource.h"
+#include "market_data/MarketDataMessage.h"
 
 namespace llt
 {

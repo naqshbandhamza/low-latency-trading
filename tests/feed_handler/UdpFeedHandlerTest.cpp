@@ -14,6 +14,9 @@
 #include "market_data/UdpMarketDataSource.h"
 #include "market_data/SequenceRecovery.h"
 #include "MockMarketDataRecoverySource.h"
+#include "market_data/MarketDataMessage.h"
+#include "ring_buffer/SpscRingBuffer.h"
+#include "market_data/MarketEvent.h"
 
 namespace
 {

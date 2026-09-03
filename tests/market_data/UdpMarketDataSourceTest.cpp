@@ -10,6 +10,8 @@
 
 #include "market_data/UdpMarketDataPacket.h"
 #include "market_data/UdpMarketDataSource.h"
+#include "market_data/MarketDataMessage.h"
+
 
 namespace
 {

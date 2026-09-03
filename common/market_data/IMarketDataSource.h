@@ -1,9 +1,12 @@
 #pragma once
 
-#include "market_data/MarketDataMessage.h"
+//#include "market_data/MarketDataMessage.h"
+
 
 namespace llt
 {
+
+class  MarketDataMessage;
 
 class IMarketDataSource
 {

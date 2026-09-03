@@ -2,6 +2,12 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include "logging/ILogger.h"
+#include "market_data/IMarketDataSource.h"
+//#include "market_data/MarketEvent.h"
+#include "ring_buffer/SpscRingBuffer.h"
+#include "market_data/ISequenceRecovery.h"
+#include "market_data/MarketDataMessage.h"
 
 namespace llt
 {
