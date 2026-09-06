@@ -235,3 +235,24 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(UdpFeedHandlerTest)
+
+
+
+
+
+add_executable(
+    UdpCodecTest
+    market_data/UdpMarketDataCodecTest.cpp
+)
+
+target_link_libraries(
+    UdpCodecTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(UdpCodecTest)

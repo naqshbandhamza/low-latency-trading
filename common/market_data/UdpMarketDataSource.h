@@ -13,7 +13,8 @@ class UdpMarketDataSource
 public:
 
     explicit UdpMarketDataSource(
-        std::uint16_t port
+        std::uint16_t port,
+        std::uint32_t receiveTimeoutMs = 100
     );
 
     ~UdpMarketDataSource() override;

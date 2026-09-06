@@ -6,11 +6,16 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <cerrno>
+#include <sys/time.h>
+#include "market_data/UdpMarketDataCodec.h"
+
 namespace llt
 {
 
 UdpMarketDataSource::UdpMarketDataSource(
-    std::uint16_t port
+    std::uint16_t port,
+    std::uint32_t receiveTimeoutMs
 )
 {
     socket_ =
@@ -22,6 +27,35 @@ UdpMarketDataSource::UdpMarketDataSource(
 
     if (socket_ < 0)
     {
+        return;
+    }
+
+    timeval timeout{};
+
+    timeout.tv_sec =
+        static_cast<time_t>(
+            receiveTimeoutMs / 1000
+        );
+
+    timeout.tv_usec =
+        static_cast<suseconds_t>(
+            (receiveTimeoutMs % 1000) * 1000
+        );
+
+    if (
+        ::setsockopt(
+            socket_,
+            SOL_SOCKET,
+            SO_RCVTIMEO,
+            &timeout,
+            sizeof(timeout)
+        ) < 0
+    )
+    {
+        ::close(socket_);
+
+        socket_ = -1;
+
         return;
     }
 
@@ -69,13 +103,25 @@ bool UdpMarketDataSource::receive(
         return false;
     }
 
-    UdpMarketDataPacket packet{};
+    // UdpMarketDataPacket packet{};
+
+    // const auto received =
+    //     ::recvfrom(
+    //         socket_,
+    //         &packet,
+    //         sizeof(packet),
+    //         0,
+    //         nullptr,
+    //         nullptr
+    //     );
+
+    UdpMarketDataCodec::Buffer buffer{};
 
     const auto received =
         ::recvfrom(
             socket_,
-            &packet,
-            sizeof(packet),
+            buffer.data(),
+            buffer.size(),
             0,
             nullptr,
             nullptr
@@ -84,12 +130,35 @@ bool UdpMarketDataSource::receive(
     if (
         received
         != static_cast<ssize_t>(
-            sizeof(packet)
+            buffer.size()
         )
     )
     {
         return false;
     }
+
+    UdpMarketDataPacket packet{};
+
+    if (
+        !UdpMarketDataCodec::decode(
+            buffer.data(),
+            buffer.size(),
+            packet
+        )
+    )
+    {
+        return false;
+    }
+
+    // if (
+    //     received
+    //     != static_cast<ssize_t>(
+    //         sizeof(packet)
+    //     )
+    // )
+    // {
+    //     return false;
+    // }
 
     message.type =
         packet.type

@@ -5,12 +5,14 @@
 
 #include <cstdint>
 #include <cstring>
+#include <chrono>
 
 #include <catch2/catch_test_macros.hpp>
 
 #include "market_data/UdpMarketDataPacket.h"
 #include "market_data/UdpMarketDataSource.h"
 #include "market_data/MarketDataMessage.h"
+#include "market_data/UdpMarketDataCodec.h"
 
 
 namespace
@@ -65,11 +67,33 @@ void sendPacket(
     address.sin_port =
         htons(port);
 
+    // const auto result =
+    //     ::sendto(
+    //         socket,
+    //         &packet,
+    //         sizeof(packet),
+    //         0,
+    //         reinterpret_cast<
+    //             const sockaddr*
+    //         >(&address),
+    //         sizeof(address)
+    //     );
+
+    // REQUIRE(
+    //     result
+    //     == static_cast<
+    //         ssize_t
+    //     >(sizeof(packet))
+    // );
+
+    const auto buffer =
+    llt::UdpMarketDataCodec::encode(packet);
+
     const auto result =
         ::sendto(
             socket,
-            &packet,
-            sizeof(packet),
+            buffer.data(),
+            buffer.size(),
             0,
             reinterpret_cast<
                 const sockaddr*
@@ -79,9 +103,9 @@ void sendPacket(
 
     REQUIRE(
         result
-        == static_cast<
-            ssize_t
-        >(sizeof(packet))
+        == static_cast<ssize_t>(
+            buffer.size()
+        )
     );
 }
 
@@ -267,3 +291,47 @@ TEST_CASE(
     ::close(sender);
 }
 
+
+
+
+
+
+TEST_CASE(
+    "UdpMarketDataSource receive times out when no packet arrives"
+)
+{
+    constexpr std::uint16_t port =
+        19003;
+
+    constexpr std::uint32_t timeoutMs =
+        20;
+
+    llt::UdpMarketDataSource source(
+        port,
+        timeoutMs
+    );
+
+    llt::MarketDataMessage message{};
+
+    const auto start =
+        std::chrono::steady_clock::now();
+
+    const bool received =
+        source.receive(message);
+
+    const auto elapsed =
+        std::chrono::steady_clock::now()
+        - start;
+
+    REQUIRE_FALSE(received);
+
+    REQUIRE(
+        elapsed
+        >= std::chrono::milliseconds(10)
+    );
+
+    REQUIRE(
+        elapsed
+        < std::chrono::milliseconds(500)
+    );
+}

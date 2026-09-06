@@ -17,6 +17,7 @@
 #include "market_data/MarketDataMessage.h"
 #include "ring_buffer/SpscRingBuffer.h"
 #include "market_data/MarketEvent.h"
+#include "market_data/UdpMarketDataCodec.h"
 
 namespace
 {
@@ -59,11 +60,33 @@ void sendPacket(
     address.sin_port =
         htons(port);
 
+    // const auto result =
+    //     ::sendto(
+    //         socket,
+    //         &packet,
+    //         sizeof(packet),
+    //         0,
+    //         reinterpret_cast<
+    //             const sockaddr*
+    //         >(&address),
+    //         sizeof(address)
+    //     );
+
+    // REQUIRE(
+    //     result
+    //     == static_cast<ssize_t>(
+    //         sizeof(packet)
+    //     )
+    // );
+
+    const auto buffer =
+    llt::UdpMarketDataCodec::encode(packet);
+
     const auto result =
         ::sendto(
             socket,
-            &packet,
-            sizeof(packet),
+            buffer.data(),
+            buffer.size(),
             0,
             reinterpret_cast<
                 const sockaddr*
@@ -74,7 +97,7 @@ void sendPacket(
     REQUIRE(
         result
         == static_cast<ssize_t>(
-            sizeof(packet)
+            buffer.size()
         )
     );
 }
