@@ -460,3 +460,63 @@ TEST_CASE(
 
     ::close(sender);
 }
+
+
+
+TEST_CASE(
+    "UdpMarketDataSource handles bind failure"
+)
+{
+    constexpr std::uint16_t port =
+        19006;
+
+    constexpr std::uint32_t timeoutMs =
+        100;
+
+    llt::UdpMarketDataSource first(
+        port,
+        timeoutMs
+    );
+
+    llt::UdpMarketDataSource second(
+        port,
+        timeoutMs
+    );
+
+    llt::MarketDataMessage message{};
+
+    // The second source cannot bind to the same UDP port.
+    REQUIRE_FALSE(
+        second.receive(message)
+    );
+}
+
+
+TEST_CASE(
+    "UdpMarketDataSource remains safe after construction failure"
+)
+{
+    constexpr std::uint16_t port =
+        19007;
+
+    constexpr std::uint32_t timeoutMs =
+        100;
+
+    llt::UdpMarketDataSource first(
+        port,
+        timeoutMs
+    );
+
+    llt::UdpMarketDataSource second(
+        port,
+        timeoutMs
+    );
+
+    llt::MarketDataMessage message{};
+
+    REQUIRE_FALSE(
+        second.receive(message)
+    );
+
+    // Destruction of both objects must be safe.
+}

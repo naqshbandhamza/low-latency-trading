@@ -189,7 +189,17 @@ bool FeedHandler::checkSequence(
         return true;
     }
 
-    if (sequence != expectedSequence_)
+    // Expected sequence arrived.
+    if (sequence == expectedSequence_)
+    {
+        expectedSequence_ =
+            sequence + 1;
+
+        return true;
+    }
+
+    // A gap was detected.
+    if (sequence > expectedSequence_)
     {
         std::vector<MarketDataMessage> recoveredMessages;
 
@@ -218,14 +228,16 @@ bool FeedHandler::checkSequence(
                 recoveredMessage
             );
         }
+
+        expectedSequence_ =
+            sequence + 1;
+
+        return true;
     }
 
-    expectedSequence_ =
-        sequence + 1;
-
+    // Older / duplicate packet.
     return true;
 }
-
 
 void FeedHandler::processMessage(
     const MarketDataMessage& message

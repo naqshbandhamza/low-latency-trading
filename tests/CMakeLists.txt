@@ -256,3 +256,24 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(UdpCodecTest)
+
+
+
+
+
+add_executable(
+    FeedHandlerUdpIntegrationTest
+    feed_handler/FeedHandlerUdpIntegrationTest.cpp
+)
+
+target_link_libraries(
+    FeedHandlerUdpIntegrationTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(FeedHandlerUdpIntegrationTest)
