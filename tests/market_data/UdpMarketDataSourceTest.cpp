@@ -9,6 +9,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <array>
 #include "market_data/UdpMarketDataPacket.h"
 #include "market_data/UdpMarketDataSource.h"
 #include "market_data/MarketDataMessage.h"
@@ -334,4 +335,128 @@ TEST_CASE(
         elapsed
         < std::chrono::milliseconds(500)
     );
+}
+
+
+
+TEST_CASE(
+    "UdpMarketDataSource rejects short datagram"
+)
+{
+    constexpr std::uint16_t port =
+        19004;
+
+    constexpr std::uint32_t timeoutMs =
+        100;
+
+    llt::UdpMarketDataSource source(
+        port,
+        timeoutMs
+    );
+
+    const int sender =
+        createSender();
+
+    REQUIRE(sender >= 0);
+
+    sockaddr_in address{};
+
+    address.sin_family =
+        AF_INET;
+
+    address.sin_addr.s_addr =
+        htonl(INADDR_LOOPBACK);
+
+    address.sin_port =
+        htons(port);
+
+    std::array<std::uint8_t, 10> buffer{};
+
+    const auto result =
+        ::sendto(
+            sender,
+            buffer.data(),
+            buffer.size(),
+            0,
+            reinterpret_cast<const sockaddr*>(&address),
+            sizeof(address)
+        );
+
+    REQUIRE(
+        result
+        == static_cast<ssize_t>(
+            buffer.size()
+        )
+    );
+
+    llt::MarketDataMessage message{};
+
+    REQUIRE_FALSE(
+        source.receive(message)
+    );
+
+    ::close(sender);
+}
+
+
+TEST_CASE(
+    "UdpMarketDataSource rejects oversized datagram"
+)
+{
+    constexpr std::uint16_t port =
+        19005;
+
+    constexpr std::uint32_t timeoutMs =
+        100;
+
+    llt::UdpMarketDataSource source(
+        port,
+        timeoutMs
+    );
+
+    const int sender =
+        createSender();
+
+    REQUIRE(sender >= 0);
+
+    sockaddr_in address{};
+
+    address.sin_family =
+        AF_INET;
+
+    address.sin_addr.s_addr =
+        htonl(INADDR_LOOPBACK);
+
+    address.sin_port =
+        htons(port);
+
+    std::array<
+        std::uint8_t,
+        llt::UdpMarketDataCodec::WireSize + 1
+    > buffer{};
+
+    const auto result =
+        ::sendto(
+            sender,
+            buffer.data(),
+            buffer.size(),
+            0,
+            reinterpret_cast<const sockaddr*>(&address),
+            sizeof(address)
+        );
+
+    REQUIRE(
+        result
+        == static_cast<ssize_t>(
+            buffer.size()
+        )
+    );
+
+    llt::MarketDataMessage message{};
+
+    REQUIRE_FALSE(
+        source.receive(message)
+    );
+
+    ::close(sender);
 }
