@@ -140,16 +140,48 @@ MarketEvent FeedHandler::createMarketEvent(
 // }
 
 
+// void FeedHandler::start(
+//     std::size_t eventCount
+// )
+// {
+//     logger_.info(
+//         "Feed handler started"
+//     );
+
+//     MarketDataMessage message;
+
+//     std::size_t receivedEvents = 0;
+
+//     while (receivedEvents < eventCount)
+//     {
+//         if (!source_.receive(message))
+//         {
+//             continue;
+//         }
+
+//         if (!checkSequence(message.sequence))
+//         {
+//             break;
+//         }
+
+//         processMessage(message);
+
+//         ++receivedEvents;
+//     }
+
+//     logger_.debug(
+//         "Feed handler stopped"
+//     );
+// }
+
+
 void FeedHandler::start(
     std::size_t eventCount
 )
 {
-    logger_.info(
-        "Feed handler started"
-    );
+    logger_.info("Feed handler started");
 
     MarketDataMessage message;
-
     std::size_t receivedEvents = 0;
 
     while (receivedEvents < eventCount)
@@ -159,23 +191,30 @@ void FeedHandler::start(
             continue;
         }
 
-        if (!checkSequence(message.sequence))
+        const auto sequenceResult =
+            checkSequence(message.sequence);
+
+        if (sequenceResult
+            == SequenceCheckResult::Stop)
         {
             break;
         }
 
-        processMessage(message);
+        if (sequenceResult
+            == SequenceCheckResult::Ignore)
+        {
+            continue;
+        }
 
+        processMessage(message);
         ++receivedEvents;
     }
 
-    logger_.debug(
-        "Feed handler stopped"
-    );
+    logger_.debug("Feed handler stopped");
 }
 
 
-bool FeedHandler::checkSequence(
+llt::SequenceCheckResult FeedHandler::checkSequence(
     std::uint64_t sequence
 )
 {
@@ -186,7 +225,7 @@ bool FeedHandler::checkSequence(
 
         hasSequence_ = true;
 
-        return true;
+        return SequenceCheckResult::Process;
     }
 
     // Expected sequence arrived.
@@ -195,7 +234,8 @@ bool FeedHandler::checkSequence(
         expectedSequence_ =
             sequence + 1;
 
-        return true;
+        return SequenceCheckResult::Process;
+
     }
 
     // A gap was detected.
@@ -216,7 +256,7 @@ bool FeedHandler::checkSequence(
                 "Market data sequence recovery failed"
             );
 
-            return false;
+            return SequenceCheckResult::Stop;
         }
 
         for (
@@ -232,11 +272,11 @@ bool FeedHandler::checkSequence(
         expectedSequence_ =
             sequence + 1;
 
-        return true;
+        return SequenceCheckResult::Process;
     }
 
     // Older / duplicate packet.
-    return true;
+    return SequenceCheckResult::Ignore;
 }
 
 void FeedHandler::processMessage(

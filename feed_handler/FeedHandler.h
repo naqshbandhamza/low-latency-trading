@@ -11,6 +11,13 @@
 namespace llt
 {
 
+    enum class SequenceCheckResult
+    {
+        Process,
+        Ignore,
+        Stop
+    };
+
     class ILogger;
     class IMarketDataSource;
     class ISequenceRecovery;
@@ -21,45 +28,36 @@ namespace llt
     using MarketEventQueue =
         SpscRingBuffer<MarketEvent, 4096>;
 
-class FeedHandler
-{
-public:
+    class FeedHandler
+    {
+    public:
+        FeedHandler(
+            ILogger &logger,
+            MarketEventQueue &queue,
+            IMarketDataSource &source,
+            ISequenceRecovery &recovery) noexcept;
 
-    FeedHandler(
-        ILogger& logger,
-        MarketEventQueue& queue,
-        IMarketDataSource& source,
-        ISequenceRecovery& recovery
-    ) noexcept;
+        void start(
+            std::size_t eventCount);
 
-    void start(
-        std::size_t eventCount
-    );
+    private:
+        MarketEvent createMarketEvent(
+            const MarketDataMessage &message);
 
-private:
+        void processMessage(
+            const MarketDataMessage &message);
 
-    MarketEvent createMarketEvent(
-        const MarketDataMessage& message
-    );
+            SequenceCheckResult checkSequence(
+            std::uint64_t sequence);
 
-    void processMessage(
-        const MarketDataMessage& message
-    );
+    private:
+        ILogger &logger_;
+        MarketEventQueue &queue_;
+        IMarketDataSource &source_;
+        ISequenceRecovery &recovery_;
 
-    bool checkSequence(
-        std::uint64_t sequence
-    );
-
-private:
-
-    ILogger& logger_;
-    MarketEventQueue& queue_;
-    IMarketDataSource& source_;
-    ISequenceRecovery& recovery_;
-
-    std::uint64_t expectedSequence_{0};
-    bool hasSequence_{false};
-
-};
+        std::uint64_t expectedSequence_{0};
+        bool hasSequence_{false};
+    };
 
 } // namespace llt
