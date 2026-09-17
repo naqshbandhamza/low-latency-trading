@@ -10,6 +10,7 @@
 
 #include "FeedHandler.h"
 #include "logging/ILogger.h"
+#include "logging/ConsoleLogger.h"
 #include "market_data/UdpMarketDataPacket.h"
 #include "market_data/UdpMarketDataSource.h"
 #include "market_data/SequenceRecovery.h"
@@ -21,18 +22,6 @@
 
 namespace
 {
-
-class TestLogger : public llt::ILogger
-{
-public:
-
-    void log(
-        llt::LogLevel,
-        std::string_view
-    ) override
-    {
-    }
-};
 
 int createSender()
 {
@@ -59,25 +48,6 @@ void sendPacket(
 
     address.sin_port =
         htons(port);
-
-    // const auto result =
-    //     ::sendto(
-    //         socket,
-    //         &packet,
-    //         sizeof(packet),
-    //         0,
-    //         reinterpret_cast<
-    //             const sockaddr*
-    //         >(&address),
-    //         sizeof(address)
-    //     );
-
-    // REQUIRE(
-    //     result
-    //     == static_cast<ssize_t>(
-    //         sizeof(packet)
-    //     )
-    // );
 
     const auto buffer =
     llt::UdpMarketDataCodec::encode(packet);
@@ -111,7 +81,7 @@ TEST_CASE(
     constexpr std::uint16_t port =
         19003;
 
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     llt::MarketEventQueue queue;
 

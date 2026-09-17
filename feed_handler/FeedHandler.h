@@ -2,11 +2,8 @@
 
 #include <cstddef>
 #include <cstdint>
-// #include "logging/ILogger.h"
-// #include "market_data/IMarketDataSource.h"
+
 #include "market_data/MarketEvent.h"
-// #include "ring_buffer/SpscRingBuffer.h"
-// #include "market_data/ISequenceRecovery.h"
 
 namespace llt
 {

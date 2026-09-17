@@ -8,8 +8,9 @@
 
 #include "FeedHandler.h"
 #include "logging/ILogger.h"
+#include "logging/ConsoleLogger.h"
 #include "market_data/MarketEvent.h"
-#include "market_data/MockMarketDataSource.h"
+#include "MockMarketDataSource.h"
 #include "market_data/SequenceRecovery.h"
 #include "MockSequenceRecovery.h"
 #include "MockMarketDataRecoverySource.h"
@@ -19,91 +20,7 @@
 namespace
 {
 
-class TestLogger : public llt::ILogger
-{
-public:
-
-    void log(
-        llt::LogLevel level,
-        std::string_view message
-    ) override
-    {
-        if (level == llt::LogLevel::Warning)
-        {
-            ++warningCount;
-            lastWarning = std::string(message);
-        }
-    }
-
-    std::size_t warningCount{0};
-
-    std::string lastWarning;
-};
-
 } // namespace
-
-
-// class TestSequenceRecovery
-//     : public llt::ISequenceRecovery
-// {
-// public:
-
-//     bool recover(
-//         std::uint64_t expectedSequence,
-//         std::uint64_t receivedSequence,
-//         std::vector<llt::MarketDataMessage>& recoveredMessages
-//     ) override
-//     {
-//         called = true;
-
-//         expected = expectedSequence;
-//         received = receivedSequence;
-
-//         recoveredMessages.clear();
-
-//         for (
-//             std::uint64_t sequence = expectedSequence;
-//             sequence < receivedSequence;
-//             ++sequence
-//         )
-//         {
-//             llt::MarketDataMessage message;
-
-//             message.type =
-//                 llt::MarketDataMessageType::Quote;
-
-//             message.sequence =
-//                 sequence;
-
-//             message.timestamp =
-//                 sequence;
-
-//             message.bidPrice =
-//                 234500;
-
-//             message.bidQuantity =
-//                 10;
-
-//             message.askPrice =
-//                 234510;
-
-//             message.askQuantity =
-//                 12;
-
-//             recoveredMessages.push_back(
-//                 message
-//             );
-//         }
-
-//         return true;
-//     }
-
-//     bool called{false};
-
-//     std::uint64_t expected{0};
-
-//     std::uint64_t received{0};
-// };
 
 
 class SequenceGapMarketDataSource
@@ -165,7 +82,7 @@ TEST_CASE(
 {
     constexpr std::size_t eventCount = 100;
 
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     llt::MarketEventQueue queue;
 
@@ -221,7 +138,7 @@ TEST_CASE(
     "FeedHandler converts Quote messages"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     llt::MarketEventQueue queue;
 
@@ -290,7 +207,7 @@ TEST_CASE(
     "FeedHandler converts Trade messages"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     llt::MarketEventQueue queue;
 
@@ -360,7 +277,7 @@ TEST_CASE(
     "FeedHandler recovers missing sequence"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     llt::MarketEventQueue queue;
 
@@ -456,7 +373,7 @@ TEST_CASE(
     "SequenceRecovery logs sequence gap"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     MockMarketDataRecoverySource source;
 
@@ -508,13 +425,11 @@ TEST_CASE(
     );
 }
 
-
-
 TEST_CASE(
     "FeedHandler stops when sequence recovery fails"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     llt::MarketEventQueue queue;
 
@@ -600,14 +515,11 @@ TEST_CASE(
     );
 }
 
-
-
-
 TEST_CASE(
     "SequenceRecovery validates recovered sequence range"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     MockMarketDataRecoverySource source;
 
@@ -634,12 +546,11 @@ TEST_CASE(
     REQUIRE(recoveredMessages[2].sequence == 104);
 }
 
-
 TEST_CASE(
     "SequenceRecovery rejects incomplete recovered sequence"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     MockMarketDataRecoverySource source;
 
@@ -664,13 +575,11 @@ TEST_CASE(
     );
 }
 
-
-
 TEST_CASE(
     "SequenceRecovery rejects out-of-order recovered sequence"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     MockMarketDataRecoverySource source;
 
@@ -699,7 +608,7 @@ TEST_CASE(
     "SequenceRecovery rejects backward sequence"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     MockMarketDataRecoverySource source;
 
@@ -722,14 +631,11 @@ TEST_CASE(
     );
 }
 
-
-
-
 TEST_CASE(
     "SequenceRecovery rejects zero received sequence"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     MockMarketDataRecoverySource source;
 
@@ -760,12 +666,11 @@ TEST_CASE(
     );
 }
 
-
 TEST_CASE(
     "SequenceRecovery handles maximum sequence"
 )
 {
-    TestLogger logger;
+    llt::ConsoleLogger logger;
 
     MockMarketDataRecoverySource source;
 

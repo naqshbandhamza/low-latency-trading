@@ -44,6 +44,8 @@ void ConsoleLogger::log(
 
 
         case LogLevel::Warning:
+            ++warningCount;
+            lastWarning = std::string(message);
             std::cout << "[WARNING] ";
             break;
 

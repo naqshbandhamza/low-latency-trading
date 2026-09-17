@@ -1,5 +1,7 @@
 #pragma once
-
+#include <cstdint>
+#include <string>
+#include <string_view>
 #include "ILogger.h"
 
 
@@ -15,6 +17,9 @@ public:
         LogLevel level,
         std::string_view message
     ) override;
+
+    std::size_t warningCount{0};
+    std::string lastWarning;
 
 };
 
