@@ -2,13 +2,14 @@
 #include "SequenceRecovery.h"
 #include "IMarketDataRecoverySource.h"
 #include "logging/ILogger.h"
+#include "types/SequenceCheckResult.h"
 
 #include <string>
 
 namespace llt
 {
 
-bool SequenceRecovery::recover(
+SequenceCheckResult SequenceRecovery::recover(
     std::uint64_t expectedSequence,
     std::uint64_t receivedSequence,
     std::vector<MarketDataMessage>& recoveredMessages
@@ -32,24 +33,25 @@ bool SequenceRecovery::recover(
             + std::to_string(receivedSequence)
         );
 
-        return false;
+        return SequenceCheckResult::Ignore;
     }
 
     const bool recovered =
         source_.recover(
             expectedSequence,
-            receivedSequence - 1,
+            receivedSequence,
             recoveredMessages
         );
 
     if (!recovered)
     {
-        return false;
+        return SequenceCheckResult::Stop;
     }
+    logger_.info("recvoered success"+std::to_string(recoveredMessages.size()));
 
     const std::uint64_t expectedCount =
         receivedSequence - expectedSequence;
-
+    
     if (recoveredMessages.size() != expectedCount)
     {
         logger_.error(
@@ -57,7 +59,7 @@ bool SequenceRecovery::recover(
         );
 
         recoveredMessages.clear();
-        return false;
+        return SequenceCheckResult::Stop;
     }
 
     for (std::size_t i = 0; i < recoveredMessages.size(); ++i)
@@ -72,11 +74,11 @@ bool SequenceRecovery::recover(
             );
 
             recoveredMessages.clear();
-            return false;
+            return SequenceCheckResult::Stop;
         }
     }
 
-    return true;
+    return SequenceCheckResult::Process;
 }
 
 } // namespace llt

@@ -7,6 +7,7 @@
 #include "ring_buffer/SpscRingBuffer.h"
 #include "market_data/ISequenceRecovery.h"
 #include "market_data/MarketDataMessage.h"
+#include "types/SequenceCheckResult.h"
 
 namespace llt
 {
@@ -74,104 +75,6 @@ MarketEvent FeedHandler::createMarketEvent(
         message.side
     );
 }
-
-// void FeedHandler::start(
-//     std::size_t eventCount
-// )
-// {
-//     logger_.info(
-//         "Feed handler started"
-//     );
-
-//     MarketDataMessage message;
-
-//     // for (
-//     //     std::size_t i = 0;
-//     //     i < eventCount;
-//     //     ++i
-//     // )
-//     // {
-//     //     if (!source_.receive(message))
-//     //     {
-//     //         continue;
-//     //     }
-
-//     //     checkSequence(
-//     //         message.sequence
-//     //     );        
-
-//     //     MarketEvent event =
-//     //         createMarketEvent(message);
-
-//     //     while (!queue_.push(std::move(event)))
-//     //     {
-//     //         std::this_thread::yield();
-//     //     }
-//     // }
-
-//     std::size_t receivedEvents = 0;
-
-//     while (receivedEvents < eventCount)
-//     {
-//         if (!source_.receive(message))
-//         {
-//             continue;
-//         }
-
-//         checkSequence(
-//             message.sequence
-//         );
-
-//         MarketEvent event =
-//             createMarketEvent(message);
-
-//         while (!queue_.push(std::move(event)))
-//         {
-//             std::this_thread::yield();
-//         }
-
-//         ++receivedEvents;
-//     }
-
-//     logger_.debug(
-//         "Feed handler stopped"
-//     );
-// }
-
-
-// void FeedHandler::start(
-//     std::size_t eventCount
-// )
-// {
-//     logger_.info(
-//         "Feed handler started"
-//     );
-
-//     MarketDataMessage message;
-
-//     std::size_t receivedEvents = 0;
-
-//     while (receivedEvents < eventCount)
-//     {
-//         if (!source_.receive(message))
-//         {
-//             continue;
-//         }
-
-//         if (!checkSequence(message.sequence))
-//         {
-//             break;
-//         }
-
-//         processMessage(message);
-
-//         ++receivedEvents;
-//     }
-
-//     logger_.debug(
-//         "Feed handler stopped"
-//     );
-// }
 
 
 void FeedHandler::start(
@@ -242,14 +145,14 @@ llt::SequenceCheckResult FeedHandler::checkSequence(
     {
         std::vector<MarketDataMessage> recoveredMessages;
 
-        const bool recovered =
+        const SequenceCheckResult recovered =
             recovery_.recover(
                 expectedSequence_,
                 sequence,
                 recoveredMessages
             );
 
-        if (!recovered)
+        if (recovered== SequenceCheckResult::Stop)
         {
             logger_.error(
                 "Market data sequence recovery failed"

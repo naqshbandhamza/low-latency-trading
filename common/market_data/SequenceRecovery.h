@@ -3,8 +3,7 @@
 #include <vector>
 
 #include "ISequenceRecovery.h"
-// #include "IMarketDataRecoverySource.h"
-// #include "logging/ILogger.h"
+
 
 namespace llt
 {
@@ -26,7 +25,7 @@ public:
     {
     }
 
-    bool recover(
+    SequenceCheckResult recover(
         std::uint64_t expectedSequence,
         std::uint64_t receivedSequence,
         std::vector<MarketDataMessage>& recoveredMessages
@@ -37,6 +36,7 @@ private:
     ILogger& logger_;
 
     IMarketDataRecoverySource& source_;
+
 };
 
 } // namespace llt

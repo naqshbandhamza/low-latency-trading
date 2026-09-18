@@ -5,13 +5,14 @@
 
 #include "market_data/ISequenceRecovery.h"
 #include "market_data/MarketDataMessage.h"
+#include "types/SequenceCheckResult.h"
 
 class MockSequenceRecovery
     : public llt::ISequenceRecovery
 {
 public:
 
-    bool recover(
+        llt::SequenceCheckResult recover(
         std::uint64_t expectedSequence,
         std::uint64_t receivedSequence,
         std::vector<llt::MarketDataMessage>& recoveredMessages
@@ -59,7 +60,7 @@ public:
             );
         }
 
-        return true;
+        return llt::SequenceCheckResult::Process;
     }
 
     bool called{false};

@@ -16,6 +16,7 @@
 #include "MockMarketDataRecoverySource.h"
 #include "market_data/MarketDataMessage.h"
 #include "ring_buffer/SpscRingBuffer.h"
+#include "types/SequenceCheckResult.h"
 
 namespace
 {
@@ -384,15 +385,15 @@ TEST_CASE(
 
     std::vector<llt::MarketDataMessage> recoveredMessages;
 
-    const bool recovered =
-        recovery.recover(
-            102,
-            103,
-            recoveredMessages
-        );
+    const llt::SequenceCheckResult recovered =
+    recovery.recover(
+        102,
+        103,
+        recoveredMessages
+    );
 
     REQUIRE(
-        recovered == true
+        recovered == llt::SequenceCheckResult::Process
     );
 
     REQUIRE(
@@ -404,7 +405,7 @@ TEST_CASE(
     );
 
     REQUIRE(
-        source.to == 102
+        source.to == 103
     );
 
     REQUIRE(
@@ -507,7 +508,7 @@ TEST_CASE(
     );
 
     REQUIRE(
-        recoverySource.to == 102
+        recoverySource.to == 103
     );
 
     REQUIRE(
@@ -530,14 +531,16 @@ TEST_CASE(
 
     std::vector<llt::MarketDataMessage> recoveredMessages;
 
-    const bool recovered =
-        recovery.recover(
-            102,
-            105,
-            recoveredMessages
-        );
+    const llt::SequenceCheckResult recovered =
+    recovery.recover(
+        102,
+        105,
+        recoveredMessages
+    );
 
-    REQUIRE(recovered);
+    REQUIRE(
+        recovered == llt::SequenceCheckResult::Process
+    );
 
     REQUIRE(recoveredMessages.size() == 3);
 
@@ -563,15 +566,15 @@ TEST_CASE(
 
     std::vector<llt::MarketDataMessage> recoveredMessages;
 
-    const bool recovered =
-        recovery.recover(
-            102,
-            105,
-            recoveredMessages
-        );
+    const llt::SequenceCheckResult recovered =
+    recovery.recover(
+        102,
+        105,
+        recoveredMessages
+    );
 
     REQUIRE(
-        recovered == false
+        recovered == llt::SequenceCheckResult::Stop
     );
 }
 
@@ -592,15 +595,15 @@ TEST_CASE(
 
     std::vector<llt::MarketDataMessage> recoveredMessages;
 
-    const bool recovered =
-        recovery.recover(
-            102,
-            105,
-            recoveredMessages
-        );
+    const llt::SequenceCheckResult recovered =
+    recovery.recover(
+        102,
+        105,
+        recoveredMessages
+    );
 
     REQUIRE(
-        recovered == false
+        recovered == llt::SequenceCheckResult::Stop
     );
 }
 
@@ -619,15 +622,15 @@ TEST_CASE(
 
     std::vector<llt::MarketDataMessage> recoveredMessages;
 
-    const bool recovered =
-        recovery.recover(
-            105,
-            103,
-            recoveredMessages
-        );
+    const llt::SequenceCheckResult recovered =
+    recovery.recover(
+        105,
+        103,
+        recoveredMessages
+    );
 
     REQUIRE(
-        recovered == false
+        recovered == llt::SequenceCheckResult::Ignore
     );
 }
 
@@ -646,15 +649,15 @@ TEST_CASE(
 
     std::vector<llt::MarketDataMessage> recoveredMessages;
 
-    const bool recovered =
-        recovery.recover(
-            10,
-            0,
-            recoveredMessages
-        );
+    const llt::SequenceCheckResult recovered =
+    recovery.recover(
+        10,
+        0,
+        recoveredMessages
+    );
 
     REQUIRE(
-        recovered == false
+        recovered == llt::SequenceCheckResult::Ignore
     );
 
     REQUIRE(
@@ -684,15 +687,15 @@ TEST_CASE(
     const std::uint64_t maxSequence =
         std::numeric_limits<std::uint64_t>::max();
 
-    const bool recovered =
-        recovery.recover(
-            maxSequence - 2,
-            maxSequence,
-            recoveredMessages
-        );
-
+    const llt::SequenceCheckResult recovered =
+    recovery.recover(
+        maxSequence - 2,
+        maxSequence,
+        recoveredMessages
+    );
+    
     REQUIRE(
-        recovered == true
+        recovered == llt::SequenceCheckResult::Process
     );
 
     REQUIRE(
@@ -704,7 +707,7 @@ TEST_CASE(
     );
 
     REQUIRE(
-        source.to == maxSequence - 1
+        source.to == maxSequence
     );
 
     REQUIRE(

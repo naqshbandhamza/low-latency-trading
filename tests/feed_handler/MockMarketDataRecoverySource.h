@@ -36,30 +36,6 @@ public:
             return false;
         }
 
-        // for (
-        //     std::uint64_t sequence = fromSequence;
-        //     sequence <= toSequence;
-        //     ++sequence
-        // )
-        // {
-        //     if (sequence == skipSequence)
-        //     {
-        //         continue;
-        //     }
-        
-        //     llt::MarketDataMessage message;
-        
-        //     message.type = llt::MarketDataMessageType::Quote;
-        //     message.sequence = sequence;
-        //     message.timestamp = sequence;
-        //     message.bidPrice = 234500;
-        //     message.bidQuantity = 10;
-        //     message.askPrice = 234510;
-        //     message.askQuantity = 12;
-        
-        //     messages.push_back(message);
-        // }
-
         std::uint64_t sequence = fromSequence;
 
         while (true)
@@ -75,6 +51,11 @@ public:
                 continue;
             }
 
+            if (sequence == toSequence)
+            {
+                break;
+            }
+             
             llt::MarketDataMessage message;
 
             message.type = llt::MarketDataMessageType::Quote;
@@ -86,11 +67,6 @@ public:
             message.askQuantity = 12;
 
             messages.push_back(message);
-
-            if (sequence == toSequence)
-            {
-                break;
-            }
 
             ++sequence;
         }

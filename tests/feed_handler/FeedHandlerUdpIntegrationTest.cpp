@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include "FeedHandler.h"
+#include "market_data/IMarketDataRecoverySource.h"
 #include "market_data/UdpMarketDataCodec.h"
 #include "market_data/UdpMarketDataSource.h"
 #include "market_data/MarketDataMessage.h"
@@ -15,12 +16,13 @@
 #include "logging/ConsoleLogger.h"
 #include "ring_buffer/SpscRingBuffer.h"
 #include "market_data/ISequenceRecovery.h"
+#include "market_data/SequenceRecovery.h"
 
 namespace
 {
 
 class IntegrationRecoverySource
-    : public llt::ISequenceRecovery
+    : public llt::IMarketDataRecoverySource
 {
 public:
     bool shouldRecover = true;
@@ -189,9 +191,11 @@ TEST_CASE(
         port,
         timeoutMs);
 
-    IntegrationRecoverySource recoverySource;
-
     llt::ConsoleLogger logger;
+
+    IntegrationRecoverySource recoverySource1;
+    llt::SequenceRecovery recoverySource(logger,recoverySource1);
+
 
     llt::MarketEventQueue queue;
 
@@ -241,9 +245,11 @@ TEST_CASE(
         port,
         timeoutMs);
 
-    IntegrationRecoverySource recoverySource;
 
     llt::ConsoleLogger logger;
+
+    IntegrationRecoverySource recoverySource1;
+    llt::SequenceRecovery recoverySource(logger,recoverySource1);
 
     llt::MarketEventQueue queue;
 
@@ -269,7 +275,7 @@ TEST_CASE(
     feedThread.join();
 
     REQUIRE_FALSE(
-        recoverySource.called);
+        recoverySource1.called);
 
     REQUIRE(
         queue.size() == 4);
@@ -294,9 +300,12 @@ TEST_CASE(
         port,
         timeoutMs);
 
-    IntegrationRecoverySource recoverySource;
+    
 
     llt::ConsoleLogger logger;
+
+    IntegrationRecoverySource recoverySource1;
+    llt::SequenceRecovery recoverySource(logger,recoverySource1);
 
     llt::MarketEventQueue queue;
 
@@ -324,13 +333,13 @@ TEST_CASE(
     feedThread.join();
 
     REQUIRE(
-        recoverySource.called);
+        recoverySource1.called);
 
     REQUIRE(
-        recoverySource.receivedFrom == 3);
+        recoverySource1.receivedFrom == 3);
 
     REQUIRE(
-        recoverySource.receivedTo == 5);
+        recoverySource1.receivedTo == 5);
 
     REQUIRE(
         queue.size() == 5);
@@ -356,9 +365,12 @@ TEST_CASE(
         port,
         timeoutMs);
 
-    IntegrationRecoverySource recoverySource;
+    
 
     llt::ConsoleLogger logger;
+
+    IntegrationRecoverySource recoverySource1;
+    llt::SequenceRecovery recoverySource(logger,recoverySource1);
 
     llt::MarketEventQueue queue;
 
@@ -388,7 +400,7 @@ TEST_CASE(
     feedThread.join();
 
     REQUIRE_FALSE(
-        recoverySource.called);
+        recoverySource1.called);
 
     REQUIRE(
         queue.size() == 3);
@@ -412,12 +424,15 @@ TEST_CASE(
         port,
         timeoutMs);
 
-    IntegrationRecoverySource recoverySource;
+    
 
-    recoverySource.shouldRecover =
-        false;
 
     llt::ConsoleLogger logger;
+
+    IntegrationRecoverySource recoverySource1;
+    recoverySource1.shouldRecover =
+        false;
+    llt::SequenceRecovery recoverySource(logger,recoverySource1);
 
     llt::MarketEventQueue queue;
 
@@ -445,13 +460,13 @@ TEST_CASE(
     feedThread.join();
 
     REQUIRE(
-        recoverySource.called);
+        recoverySource1.called);
 
     REQUIRE(
-        recoverySource.receivedFrom == 3);
+        recoverySource1.receivedFrom == 3);
 
     REQUIRE(
-        recoverySource.receivedTo == 4);
+        recoverySource1.receivedTo == 4);
 
     // Only the valid packets received before
     // the failed recovery should be queued.
@@ -477,9 +492,12 @@ TEST_CASE(
         port,
         timeoutMs);
 
-    IntegrationRecoverySource recoverySource;
+   
 
     llt::ConsoleLogger logger;
+
+    IntegrationRecoverySource recoverySource1;
+    llt::SequenceRecovery recoverySource(logger,recoverySource1);
 
     llt::MarketEventQueue queue;
 
@@ -503,7 +521,7 @@ TEST_CASE(
     feedThread.join();
 
     REQUIRE_FALSE(
-        recoverySource.called);
+        recoverySource1.called);
 
     REQUIRE(
         queue.size() == 2);

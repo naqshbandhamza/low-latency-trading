@@ -8,12 +8,7 @@
 namespace llt
 {
 
-    enum class SequenceCheckResult
-    {
-        Process,
-        Ignore,
-        Stop
-    };
+    enum class SequenceCheckResult;
 
     class ILogger;
     class IMarketDataSource;
@@ -44,7 +39,7 @@ namespace llt
         void processMessage(
             const MarketDataMessage &message);
 
-            SequenceCheckResult checkSequence(
+        SequenceCheckResult checkSequence(
             std::uint64_t sequence);
 
     private:
