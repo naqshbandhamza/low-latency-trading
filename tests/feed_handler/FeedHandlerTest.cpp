@@ -3,6 +3,8 @@
 #include <string_view>
 #include <vector>
 #include <limits>
+#include <chrono>
+#include <thread>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -726,3 +728,144 @@ TEST_CASE(
 
 
 
+TEST_CASE(
+    "FeedHandler stops cleanly while market event queue is full"
+)
+{
+    llt::ConsoleLogger logger;
+
+    llt::MarketEventQueue queue;
+
+    // SpscRingBuffer<..., 4096> reserves one slot
+    // to distinguish full from empty.
+    //
+    // Therefore its usable capacity is 4095.
+    constexpr std::size_t usableCapacity =
+        4095;
+
+    // ---------------------------------------------------------
+    // Completely fill the SPSC queue.
+    // ---------------------------------------------------------
+
+    for (
+        std::size_t i = 0;
+        i < usableCapacity;
+        ++i
+    )
+    {
+        llt::MarketEvent event =
+            llt::Trade(
+                llt::Instrument("TXFU6"),
+
+                llt::SequenceNumber(
+                    static_cast<std::uint64_t>(
+                        i + 1
+                    )
+                ),
+
+                llt::Timestamp(
+                    static_cast<std::uint64_t>(
+                        i + 1
+                    )
+                ),
+
+                llt::Price(100),
+
+                llt::Quantity(1),
+
+                llt::Side::Buy
+            );
+
+        REQUIRE(
+            queue.push(
+                std::move(event)
+            )
+        );
+    }
+
+    REQUIRE(
+        queue.size()
+        == usableCapacity
+    );
+
+    REQUIRE(
+        queue.full()
+    );
+
+    // ---------------------------------------------------------
+    // FeedHandler will receive another market-data message.
+    //
+    // Since the SPSC queue is already full, processMessage()
+    // will retry publication until either:
+    //
+    // 1. space becomes available, or
+    // 2. stop() sets running_ = false.
+    // ---------------------------------------------------------
+
+    llt::MockMarketDataSource source;
+
+    MockMarketDataRecoverySource
+        recoverySource;
+
+    llt::SequenceRecovery recovery(
+        logger,
+        recoverySource
+    );
+
+    llt::FeedHandler handler(
+        logger,
+        queue,
+        source,
+        recovery
+    );
+
+    std::thread feedThread(
+        [&handler]
+        {
+            handler.run();
+        }
+    );
+
+    // Wait until run() has definitely initialized its
+    // lifecycle state.
+    while (
+        handler.state()
+        != llt::FeedHandlerState::Running
+    )
+    {
+        std::this_thread::yield();
+    }
+
+    // Give FeedHandler enough time to receive its first
+    // message and hit the full queue.
+    std::this_thread::sleep_for(
+        std::chrono::milliseconds(20)
+    );
+
+    handler.stop();
+
+    feedThread.join();
+
+    // ---------------------------------------------------------
+    // Critical behavior:
+    //
+    // processMessage() must observe running_ == false and
+    // escape instead of spinning forever on the full queue.
+    // ---------------------------------------------------------
+
+    REQUIRE(
+        handler.state()
+        == llt::FeedHandlerState::Stopped
+    );
+
+    // No consumer removed anything and FeedHandler could not
+    // publish its additional event.
+    REQUIRE(
+        queue.size()
+        == usableCapacity
+    );
+
+    REQUIRE(
+        queue.full()
+    );
+}

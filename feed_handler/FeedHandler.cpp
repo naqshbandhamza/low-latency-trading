@@ -1,12 +1,14 @@
 #include "FeedHandler.h"
+
 #include <string>
 #include <thread>
 #include <vector>
+
 #include "logging/ILogger.h"
 #include "market_data/IMarketDataSource.h"
-#include "ring_buffer/SpscRingBuffer.h"
 #include "market_data/ISequenceRecovery.h"
 #include "market_data/MarketDataMessage.h"
+#include "ring_buffer/SpscRingBuffer.h"
 #include "types/SequenceCheckResult.h"
 
 namespace llt
@@ -81,12 +83,29 @@ void FeedHandler::start(
     std::size_t eventCount
 )
 {
-    logger_.info("Feed handler started");
+    logger_.info(
+        "Feed handler started"
+    );
+
+    state_.store(
+        FeedHandlerState::Running,
+        std::memory_order_release
+    );
+
+    running_.store(
+        true,
+        std::memory_order_release
+    );
 
     MarketDataMessage message;
     std::size_t receivedEvents = 0;
 
-    while (receivedEvents < eventCount)
+    while (
+        running_.load(
+            std::memory_order_acquire
+        )
+        && receivedEvents < eventCount
+    )
     {
         if (!source_.receive(message))
         {
@@ -94,29 +113,64 @@ void FeedHandler::start(
         }
 
         const auto sequenceResult =
-            checkSequence(message.sequence);
+            checkSequence(
+                message.sequence
+            );
 
-        if (sequenceResult
-            == SequenceCheckResult::Stop)
+        if (
+            sequenceResult
+            == SequenceCheckResult::Stop
+        )
         {
+            state_.store(
+                FeedHandlerState::Failed,
+                std::memory_order_release
+            );
+
             break;
         }
 
-        if (sequenceResult
-            == SequenceCheckResult::Ignore)
+        if (
+            sequenceResult
+            == SequenceCheckResult::Ignore
+        )
         {
             continue;
         }
 
-        processMessage(message);
+        if (!processMessage(message))
+        {
+            break;
+        }
+
         ++receivedEvents;
     }
 
-    logger_.debug("Feed handler stopped");
+    running_.store(
+        false,
+        std::memory_order_release
+    );
+
+    if (
+        state_.load(
+            std::memory_order_acquire
+        )
+        != FeedHandlerState::Failed
+    )
+    {
+        state_.store(
+            FeedHandlerState::Stopped,
+            std::memory_order_release
+        );
+    }
+
+    logger_.debug(
+        "Feed handler stopped"
+    );
 }
 
 
-llt::SequenceCheckResult FeedHandler::checkSequence(
+SequenceCheckResult FeedHandler::checkSequence(
     std::uint64_t sequence
 )
 {
@@ -137,13 +191,13 @@ llt::SequenceCheckResult FeedHandler::checkSequence(
             sequence + 1;
 
         return SequenceCheckResult::Process;
-
     }
 
     // A gap was detected.
     if (sequence > expectedSequence_)
     {
-        std::vector<MarketDataMessage> recoveredMessages;
+        std::vector<MarketDataMessage>
+            recoveredMessages;
 
         const SequenceCheckResult recovered =
             recovery_.recover(
@@ -152,7 +206,10 @@ llt::SequenceCheckResult FeedHandler::checkSequence(
                 recoveredMessages
             );
 
-        if (recovered== SequenceCheckResult::Stop)
+        if (
+            recovered
+            == SequenceCheckResult::Stop
+        )
         {
             logger_.error(
                 "Market data sequence recovery failed"
@@ -166,9 +223,27 @@ llt::SequenceCheckResult FeedHandler::checkSequence(
             : recoveredMessages
         )
         {
-            processMessage(
-                recoveredMessage
-            );
+            if (
+                !processMessage(
+                    recoveredMessage
+                )
+            )
+            {
+                // Publication was interrupted because the
+                // FeedHandler is shutting down.
+                //
+                // This is not a sequence-recovery failure.
+                if (
+                    !running_.load(
+                        std::memory_order_acquire
+                    )
+                )
+                {
+                    return SequenceCheckResult::Ignore;
+                }
+
+                return SequenceCheckResult::Stop;
+            }
         }
 
         expectedSequence_ =
@@ -181,7 +256,8 @@ llt::SequenceCheckResult FeedHandler::checkSequence(
     return SequenceCheckResult::Ignore;
 }
 
-void FeedHandler::processMessage(
+
+bool FeedHandler::processMessage(
     const MarketDataMessage& message
 )
 {
@@ -190,9 +266,123 @@ void FeedHandler::processMessage(
 
     while (!queue_.push(std::move(event)))
     {
+        // Never allow a full SPSC queue to prevent the
+        // FeedHandler from shutting down.
+        if (
+            !running_.load(
+                std::memory_order_acquire
+            )
+        )
+        {
+            return false;
+        }
+
         std::this_thread::yield();
     }
+
+    return true;
 }
 
+
+void FeedHandler::run()
+{
+    logger_.info(
+        "Feed handler started"
+    );
+
+    state_.store(
+        FeedHandlerState::Running,
+        std::memory_order_release
+    );
+
+    running_.store(
+        true,
+        std::memory_order_release
+    );
+
+    MarketDataMessage message;
+
+    while (
+        running_.load(
+            std::memory_order_acquire
+        )
+    )
+    {
+        if (!source_.receive(message))
+        {
+            continue;
+        }
+
+        const auto sequenceResult =
+            checkSequence(
+                message.sequence
+            );
+
+        if (
+            sequenceResult
+            == SequenceCheckResult::Stop
+        )
+        {
+            state_.store(
+                FeedHandlerState::Failed,
+                std::memory_order_release
+            );
+
+            break;
+        }
+
+        if (
+            sequenceResult
+            == SequenceCheckResult::Ignore
+        )
+        {
+            continue;
+        }
+
+        if (!processMessage(message))
+        {
+            break;
+        }
+    }
+
+    running_.store(
+        false,
+        std::memory_order_release
+    );
+
+    if (
+        state_.load(
+            std::memory_order_acquire
+        )
+        != FeedHandlerState::Failed
+    )
+    {
+        state_.store(
+            FeedHandlerState::Stopped,
+            std::memory_order_release
+        );
+    }
+
+    logger_.debug(
+        "Feed handler stopped"
+    );
+}
+
+
+FeedHandlerState FeedHandler::state() const noexcept
+{
+    return state_.load(
+        std::memory_order_acquire
+    );
+}
+
+
+void FeedHandler::stop() noexcept
+{
+    running_.store(
+        false,
+        std::memory_order_release
+    );
+}
 
 } // namespace llt

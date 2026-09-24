@@ -292,11 +292,6 @@ TEST_CASE(
     ::close(sender);
 }
 
-
-
-
-
-
 TEST_CASE(
     "UdpMarketDataSource receive times out when no packet arrives"
 )
@@ -336,8 +331,6 @@ TEST_CASE(
         < std::chrono::milliseconds(500)
     );
 }
-
-
 
 TEST_CASE(
     "UdpMarketDataSource rejects short datagram"
@@ -397,7 +390,6 @@ TEST_CASE(
 
     ::close(sender);
 }
-
 
 TEST_CASE(
     "UdpMarketDataSource rejects oversized datagram"
@@ -461,8 +453,6 @@ TEST_CASE(
     ::close(sender);
 }
 
-
-
 TEST_CASE(
     "UdpMarketDataSource handles bind failure"
 )
@@ -490,7 +480,6 @@ TEST_CASE(
         second.receive(message)
     );
 }
-
 
 TEST_CASE(
     "UdpMarketDataSource remains safe after construction failure"

@@ -1,7 +1,9 @@
 #pragma once
 
+#include <atomic>
 #include <cstddef>
 #include <cstdint>
+#include "FeedHandlerState.h"
 
 #include "market_data/MarketEvent.h"
 
@@ -29,14 +31,20 @@ namespace llt
             IMarketDataSource &source,
             ISequenceRecovery &recovery) noexcept;
 
+        void run();
+
+        void stop() noexcept;
+
         void start(
             std::size_t eventCount);
+
+        FeedHandlerState state() const noexcept;
 
     private:
         MarketEvent createMarketEvent(
             const MarketDataMessage &message);
 
-        void processMessage(
+        bool processMessage(
             const MarketDataMessage &message);
 
         SequenceCheckResult checkSequence(
@@ -50,6 +58,12 @@ namespace llt
 
         std::uint64_t expectedSequence_{0};
         bool hasSequence_{false};
+
+        std::atomic<bool> running_{false};
+
+        std::atomic<FeedHandlerState> state_{
+            FeedHandlerState::Stopped
+        };
     };
 
 } // namespace llt
