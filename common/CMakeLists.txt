@@ -3,6 +3,8 @@ add_library(common STATIC
     market_data/UdpMarketDataSource.cpp
     market_data/SequenceRecovery.cpp
     market_data/UdpMarketDataCodec.cpp
+    strategy/SimpleStrategy.cpp
+    strategy/StrategyEngine.cpp
 )
 
 target_include_directories(common

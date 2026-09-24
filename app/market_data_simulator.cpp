@@ -20,7 +20,9 @@ bool sendPacket(
 )
 {
     const auto buffer =
-        llt::UdpMarketDataCodec::encode(packet);
+        llt::UdpMarketDataCodec::encode(
+            packet
+        );
 
     const auto sent =
         ::sendto(
@@ -39,6 +41,7 @@ bool sendPacket(
             buffer.size()
         );
 }
+
 
 llt::UdpMarketDataPacket makeQuote(
     std::uint64_t sequence,
@@ -77,6 +80,7 @@ llt::UdpMarketDataPacket makeQuote(
     return packet;
 }
 
+
 llt::UdpMarketDataPacket makeTrade(
     std::uint64_t sequence,
     std::int64_t price,
@@ -107,7 +111,93 @@ llt::UdpMarketDataPacket makeTrade(
     return packet;
 }
 
+
+bool sendQuote(
+    int socket,
+    const sockaddr_in& destination,
+    const llt::UdpMarketDataPacket& packet
+)
+{
+    if (
+        !sendPacket(
+            socket,
+            destination,
+            packet
+        )
+    )
+    {
+        std::cerr
+            << "Failed to send QUOTE"
+            << " seq="
+            << packet.sequence
+            << '\n';
+
+        return false;
+    }
+
+    std::cout
+        << "Sent QUOTE"
+        << " seq="
+        << packet.sequence
+        << " bid="
+        << packet.bidPrice
+        << " bidQty="
+        << packet.bidQuantity
+        << " ask="
+        << packet.askPrice
+        << " askQty="
+        << packet.askQuantity
+        << '\n';
+
+    return true;
+}
+
+
+bool sendTrade(
+    int socket,
+    const sockaddr_in& destination,
+    const llt::UdpMarketDataPacket& packet
+)
+{
+    if (
+        !sendPacket(
+            socket,
+            destination,
+            packet
+        )
+    )
+    {
+        std::cerr
+            << "Failed to send TRADE"
+            << " seq="
+            << packet.sequence
+            << '\n';
+
+        return false;
+    }
+
+    std::cout
+        << "Sent TRADE"
+        << " seq="
+        << packet.sequence
+        << " price="
+        << packet.price
+        << " quantity="
+        << packet.quantity
+        << " side="
+        << (
+            packet.side
+            == llt::UdpMarketDataPacketSide::Buy
+                ? "BUY"
+                : "SELL"
+        )
+        << '\n';
+
+    return true;
+}
+
 } // namespace
+
 
 int main()
 {
@@ -129,6 +219,7 @@ int main()
         return 1;
     }
 
+
     sockaddr_in destination{};
 
     destination.sin_family =
@@ -140,15 +231,28 @@ int main()
     destination.sin_addr.s_addr =
         htonl(INADDR_LOOPBACK);
 
+
     std::cout
         << "Market data simulator starting\n"
-        << "Sending UDP market data to 127.0.0.1:"
+        << "Sending UDP market data to "
+        << "127.0.0.1:"
         << port
         << "\n\n";
 
-    // ---------------------------------------------------------
-    // Sequence 1 - Quote
-    // ---------------------------------------------------------
+
+    // =========================================================
+    // Sequence 1
+    //
+    // Tight quote:
+    //
+    // bid = 10000
+    // ask = 10010
+    // spread = 10
+    //
+    // SimpleStrategy should generate:
+    //
+    // BUY @ 10010
+    // =========================================================
 
     const auto quote1 =
         makeQuote(
@@ -159,33 +263,32 @@ int main()
             12
         );
 
-    if (!sendPacket(
+    if (
+        !sendQuote(
             socket,
             destination,
             quote1
-        ))
+        )
+    )
     {
-        std::cerr
-            << "Failed to send sequence 1\n";
-
         ::close(socket);
         return 1;
     }
 
-    std::cout
-        << "Sent QUOTE"
-        << " seq=1"
-        << " bid=10000"
-        << " ask=10010"
-        << '\n';
 
     std::this_thread::sleep_for(
         std::chrono::milliseconds(100)
     );
 
-    // ---------------------------------------------------------
-    // Sequence 2 - Trade
-    // ---------------------------------------------------------
+
+    // =========================================================
+    // Sequence 2
+    //
+    // Trade event.
+    //
+    // SimpleStrategy currently ignores Trade events.
+    // Therefore no OrderIntent should be generated.
+    // =========================================================
 
     const auto trade =
         makeTrade(
@@ -195,64 +298,62 @@ int main()
             llt::UdpMarketDataPacketSide::Buy
         );
 
-    if (!sendPacket(
+    if (
+        !sendTrade(
             socket,
             destination,
             trade
-        ))
+        )
+    )
     {
-        std::cerr
-            << "Failed to send sequence 2\n";
-
         ::close(socket);
         return 1;
     }
 
-    std::cout
-        << "Sent TRADE"
-        << " seq=2"
-        << " price=10005"
-        << " quantity=5"
-        << '\n';
 
     std::this_thread::sleep_for(
         std::chrono::milliseconds(100)
     );
 
-    // ---------------------------------------------------------
-    // Sequence 3 - Quote
-    // ---------------------------------------------------------
+
+    // =========================================================
+    // Sequence 3
+    //
+    // Another tight quote:
+    //
+    // bid = 10002
+    // ask = 10012
+    // spread = 10
+    //
+    // SimpleStrategy should generate:
+    //
+    // BUY @ 10012
+    // =========================================================
 
     const auto quote2 =
-    makeQuote(
-        3,
-        10002,
-        15,
-        10012,
-        20
-    );
+        makeQuote(
+            3,
+            10002,
+            15,
+            10012,
+            20
+        );
 
-    if (!sendPacket(
+    if (
+        !sendQuote(
             socket,
             destination,
             quote2
-        ))
+        )
+    )
     {
-        std::cerr
-            << "Failed to send sequence 3\n";
-
         ::close(socket);
         return 1;
     }
 
-    std::cout
-    << "Sent QUOTE"
-    << " seq=4"
-    << " bid=10002"
-    << " ask=10012"
-    << '\n';
 
     ::close(socket);
+
 
     std::cout
         << "\nMarket data simulation complete\n";

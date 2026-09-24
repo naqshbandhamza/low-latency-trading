@@ -277,3 +277,39 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(FeedHandlerUdpIntegrationTest)
+
+
+add_executable(
+    SimpleStrategyTest
+    strategy/SimpleStrategyTest.cpp
+)
+
+target_link_libraries(
+    SimpleStrategyTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(SimpleStrategyTest)
+
+
+add_executable(
+    StrategyEngineTest
+    strategy/StrategyEngineTest.cpp
+)
+
+target_link_libraries(
+    StrategyEngineTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(StrategyEngineTest)
