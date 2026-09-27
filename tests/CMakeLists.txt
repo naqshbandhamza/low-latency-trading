@@ -313,3 +313,255 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(StrategyEngineTest)
+
+
+
+
+add_executable(
+    ItchDecoderTest
+    market_data/itch/ItchDecoderTest.cpp
+)
+
+target_link_libraries(
+    ItchDecoderTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchDecoderTest)
+
+
+
+add_executable(
+    ItchDispatcherTest
+    market_data/itch/ItchDispatcherTest.cpp
+)
+
+target_link_libraries(
+    ItchDispatcherTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchDispatcherTest)
+
+
+
+add_executable(
+    ItchStreamReaderTest
+    market_data/itch/ItchStreamReaderTest.cpp
+)
+
+target_link_libraries(
+    ItchStreamReaderTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchStreamReaderTest)
+
+
+
+
+add_executable(
+    ItchReplayTest
+    market_data/itch/ItchReplayTest.cpp
+)
+
+target_link_libraries(
+    ItchReplayTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchReplayTest)
+
+
+
+
+add_executable(
+    AddOrderWithMpidMessageTest
+    market_data/itch/AddOrderWithMpidMessageTest.cpp
+)
+
+target_link_libraries(
+    AddOrderWithMpidMessageTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(AddOrderWithMpidMessageTest)
+
+
+
+
+add_executable(
+    TradeMessageTest
+    market_data/itch/TradeMessageTest.cpp
+)
+
+target_link_libraries(
+    TradeMessageTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(TradeMessageTest)
+
+
+add_executable(
+    CrossTradeMessageTest
+    market_data/itch/CrossTradeMessageTest.cpp
+)
+
+target_link_libraries(
+    CrossTradeMessageTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(CrossTradeMessageTest)
+
+
+add_executable(
+    BrokenTradeMessageTest
+    market_data/itch/BrokenTradeMessageTest.cpp
+)
+
+target_link_libraries(
+    BrokenTradeMessageTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(BrokenTradeMessageTest)
+
+
+add_executable(
+    StockTradingActionMessageTest
+    market_data/itch/StockTradingActionMessageTest.cpp
+)
+
+target_link_libraries(
+    StockTradingActionMessageTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(StockTradingActionMessageTest)
+
+
+add_executable(
+    MarketParticipantPositionMessageTest
+    market_data/itch/MarketParticipantPositionMessageTest.cpp
+)
+
+target_link_libraries(
+    MarketParticipantPositionMessageTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(MarketParticipantPositionMessageTest)
+
+
+
+
+add_executable(
+    RemainingItchMessagesTest
+    market_data/itch/RemainingItchMessagesTest.cpp
+)
+
+target_link_libraries(
+    RemainingItchMessagesTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(RemainingItchMessagesTest)
+
+
+
+
+add_executable(
+    InstrumentStoreTest
+    market_data/normalized/InstrumentStoreTest.cpp
+)
+
+target_link_libraries(
+    InstrumentStoreTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(InstrumentStoreTest)
+
+
+
+
+
+
+add_executable(
+    ItchNormalizerTest
+    market_data/itch/ItchNormalizerTest.cpp
+)
+
+target_link_libraries(
+    ItchNormalizerTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchNormalizerTest)

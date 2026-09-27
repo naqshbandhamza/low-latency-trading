@@ -1,0 +1,241 @@
+#include <fstream>
+#include <iostream>
+#include <string>
+
+#include "market_data/itch/ItchReplay.h"
+#include "market_data/itch/ItchMarketState.h"
+
+namespace
+{
+
+    const char *statusToString(
+        llt::itch::ItchReplayStatus status) noexcept
+    {
+        switch (status)
+        {
+        case llt::itch::ItchReplayStatus::Complete:
+            return "COMPLETE";
+
+        case llt::itch::ItchReplayStatus::IncompleteStream:
+            return "INCOMPLETE";
+
+        case llt::itch::ItchReplayStatus::StreamError:
+            return "STREAM ERROR";
+        }
+
+        return "UNKNOWN";
+    }
+
+    void printStats(
+        const llt::itch::ItchReplayResult &result)
+    {
+        const auto &stats = result.stats;
+
+        std::cout
+            << "\n"
+            << "========================================\n"
+            << "          ITCH REPLAY SUMMARY\n"
+            << "========================================\n"
+            << "Status                 : "
+            << statusToString(result.status) << '\n'
+            << "Session complete       : "
+            << (stats.sessionComplete ? "YES" : "NO") << '\n'
+            << '\n'
+            << "Records read           : "
+            << stats.recordsRead << '\n'
+            << "Decoded messages       : "
+            << stats.decodedMessages << '\n'
+            << "Unsupported messages   : "
+            << stats.unsupportedMessages << '\n'
+            << "Malformed messages     : "
+            << stats.malformedMessages << '\n'
+            << '\n'
+            << "S  System Event        : "
+            << stats.systemEvents << '\n'
+            << "R  Stock Directory     : "
+            << stats.stockDirectories << '\n'
+            << "A  Add Order           : "
+            << stats.addOrders << '\n'
+            << "F  Add Order with MPID : "
+            << stats.addOrdersWithMpid << '\n'
+            << "E  Order Executed      : "
+            << stats.orderExecutions << '\n'
+            << "C  Executed With Price : "
+            << stats.orderExecutionsWithPrice << '\n'
+            << "X  Order Cancel        : "
+            << stats.orderCancels << '\n'
+            << "D  Order Delete        : "
+            << stats.orderDeletes << '\n'
+            << "U  Order Replace       : "
+            << stats.orderReplaces << '\n'
+            << "P  Trade               : "
+            << stats.trades << '\n'
+            << "Q  Cross Trade         : "
+            << stats.crossTrades << '\n'
+            << "B  Broken Trade        : "
+            << stats.brokenTrades << '\n'
+            << "H  Stock Trading Action: "
+            << stats.stockTradingActions << '\n'
+            << "L  Market Participant  : "
+            << stats.marketParticipantPositions << '\n'
+            << "Y  Reg SHO Restriction : "
+            << stats.regShoRestrictions << '\n'
+
+            << "V  MWCB Decline Level  : "
+            << stats.mwcbDeclineLevels << '\n'
+
+            << "W  MWCB Status         : "
+            << stats.mwcbStatuses << '\n'
+
+            << "I  NOII                : "
+            << stats.noiiMessages << '\n'
+
+            << "J  LULD Auction Collar : "
+            << stats.luldAuctionCollars << '\n'
+
+            << "========================================\n";
+    }
+
+    void printUnsupportedTypes(
+        const llt::itch::ItchReplayStats &stats)
+    {
+        std::cout
+            << "\n"
+            << "Unsupported message types:\n";
+
+        bool found = false;
+
+        for (std::size_t i = 0;
+             i < stats.unsupportedByType.size();
+             ++i)
+        {
+            const auto count =
+                stats.unsupportedByType[i];
+
+            if (count == 0)
+                continue;
+
+            found = true;
+
+            const auto type =
+                static_cast<unsigned char>(i);
+
+            if (type >= 32 && type <= 126)
+            {
+                std::cout
+                    << "  "
+                    << static_cast<char>(type)
+                    << " : "
+                    << count
+                    << '\n';
+            }
+            else
+            {
+                std::cout
+                    << "  0x"
+                    << std::hex
+                    << static_cast<unsigned int>(type)
+                    << std::dec
+                    << " : "
+                    << count
+                    << '\n';
+            }
+        }
+
+        if (!found)
+        {
+            std::cout
+                << "  None\n";
+        }
+    }
+
+} // namespace
+
+int main(
+    int argc,
+    char *argv[])
+{
+    if (argc != 2)
+    {
+        std::cerr
+            << "Usage: "
+            << argv[0]
+            << " <ITCH BinaryFILE>\n";
+
+        return 2;
+    }
+
+    const std::string filePath =
+        argv[1];
+
+    std::ifstream file(
+        filePath,
+        std::ios::binary);
+
+    if (!file.is_open())
+    {
+        std::cerr
+            << "Failed to open ITCH file: "
+            << filePath
+            << '\n';
+
+        return 2;
+    }
+
+    std::cout
+        << "ITCH replay starting\n"
+        << "File: "
+        << filePath
+        << '\n';
+
+    llt::itch::ItchMarketState marketState;
+
+    const auto result =
+        llt::itch::ItchReplay::run(
+            file,
+            [&marketState](
+                const llt::itch::ItchMessage &message)
+            {
+                marketState.onMessage(message);
+            });
+
+    printStats(result);
+    printUnsupportedTypes(result.stats);
+
+    std::cout
+        << "\n"
+        << "Market state\n"
+        << "----------------------------------------\n"
+        << "Instruments                 : "
+        << marketState.instruments().size()
+        << '\n'
+        << "Unknown H instruments       : "
+        << marketState.unknownTradingActionInstruments()
+        << '\n'
+        << "Unknown Y instruments       : "
+        << marketState.unknownRegShoInstruments()
+        << '\n';
+
+    switch (result.status)
+    {
+    case llt::itch::ItchReplayStatus::Complete:
+        return 0;
+
+    case llt::itch::ItchReplayStatus::IncompleteStream:
+        std::cerr
+            << "Replay failed: "
+            << "BinaryFILE ended without a "
+            << "complete session terminator.\n";
+
+        return 1;
+
+    case llt::itch::ItchReplayStatus::StreamError:
+        std::cerr
+            << "Replay failed: "
+            << "I/O error while reading file.\n";
+
+        return 1;
+    }
+
+    return 1;
+}

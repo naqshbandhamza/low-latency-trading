@@ -18,3 +18,14 @@ target_link_libraries(market_data_simulator
         common
         feed_handler
 )
+
+
+add_executable(itch_replay
+    itch_replay.cpp
+)
+
+target_link_libraries(itch_replay
+    PRIVATE
+        common
+        feed_handler
+)
