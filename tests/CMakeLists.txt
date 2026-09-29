@@ -565,3 +565,26 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(ItchNormalizerTest)
+
+
+
+
+
+
+
+add_executable(
+    OrderStoreTest
+    market_data/normalized/OrderStoreTest.cpp
+)
+
+target_link_libraries(
+    OrderStoreTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(OrderStoreTest)

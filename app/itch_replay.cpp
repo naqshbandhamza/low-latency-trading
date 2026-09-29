@@ -209,11 +209,46 @@ int main(
         << "Instruments                 : "
         << marketState.instruments().size()
         << '\n'
+        << "Active orders               : "
+        << marketState.orders().size()
+        << '\n'
+        << '\n'
         << "Unknown H instruments       : "
         << marketState.unknownTradingActionInstruments()
         << '\n'
         << "Unknown Y instruments       : "
         << marketState.unknownRegShoInstruments()
+        << '\n'
+        << '\n'
+        << "Duplicate A/F order IDs     : "
+        << marketState.duplicateAddOrders()
+        << '\n'
+        << "Unknown E orders            : "
+        << marketState.unknownOrderExecutions()
+        << '\n'
+        << "Over-executed E orders      : "
+        << marketState.overExecutedOrders()
+        << '\n'
+        << "Unknown C orders            : "
+        << marketState.unknownOrderExecutionsWithPrice()
+        << '\n'
+        << "Over-executed C orders      : "
+        << marketState.overExecutedOrdersWithPrice()
+        << '\n'
+        << "Unknown X orders            : "
+        << marketState.unknownOrderCancels()
+        << '\n'
+        << "Over-cancelled X orders     : "
+        << marketState.overCancelledOrders()
+        << '\n'
+        << "Unknown D orders            : "
+        << marketState.unknownOrderDeletes()
+        << '\n'
+        << "Unknown U orders            : "
+        << marketState.unknownOrderReplaces()
+        << '\n'
+        << "Duplicate U new IDs         : "
+        << marketState.duplicateReplacementOrderIds()
         << '\n';
 
     switch (result.status)
