@@ -672,3 +672,68 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(BookStoreTest)
+
+
+
+
+
+add_executable(
+    OrderBookAddIntegrationTest
+    market_data/itch/OrderBookAddIntegrationTest.cpp
+)
+
+target_link_libraries(
+    OrderBookAddIntegrationTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(OrderBookAddIntegrationTest)
+
+
+
+
+
+add_executable(
+    OrderBookLifecycleIntegrationTest
+    market_data/itch/OrderBookLifecycleIntegrationTest.cpp
+)
+
+target_link_libraries(
+    OrderBookLifecycleIntegrationTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(OrderBookLifecycleIntegrationTest)
+
+
+
+
+
+
+
+add_executable(
+    OrderBookIntegrityTest
+    market_data/itch/OrderBookIntegrityTest.cpp
+)
+
+target_link_libraries(
+    OrderBookIntegrityTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(OrderBookIntegrityTest)

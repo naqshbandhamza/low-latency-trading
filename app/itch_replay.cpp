@@ -249,6 +249,19 @@ int main(
         << '\n'
         << "Duplicate U new IDs         : "
         << marketState.duplicateReplacementOrderIds()
+        << '\n'
+        << '\n'
+        << "Missing books               : "
+        << marketState.missingBooks()
+        << '\n'
+        << "Failed book reductions      : "
+        << marketState.failedBookReductions()
+        << '\n'
+        << "Failed book removals        : "
+        << marketState.failedBookRemovals()
+        << '\n'
+        << "Books                       : "
+        << marketState.books().size()
         << '\n';
 
     switch (result.status)

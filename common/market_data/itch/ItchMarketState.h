@@ -6,6 +6,7 @@
 #include "market_data/itch/ItchNormalizer.h"
 #include "market_data/normalized/InstrumentStore.h"
 #include "market_data/normalized/OrderStore.h"
+#include "market_data/book/BookStore.h"
 
 namespace llt::itch
 {
@@ -124,6 +125,36 @@ namespace llt::itch
             return duplicateAddOrders_;
         }
 
+        [[nodiscard]]
+        market_data::BookStore &books() noexcept
+        {
+            return books_;
+        }
+
+        [[nodiscard]]
+        const market_data::BookStore &books() const noexcept
+        {
+            return books_;
+        }
+
+        [[nodiscard]]
+        std::uint64_t missingBooks() const noexcept
+        {
+            return missingBooks_;
+        }
+
+        [[nodiscard]]
+        std::uint64_t failedBookReductions() const noexcept
+        {
+            return failedBookReductions_;
+        }
+
+        [[nodiscard]]
+        std::uint64_t failedBookRemovals() const noexcept
+        {
+            return failedBookRemovals_;
+        }
+
     private:
         void handle(
             const StockDirectoryMessage &message) noexcept
@@ -170,37 +201,6 @@ namespace llt::itch
                     message);
         }
 
-        // void handle(
-        //     const StockDirectoryMessage& message
-        // ) noexcept
-        // {
-        //     const auto instrument =
-        //         ItchNormalizer::normalize(message);
-
-        //     if (!instruments_.add(instrument))
-        //     {
-        //         const auto* existing =
-        //             instruments_.find(instrument.id);
-
-        //         std::cerr
-        //             << "\n[DUPLICATE STOCK DIRECTORY]\n"
-        //             << "Stock Locate : "
-        //             << instrument.id
-        //             << '\n'
-        //             << "New Symbol   : "
-        //             << instrument.symbolView()
-        //             << '\n';
-
-        //         if (existing != nullptr)
-        //         {
-        //             std::cerr
-        //                 << "Old Symbol   : "
-        //                 << existing->symbolView()
-        //                 << '\n';
-        //         }
-        //     }
-        // }
-
         void handle(
             const AddOrderMessage &message)
         {
@@ -211,7 +211,18 @@ namespace llt::itch
             if (!orders_.add(order))
             {
                 ++duplicateAddOrders_;
+                return;
             }
+
+            auto &book =
+                books_.getOrCreate(
+                    order.instrumentId);
+
+            book.side(
+                    order.side)
+                .add(
+                    order.price,
+                    order.quantity);
         }
 
         void handle(
@@ -224,7 +235,18 @@ namespace llt::itch
             if (!orders_.add(order))
             {
                 ++duplicateAddOrders_;
+                return;
             }
+
+            auto &book =
+                books_.getOrCreate(
+                    order.instrumentId);
+
+            book.side(
+                    order.side)
+                .add(
+                    order.price,
+                    order.quantity);
         }
 
         void handle(
@@ -250,8 +272,41 @@ namespace llt::itch
                 return;
             }
 
+            auto *book =
+                books_.find(
+                    order->instrumentId);
+
+            if (book == nullptr)
+            {
+                ++missingBooks_;
+                return;
+            }
+
+            auto &side =
+                book->side(
+                    order->side);
+
+            if (!side.reduce(
+                    order->price,
+                    executed))
+            {
+                ++failedBookReductions_;
+                return;
+            }
+
             if (executed == order->quantity)
             {
+                // reduce() already removed all quantity.
+                // removeOrder(..., 0) removes the order count
+                // and erases the now-empty price level.
+                if (!side.removeOrder(
+                        order->price,
+                        0))
+                {
+                    ++failedBookRemovals_;
+                    return;
+                }
+
                 orders_.remove(
                     message.orderReferenceNumber);
 
@@ -284,8 +339,38 @@ namespace llt::itch
                 return;
             }
 
+            auto *book =
+                books_.find(
+                    order->instrumentId);
+
+            if (book == nullptr)
+            {
+                ++missingBooks_;
+                return;
+            }
+
+            auto &side =
+                book->side(
+                    order->side);
+
+            if (!side.reduce(
+                    order->price,
+                    executed))
+            {
+                ++failedBookReductions_;
+                return;
+            }
+
             if (executed == order->quantity)
             {
+                if (!side.removeOrder(
+                        order->price,
+                        0))
+                {
+                    ++failedBookRemovals_;
+                    return;
+                }
+
                 orders_.remove(
                     message.orderReferenceNumber);
 
@@ -318,8 +403,38 @@ namespace llt::itch
                 return;
             }
 
+            auto *book =
+                books_.find(
+                    order->instrumentId);
+
+            if (book == nullptr)
+            {
+                ++missingBooks_;
+                return;
+            }
+
+            auto &side =
+                book->side(
+                    order->side);
+
+            if (!side.reduce(
+                    order->price,
+                    cancelled))
+            {
+                ++failedBookReductions_;
+                return;
+            }
+
             if (cancelled == order->quantity)
             {
+                if (!side.removeOrder(
+                        order->price,
+                        0))
+                {
+                    ++failedBookRemovals_;
+                    return;
+                }
+
                 orders_.remove(
                     message.orderReferenceNumber);
 
@@ -332,17 +447,46 @@ namespace llt::itch
         void handle(
             const OrderDeleteMessage &message)
         {
-            if (!orders_.remove(
-                    message.orderReferenceNumber))
+            auto *order =
+                orders_.find(
+                    message.orderReferenceNumber);
+
+            if (order == nullptr)
             {
                 ++unknownOrderDeletes_;
+                return;
             }
+
+            auto *book =
+                books_.find(
+                    order->instrumentId);
+
+            if (book == nullptr)
+            {
+                ++missingBooks_;
+                return;
+            }
+
+            auto &side =
+                book->side(
+                    order->side);
+
+            if (!side.removeOrder(
+                    order->price,
+                    order->quantity))
+            {
+                ++failedBookRemovals_;
+                return;
+            }
+
+            orders_.remove(
+                message.orderReferenceNumber);
         }
 
         void handle(
             const OrderReplaceMessage &message)
         {
-            const auto *existing =
+            auto *existing =
                 orders_.find(
                     message.originalOrderReferenceNumber);
 
@@ -352,37 +496,6 @@ namespace llt::itch
                 return;
             }
 
-            // Capture inherited state BEFORE removing the old order.
-            const auto instrumentId =
-                existing->instrumentId;
-
-            const auto side =
-                existing->side;
-
-            const auto timestamp =
-                message.timestamp;
-
-            market_data::Order replacement{
-                .orderId =
-                    message.newOrderReferenceNumber,
-
-                .instrumentId =
-                    instrumentId,
-
-                .timestamp =
-                    timestamp,
-
-                .price =
-                    message.price,
-
-                .quantity =
-                    message.shares,
-
-                .side =
-                    side};
-
-            // Protect the old order if the replacement ID
-            // unexpectedly already exists.
             if (
                 message.newOrderReferenceNumber !=
                     message.originalOrderReferenceNumber &&
@@ -392,6 +505,64 @@ namespace llt::itch
                 ++duplicateReplacementOrderIds_;
                 return;
             }
+
+            // Save the old state before removing anything.
+            const auto instrumentId =
+                existing->instrumentId;
+
+            const auto sideValue =
+                existing->side;
+
+            const auto oldPrice =
+                existing->price;
+
+            const auto oldQuantity =
+                existing->quantity;
+
+            market_data::Order replacement{
+                .orderId =
+                    message.newOrderReferenceNumber,
+
+                .instrumentId =
+                    instrumentId,
+
+                .timestamp =
+                    message.timestamp,
+
+                .price =
+                    message.price,
+
+                .quantity =
+                    message.shares,
+
+                .side =
+                    sideValue};
+
+            auto *book =
+                books_.find(
+                    instrumentId);
+
+            if (book == nullptr)
+            {
+                ++missingBooks_;
+                return;
+            }
+
+            auto &side =
+                book->side(
+                    sideValue);
+
+            if (!side.removeOrder(
+                    oldPrice,
+                    oldQuantity))
+            {
+                ++failedBookRemovals_;
+                return;
+            }
+
+            side.add(
+                replacement.price,
+                replacement.quantity);
 
             orders_.remove(
                 message.originalOrderReferenceNumber);
@@ -431,6 +602,12 @@ namespace llt::itch
         std::uint64_t duplicateReplacementOrderIds_{0};
 
         std::uint64_t duplicateAddOrders_{0};
+
+        market_data::BookStore books_;
+
+        std::uint64_t missingBooks_{0};
+        std::uint64_t failedBookReductions_{0};
+        std::uint64_t failedBookRemovals_{0};
     };
 
 } // namespace llt::itch
