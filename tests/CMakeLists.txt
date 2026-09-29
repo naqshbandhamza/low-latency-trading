@@ -588,3 +588,87 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(OrderStoreTest)
+
+
+
+
+
+add_executable(
+    PriceLevelTest
+    market_data/book/PriceLevelTest.cpp
+)
+
+target_link_libraries(
+    PriceLevelTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(PriceLevelTest)
+
+
+
+
+
+add_executable(
+    BookSideTest
+    market_data/book/BookSideTest.cpp
+)
+
+target_link_libraries(
+    BookSideTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(BookSideTest)
+
+
+
+
+
+
+add_executable(
+    OrderBookTest
+    market_data/book/OrderBookTest.cpp
+)
+
+target_link_libraries(
+    OrderBookTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(OrderBookTest)
+
+
+
+
+add_executable(
+    BookStoreTest
+    market_data/book/BookStoreTest.cpp
+)
+
+target_link_libraries(
+    BookStoreTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(BookStoreTest)
