@@ -2,7 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <atomic>
+#include <thread>
 
+#include "market_data/MarketEventConsumer.h"
 #include "market_data/MarketEventQueue.h"
 #include "market_data/itch/ItchMarketState.h"
 #include "market_data/itch/ItchQuotePublisher.h"
@@ -11,147 +14,150 @@
 namespace
 {
 
-    const char *statusToString(
-        llt::itch::ItchReplayStatus status) noexcept
+const char *statusToString(
+    llt::itch::ItchReplayStatus status) noexcept
+{
+    switch (status)
     {
-        switch (status)
-        {
-        case llt::itch::ItchReplayStatus::Complete:
-            return "COMPLETE";
+    case llt::itch::ItchReplayStatus::Complete:
+        return "COMPLETE";
 
-        case llt::itch::ItchReplayStatus::IncompleteStream:
-            return "INCOMPLETE";
+    case llt::itch::ItchReplayStatus::IncompleteStream:
+        return "INCOMPLETE";
 
-        case llt::itch::ItchReplayStatus::StreamError:
-            return "STREAM ERROR";
-        }
-
-        return "UNKNOWN";
+    case llt::itch::ItchReplayStatus::StreamError:
+        return "STREAM ERROR";
     }
 
-    void printStats(
-        const llt::itch::ItchReplayResult &result)
+    return "UNKNOWN";
+}
+
+
+void printStats(
+    const llt::itch::ItchReplayResult &result)
+{
+    const auto &stats =
+        result.stats;
+
+    std::cout
+        << "\n"
+        << "========================================\n"
+        << "          ITCH REPLAY SUMMARY\n"
+        << "========================================\n"
+        << "Status                 : "
+        << statusToString(result.status) << '\n'
+        << "Session complete       : "
+        << (stats.sessionComplete ? "YES" : "NO") << '\n'
+        << '\n'
+        << "Records read           : "
+        << stats.recordsRead << '\n'
+        << "Decoded messages       : "
+        << stats.decodedMessages << '\n'
+        << "Unsupported messages   : "
+        << stats.unsupportedMessages << '\n'
+        << "Malformed messages     : "
+        << stats.malformedMessages << '\n'
+        << '\n'
+        << "S  System Event        : "
+        << stats.systemEvents << '\n'
+        << "R  Stock Directory     : "
+        << stats.stockDirectories << '\n'
+        << "A  Add Order           : "
+        << stats.addOrders << '\n'
+        << "F  Add Order with MPID : "
+        << stats.addOrdersWithMpid << '\n'
+        << "E  Order Executed      : "
+        << stats.orderExecutions << '\n'
+        << "C  Executed With Price : "
+        << stats.orderExecutionsWithPrice << '\n'
+        << "X  Order Cancel        : "
+        << stats.orderCancels << '\n'
+        << "D  Order Delete        : "
+        << stats.orderDeletes << '\n'
+        << "U  Order Replace       : "
+        << stats.orderReplaces << '\n'
+        << "P  Trade               : "
+        << stats.trades << '\n'
+        << "Q  Cross Trade         : "
+        << stats.crossTrades << '\n'
+        << "B  Broken Trade        : "
+        << stats.brokenTrades << '\n'
+        << "H  Stock Trading Action: "
+        << stats.stockTradingActions << '\n'
+        << "L  Market Participant  : "
+        << stats.marketParticipantPositions << '\n'
+        << "Y  Reg SHO Restriction : "
+        << stats.regShoRestrictions << '\n'
+        << "V  MWCB Decline Level  : "
+        << stats.mwcbDeclineLevels << '\n'
+        << "W  MWCB Status         : "
+        << stats.mwcbStatuses << '\n'
+        << "I  NOII                : "
+        << stats.noiiMessages << '\n'
+        << "J  LULD Auction Collar : "
+        << stats.luldAuctionCollars << '\n'
+        << "========================================\n";
+}
+
+
+void printUnsupportedTypes(
+    const llt::itch::ItchReplayStats &stats)
+{
+    std::cout
+        << "\n"
+        << "Unsupported message types:\n";
+
+    bool found = false;
+
+    for (
+        std::size_t i = 0;
+        i < stats.unsupportedByType.size();
+        ++i)
     {
-        const auto &stats =
-            result.stats;
+        const auto count =
+            stats.unsupportedByType[i];
 
-        std::cout
-            << "\n"
-            << "========================================\n"
-            << "          ITCH REPLAY SUMMARY\n"
-            << "========================================\n"
-            << "Status                 : "
-            << statusToString(result.status) << '\n'
-            << "Session complete       : "
-            << (stats.sessionComplete ? "YES" : "NO") << '\n'
-            << '\n'
-            << "Records read           : "
-            << stats.recordsRead << '\n'
-            << "Decoded messages       : "
-            << stats.decodedMessages << '\n'
-            << "Unsupported messages   : "
-            << stats.unsupportedMessages << '\n'
-            << "Malformed messages     : "
-            << stats.malformedMessages << '\n'
-            << '\n'
-            << "S  System Event        : "
-            << stats.systemEvents << '\n'
-            << "R  Stock Directory     : "
-            << stats.stockDirectories << '\n'
-            << "A  Add Order           : "
-            << stats.addOrders << '\n'
-            << "F  Add Order with MPID : "
-            << stats.addOrdersWithMpid << '\n'
-            << "E  Order Executed      : "
-            << stats.orderExecutions << '\n'
-            << "C  Executed With Price : "
-            << stats.orderExecutionsWithPrice << '\n'
-            << "X  Order Cancel        : "
-            << stats.orderCancels << '\n'
-            << "D  Order Delete        : "
-            << stats.orderDeletes << '\n'
-            << "U  Order Replace       : "
-            << stats.orderReplaces << '\n'
-            << "P  Trade               : "
-            << stats.trades << '\n'
-            << "Q  Cross Trade         : "
-            << stats.crossTrades << '\n'
-            << "B  Broken Trade        : "
-            << stats.brokenTrades << '\n'
-            << "H  Stock Trading Action: "
-            << stats.stockTradingActions << '\n'
-            << "L  Market Participant  : "
-            << stats.marketParticipantPositions << '\n'
-            << "Y  Reg SHO Restriction : "
-            << stats.regShoRestrictions << '\n'
-            << "V  MWCB Decline Level  : "
-            << stats.mwcbDeclineLevels << '\n'
-            << "W  MWCB Status         : "
-            << stats.mwcbStatuses << '\n'
-            << "I  NOII                : "
-            << stats.noiiMessages << '\n'
-            << "J  LULD Auction Collar : "
-            << stats.luldAuctionCollars << '\n'
-            << "========================================\n";
-    }
-
-    void printUnsupportedTypes(
-        const llt::itch::ItchReplayStats &stats)
-    {
-        std::cout
-            << "\n"
-            << "Unsupported message types:\n";
-
-        bool found = false;
-
-        for (
-            std::size_t i = 0;
-            i < stats.unsupportedByType.size();
-            ++i)
+        if (count == 0)
         {
-            const auto count =
-                stats.unsupportedByType[i];
-
-            if (count == 0)
-            {
-                continue;
-            }
-
-            found = true;
-
-            const auto type =
-                static_cast<unsigned char>(i);
-
-            if (type >= 32 && type <= 126)
-            {
-                std::cout
-                    << "  "
-                    << static_cast<char>(type)
-                    << " : "
-                    << count
-                    << '\n';
-            }
-            else
-            {
-                std::cout
-                    << "  0x"
-                    << std::hex
-                    << static_cast<unsigned int>(type)
-                    << std::dec
-                    << " : "
-                    << count
-                    << '\n';
-            }
+            continue;
         }
 
-        if (!found)
+        found = true;
+
+        const auto type =
+            static_cast<unsigned char>(i);
+
+        if (type >= 32 && type <= 126)
         {
             std::cout
-                << "  None\n";
+                << "  "
+                << static_cast<char>(type)
+                << " : "
+                << count
+                << '\n';
+        }
+        else
+        {
+            std::cout
+                << "  0x"
+                << std::hex
+                << static_cast<unsigned int>(type)
+                << std::dec
+                << " : "
+                << count
+                << '\n';
         }
     }
 
+    if (!found)
+    {
+        std::cout
+            << "  None\n";
+    }
+}
+
 } // namespace
+
 
 int main(
     int argc,
@@ -190,23 +196,34 @@ int main(
         << filePath
         << '\n';
 
+
     //
     // Normalized market-event SPSC.
     //
+    // Producer:
+    //     ITCH / market-data thread
+    //
+    // Consumer:
+    //     dedicated downstream thread
+    //
     llt::MarketEventQueue marketEventQueue;
+
 
     //
     // ITCH order-book / market-state reconstruction.
     //
     llt::itch::ItchMarketState marketState;
 
+
     //
-    // Converts BBO changes into the existing normalized
-    // Quote -> MarketEvent -> SPSC path.
+    // Converts BBO changes into:
+    //
+    // Quote -> MarketEvent -> SPSC
     //
     llt::itch::ItchQuotePublisher publisher{
         marketState.instruments(),
         marketEventQueue};
+
 
     marketState.setBboChangeHandler(
         [&publisher](
@@ -220,57 +237,83 @@ int main(
                 bbo);
         });
 
-    std::uint64_t consumedMarketEvents{0};
 
+    //
+    // Signals that no more MarketEvents can be
+    // produced.
+    //
+    std::atomic<bool> producerDone{
+        false};
+
+
+    //
+    // Dedicated downstream consumer.
+    //
+    // This intentionally performs no strategy logic.
+    // Its job is simply to prove that normalized
+    // MarketEvents cross the SPSC thread boundary.
+    //
+    llt::MarketEventConsumer consumer{
+        marketEventQueue};
+
+
+    std::thread consumerThread{
+        [&consumer, &producerDone]()
+        {
+            consumer.run(
+                producerDone);
+        }};
+
+
+    //
+    // Producer side.
+    //
+    // The replay itself remains on the main thread.
+    // Every decoded ITCH message updates market state.
+    //
+    // BBO changes eventually reach:
+    //
+    // ItchQuotePublisher
+    //      ->
+    // MarketEventQueue::push()
+    //
     const auto result =
         llt::itch::ItchReplay::run(
             file,
-            [&marketState,
-             &marketEventQueue,
-             &consumedMarketEvents](
+            [&marketState](
                 const llt::itch::ItchMessage &message)
             {
-                //
-                // Decode-derived message enters the
-                // reconstructed market state.
-                //
                 marketState.onMessage(
                     message);
-
-                //
-                // TEMPORARY replay consumer.
-                //
-                // The SPSC has capacity 4096. During a
-                // 368M-message historical replay we cannot
-                // leave published Quotes sitting in it.
-                //
-                // For now we drain immediately so that we
-                // can validate:
-                //
-                // ITCH -> Book -> BBO -> Quote -> SPSC -> pop
-                //
-                // Later this becomes the dedicated strategy
-                // / consumer thread.
-                //
-                while (true)
-                {
-                    auto event =
-                        marketEventQueue.pop();
-
-                    if (!event.has_value())
-                    {
-                        break;
-                    }
-
-                    ++consumedMarketEvents;
-                }
             });
+
+
+    //
+    // No more events will be produced.
+    //
+    // Release pairs with the consumer's acquire load.
+    //
+    producerDone.store(
+        true,
+        std::memory_order_release);
+
+
+    //
+    // Consumer exits only after:
+    //
+    // producerDone == true
+    // AND
+    // SPSC is empty.
+    //
+    consumerThread.join();
+
 
     printStats(
         result);
 
     printUnsupportedTypes(
         result.stats);
+
 
     std::cout
         << "\n"
@@ -334,6 +377,7 @@ int main(
         << marketState.books().size()
         << '\n';
 
+
     std::cout
         << "\n"
         << "Normalized publication\n"
@@ -348,11 +392,12 @@ int main(
         << publisher.unknownInstruments()
         << '\n'
         << "Consumed market events      : "
-        << consumedMarketEvents
+        << consumer.consumedEvents()
         << '\n'
         << "Events remaining in SPSC    : "
         << marketEventQueue.size()
         << '\n';
+
 
     std::cout
         << "\n"
@@ -390,6 +435,7 @@ int main(
                 << '\n';
         }
     }
+
 
     switch (result.status)
     {

@@ -820,3 +820,25 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(ItchQuotePipelineIntegrationTest)
+
+
+
+
+
+
+add_executable(
+    MarketEventConsumerTest
+    market_data/MarketEventConsumerTest.cpp
+)
+
+target_link_libraries(
+    MarketEventConsumerTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(MarketEventConsumerTest)
