@@ -2,8 +2,9 @@
 
 #include <atomic>
 
-#include "market_data/MarketEvent.h"
-#include "ring_buffer/SpscRingBuffer.h"
+// #include "market_data/MarketEvent.h"
+// #include "ring_buffer/SpscRingBuffer.h"
+#include "market_data/MarketEventQueue.h"
 #include "strategy/IStrategy.h"
 #include "strategy/OrderIntentQueue.h"
 #include "strategy/StrategyEngineState.h"
@@ -12,11 +13,11 @@ namespace llt
 {
 
 
-    template <typename T, std::size_t Capacity>
-    class SpscRingBuffer;
+    // template <typename T, std::size_t Capacity>
+    // class SpscRingBuffer;
 
-    using MarketEventQueue =
-        SpscRingBuffer<MarketEvent, 4096>;
+    // using MarketEventQueue =
+    //     SpscRingBuffer<MarketEvent, 4096>;
 
 
 class StrategyEngine

@@ -9,6 +9,7 @@ add_library(common STATIC
     market_data/itch/ItchReplay.cpp
     strategy/SimpleStrategy.cpp
     strategy/StrategyEngine.cpp
+    market_data/itch/ItchQuotePublisher.cpp
 )
 
 target_include_directories(common

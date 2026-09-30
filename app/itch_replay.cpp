@@ -1,9 +1,12 @@
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <string>
 
-#include "market_data/itch/ItchReplay.h"
+#include "market_data/MarketEventQueue.h"
 #include "market_data/itch/ItchMarketState.h"
+#include "market_data/itch/ItchQuotePublisher.h"
+#include "market_data/itch/ItchReplay.h"
 
 namespace
 {
@@ -29,7 +32,8 @@ namespace
     void printStats(
         const llt::itch::ItchReplayResult &result)
     {
-        const auto &stats = result.stats;
+        const auto &stats =
+            result.stats;
 
         std::cout
             << "\n"
@@ -80,19 +84,14 @@ namespace
             << stats.marketParticipantPositions << '\n'
             << "Y  Reg SHO Restriction : "
             << stats.regShoRestrictions << '\n'
-
             << "V  MWCB Decline Level  : "
             << stats.mwcbDeclineLevels << '\n'
-
             << "W  MWCB Status         : "
             << stats.mwcbStatuses << '\n'
-
             << "I  NOII                : "
             << stats.noiiMessages << '\n'
-
             << "J  LULD Auction Collar : "
             << stats.luldAuctionCollars << '\n'
-
             << "========================================\n";
     }
 
@@ -105,15 +104,18 @@ namespace
 
         bool found = false;
 
-        for (std::size_t i = 0;
-             i < stats.unsupportedByType.size();
-             ++i)
+        for (
+            std::size_t i = 0;
+            i < stats.unsupportedByType.size();
+            ++i)
         {
             const auto count =
                 stats.unsupportedByType[i];
 
             if (count == 0)
+            {
                 continue;
+            }
 
             found = true;
 
@@ -188,19 +190,87 @@ int main(
         << filePath
         << '\n';
 
+    //
+    // Normalized market-event SPSC.
+    //
+    llt::MarketEventQueue marketEventQueue;
+
+    //
+    // ITCH order-book / market-state reconstruction.
+    //
     llt::itch::ItchMarketState marketState;
+
+    //
+    // Converts BBO changes into the existing normalized
+    // Quote -> MarketEvent -> SPSC path.
+    //
+    llt::itch::ItchQuotePublisher publisher{
+        marketState.instruments(),
+        marketEventQueue};
+
+    marketState.setBboChangeHandler(
+        [&publisher](
+            llt::market_data::InstrumentId instrumentId,
+            llt::market_data::Timestamp timestamp,
+            const llt::market_data::Bbo &bbo)
+        {
+            publisher.onBboChange(
+                instrumentId,
+                timestamp,
+                bbo);
+        });
+
+    std::uint64_t consumedMarketEvents{0};
 
     const auto result =
         llt::itch::ItchReplay::run(
             file,
-            [&marketState](
+            [&marketState,
+             &marketEventQueue,
+             &consumedMarketEvents](
                 const llt::itch::ItchMessage &message)
             {
-                marketState.onMessage(message);
+                //
+                // Decode-derived message enters the
+                // reconstructed market state.
+                //
+                marketState.onMessage(
+                    message);
+
+                //
+                // TEMPORARY replay consumer.
+                //
+                // The SPSC has capacity 4096. During a
+                // 368M-message historical replay we cannot
+                // leave published Quotes sitting in it.
+                //
+                // For now we drain immediately so that we
+                // can validate:
+                //
+                // ITCH -> Book -> BBO -> Quote -> SPSC -> pop
+                //
+                // Later this becomes the dedicated strategy
+                // / consumer thread.
+                //
+                while (true)
+                {
+                    auto event =
+                        marketEventQueue.pop();
+
+                    if (!event.has_value())
+                    {
+                        break;
+                    }
+
+                    ++consumedMarketEvents;
+                }
             });
 
-    printStats(result);
-    printUnsupportedTypes(result.stats);
+    printStats(
+        result);
+
+    printUnsupportedTypes(
+        result.stats);
 
     std::cout
         << "\n"
@@ -263,6 +333,63 @@ int main(
         << "Books                       : "
         << marketState.books().size()
         << '\n';
+
+    std::cout
+        << "\n"
+        << "Normalized publication\n"
+        << "----------------------------------------\n"
+        << "Published quotes            : "
+        << publisher.publishedQuotes()
+        << '\n'
+        << "Dropped quotes              : "
+        << publisher.droppedQuotes()
+        << '\n'
+        << "Unknown instruments         : "
+        << publisher.unknownInstruments()
+        << '\n'
+        << "Consumed market events      : "
+        << consumedMarketEvents
+        << '\n'
+        << "Events remaining in SPSC    : "
+        << marketEventQueue.size()
+        << '\n';
+
+    std::cout
+        << "\n"
+        << "Unknown instrument samples\n"
+        << "----------------------------------------\n";
+
+    const auto sampleCount =
+        publisher.unknownInstrumentSampleCount();
+
+    if (sampleCount == 0)
+    {
+        std::cout
+            << "None\n";
+    }
+    else
+    {
+        const auto &samples =
+            publisher.unknownInstrumentSamples();
+
+        for (
+            std::size_t i = 0;
+            i < sampleCount;
+            ++i)
+        {
+            const auto &sample =
+                samples[i];
+
+            std::cout
+                << "Instrument ID "
+                << sample.instrumentId
+                << " | first timestamp "
+                << sample.timestamp
+                << " | occurrences "
+                << sample.occurrences
+                << '\n';
+        }
+    }
 
     switch (result.status)
     {

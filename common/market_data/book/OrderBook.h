@@ -15,6 +15,58 @@ struct Bbo
     bool hasAsk{false};
     Price askPrice{0};
     Quantity askQuantity{0};
+
+    [[nodiscard]]
+    bool operator==(
+        const Bbo& other
+    ) const noexcept
+    {
+        // Bid presence changed.
+        if (hasBid != other.hasBid)
+        {
+            return false;
+        }
+
+        // Ask presence changed.
+        if (hasAsk != other.hasAsk)
+        {
+            return false;
+        }
+
+        // Only compare bid values when a bid exists.
+        if (
+            hasBid &&
+            (
+                bidPrice != other.bidPrice ||
+                bidQuantity != other.bidQuantity
+            )
+        )
+        {
+            return false;
+        }
+
+        // Only compare ask values when an ask exists.
+        if (
+            hasAsk &&
+            (
+                askPrice != other.askPrice ||
+                askQuantity != other.askQuantity
+            )
+        )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    [[nodiscard]]
+    bool operator!=(
+        const Bbo& other
+    ) const noexcept
+    {
+        return !(*this == other);
+    }
 };
 
 

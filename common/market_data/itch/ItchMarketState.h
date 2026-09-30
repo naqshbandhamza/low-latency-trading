@@ -2,11 +2,13 @@
 
 #include <iostream>
 #include <cstdint>
+#include <utility>
 #include "market_data/itch/ItchMessage.h"
 #include "market_data/itch/ItchNormalizer.h"
 #include "market_data/normalized/InstrumentStore.h"
 #include "market_data/normalized/OrderStore.h"
 #include "market_data/book/BookStore.h"
+#include <functional>
 
 namespace llt::itch
 {
@@ -39,12 +41,12 @@ namespace llt::itch
                 message);
         }
 
-        [[nodiscard]]
-        market_data::InstrumentStore &
-        instruments() noexcept
-        {
-            return instruments_;
-        }
+        // [[nodiscard]]
+        // market_data::InstrumentStore &
+        // instruments() noexcept
+        // {
+        //     return instruments_;
+        // }
 
         [[nodiscard]]
         const market_data::InstrumentStore &
@@ -155,7 +157,46 @@ namespace llt::itch
             return failedBookRemovals_;
         }
 
+        using BboChangeHandler =
+            std::function<void(
+                market_data::InstrumentId,
+                market_data::Timestamp,
+                const market_data::Bbo &)>;
+
+        explicit ItchMarketState(
+            BboChangeHandler handler = {})
+            : bboChangeHandler_(
+                  std::move(handler))
+        {
+        }
+
+        void setBboChangeHandler(
+            BboChangeHandler handler)
+        {
+            bboChangeHandler_ =
+                std::move(handler);
+        }
+
     private:
+        void notifyBboChange(
+            market_data::InstrumentId instrumentId,
+            market_data::Timestamp timestamp,
+            const market_data::Bbo &before,
+            const market_data::Bbo &after)
+        {
+            if (
+                before == after ||
+                !bboChangeHandler_)
+            {
+                return;
+            }
+
+            bboChangeHandler_(
+                instrumentId,
+                timestamp,
+                after);
+        }
+
         void handle(
             const StockDirectoryMessage &message) noexcept
         {
@@ -218,11 +259,23 @@ namespace llt::itch
                 books_.getOrCreate(
                     order.instrumentId);
 
+            const auto before =
+                book.bbo();
+
             book.side(
                     order.side)
                 .add(
                     order.price,
                     order.quantity);
+
+            const auto after =
+                book.bbo();
+
+            notifyBboChange(
+                order.instrumentId,
+                message.timestamp,
+                before,
+                after);
         }
 
         void handle(
@@ -242,11 +295,23 @@ namespace llt::itch
                 books_.getOrCreate(
                     order.instrumentId);
 
+            const auto before =
+                book.bbo();
+
             book.side(
                     order.side)
                 .add(
                     order.price,
                     order.quantity);
+
+            const auto after =
+                book.bbo();
+
+            notifyBboChange(
+                order.instrumentId,
+                message.timestamp,
+                before,
+                after);
         }
 
         void handle(
@@ -282,6 +347,9 @@ namespace llt::itch
                 return;
             }
 
+            const auto before =
+                book->bbo();
+
             auto &side =
                 book->side(
                     order->side);
@@ -296,9 +364,9 @@ namespace llt::itch
 
             if (executed == order->quantity)
             {
-                // reduce() already removed all quantity.
-                // removeOrder(..., 0) removes the order count
-                // and erases the now-empty price level.
+                const auto instrumentId =
+                    order->instrumentId;
+
                 if (!side.removeOrder(
                         order->price,
                         0))
@@ -310,10 +378,28 @@ namespace llt::itch
                 orders_.remove(
                     message.orderReferenceNumber);
 
+                const auto after =
+                    book->bbo();
+
+                notifyBboChange(
+                    instrumentId,
+                    message.timestamp,
+                    before,
+                    after);
+
                 return;
             }
 
             order->quantity -= executed;
+
+            const auto after =
+                book->bbo();
+
+            notifyBboChange(
+                order->instrumentId,
+                message.timestamp,
+                before,
+                after);
         }
 
         void handle(
@@ -349,6 +435,9 @@ namespace llt::itch
                 return;
             }
 
+            const auto before =
+                book->bbo();
+
             auto &side =
                 book->side(
                     order->side);
@@ -363,6 +452,9 @@ namespace llt::itch
 
             if (executed == order->quantity)
             {
+                const auto instrumentId =
+                    order->instrumentId;
+
                 if (!side.removeOrder(
                         order->price,
                         0))
@@ -374,10 +466,27 @@ namespace llt::itch
                 orders_.remove(
                     message.orderReferenceNumber);
 
+                const auto after =
+                    book->bbo();
+
+                notifyBboChange(
+                    instrumentId,
+                    message.timestamp,
+                    before,
+                    after);
                 return;
             }
 
             order->quantity -= executed;
+
+            const auto after =
+                book->bbo();
+
+            notifyBboChange(
+                order->instrumentId,
+                message.timestamp,
+                before,
+                after);
         }
 
         void handle(
@@ -413,6 +522,9 @@ namespace llt::itch
                 return;
             }
 
+            const auto before =
+                book->bbo();
+
             auto &side =
                 book->side(
                     order->side);
@@ -427,6 +539,9 @@ namespace llt::itch
 
             if (cancelled == order->quantity)
             {
+                const auto instrumentId =
+                    order->instrumentId;
+
                 if (!side.removeOrder(
                         order->price,
                         0))
@@ -438,10 +553,28 @@ namespace llt::itch
                 orders_.remove(
                     message.orderReferenceNumber);
 
+                const auto after =
+                    book->bbo();
+
+                notifyBboChange(
+                    instrumentId,
+                    message.timestamp,
+                    before,
+                    after);
+
                 return;
             }
 
             order->quantity -= cancelled;
+
+            const auto after =
+                book->bbo();
+
+            notifyBboChange(
+                order->instrumentId,
+                message.timestamp,
+                before,
+                after);
         }
 
         void handle(
@@ -467,9 +600,17 @@ namespace llt::itch
                 return;
             }
 
+            const auto before =
+                book->bbo();
+
             auto &side =
                 book->side(
                     order->side);
+
+            // IMPORTANT:
+            // Save this BEFORE orders_.remove().
+            const auto instrumentId =
+                order->instrumentId;
 
             if (!side.removeOrder(
                     order->price,
@@ -481,6 +622,15 @@ namespace llt::itch
 
             orders_.remove(
                 message.orderReferenceNumber);
+
+            const auto after =
+                book->bbo();
+
+            notifyBboChange(
+                instrumentId,
+                message.timestamp,
+                before,
+                after);
         }
 
         void handle(
@@ -506,7 +656,6 @@ namespace llt::itch
                 return;
             }
 
-            // Save the old state before removing anything.
             const auto instrumentId =
                 existing->instrumentId;
 
@@ -548,6 +697,9 @@ namespace llt::itch
                 return;
             }
 
+            const auto before =
+                book->bbo();
+
             auto &side =
                 book->side(
                     sideValue);
@@ -570,7 +722,17 @@ namespace llt::itch
             if (!orders_.add(replacement))
             {
                 ++duplicateReplacementOrderIds_;
+                return;
             }
+
+            const auto after =
+                book->bbo();
+
+            notifyBboChange(
+                instrumentId,
+                message.timestamp,
+                before,
+                after);
         }
 
         // All other ITCH messages are intentionally
@@ -608,6 +770,8 @@ namespace llt::itch
         std::uint64_t missingBooks_{0};
         std::uint64_t failedBookReductions_{0};
         std::uint64_t failedBookRemovals_{0};
+
+        BboChangeHandler bboChangeHandler_;
     };
 
 } // namespace llt::itch

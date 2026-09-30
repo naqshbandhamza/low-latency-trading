@@ -737,3 +737,86 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(OrderBookIntegrityTest)
+
+
+
+
+
+add_executable(
+    BboTest
+    market_data/book/BboTest.cpp
+)
+
+target_link_libraries(
+    BboTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(BboTest)
+
+
+
+
+add_executable(
+    BboChangeIntegrationTest
+    market_data/itch/BboChangeIntegrationTest.cpp
+)
+
+target_link_libraries(
+    BboChangeIntegrationTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(BboChangeIntegrationTest)
+
+
+
+
+
+add_executable(
+    ItchQuotePublisherTest
+    market_data/itch/ItchQuotePublisherTest.cpp
+)
+
+target_link_libraries(
+    ItchQuotePublisherTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchQuotePublisherTest)
+
+
+
+
+
+add_executable(
+    ItchQuotePipelineIntegrationTest
+    market_data/itch/ItchQuotePipelineIntegrationTest.cpp
+)
+
+target_link_libraries(
+    ItchQuotePipelineIntegrationTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchQuotePipelineIntegrationTest)
