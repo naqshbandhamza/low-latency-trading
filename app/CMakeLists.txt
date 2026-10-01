@@ -29,3 +29,44 @@ target_link_libraries(itch_replay
         common
         feed_handler
 )
+
+
+
+
+add_executable(
+    itch_synthetic_sender
+    itch_synthetic_sender.cpp
+)
+
+target_link_libraries(
+    itch_synthetic_sender
+    PRIVATE
+    common
+    feed_handler
+)
+
+
+add_executable(itch_live
+    itch_live.cpp
+)
+
+target_link_libraries(itch_live
+    PRIVATE
+        common
+        feed_handler
+)
+
+
+
+
+add_executable(
+    itch_udp_replay
+    itch_udp_replay.cpp
+)
+
+target_link_libraries(
+    itch_udp_replay
+    PRIVATE
+    common
+    feed_handler
+)

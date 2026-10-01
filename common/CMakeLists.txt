@@ -10,6 +10,9 @@ add_library(common STATIC
     strategy/SimpleStrategy.cpp
     strategy/StrategyEngine.cpp
     market_data/itch/ItchQuotePublisher.cpp
+    market_data/itch/ItchUdpCodec.cpp
+    market_data/itch/UdpItchMarketDataSource.cpp
+    market_data/itch/ItchSequenceRecovery.cpp
 )
 
 target_include_directories(common

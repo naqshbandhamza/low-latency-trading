@@ -842,3 +842,131 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(MarketEventConsumerTest)
+
+
+
+
+
+add_executable(
+    ItchUdpCodecTest
+    market_data/itch/ItchUdpCodecTest.cpp
+)
+
+target_link_libraries(
+    ItchUdpCodecTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchUdpCodecTest)
+
+
+
+
+add_executable(
+    UdpItchMarketDataSourceTest
+    market_data/itch/UdpItchMarketDataSourceTest.cpp
+)
+
+target_link_libraries(
+    UdpItchMarketDataSourceTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(UdpItchMarketDataSourceTest)
+
+
+
+
+
+
+
+
+
+add_executable(
+    ItchSequenceRecoveryTest
+    market_data/itch/ItchSequenceRecoveryTest.cpp
+)
+
+target_link_libraries(
+    ItchSequenceRecoveryTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchSequenceRecoveryTest)
+
+
+
+
+
+add_executable(
+    ItchFeedHandlerTest
+    market_data/itch/ItchFeedHandlerTest.cpp
+)
+
+target_link_libraries(
+    ItchFeedHandlerTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchFeedHandlerTest)
+
+
+
+
+add_executable(
+    ItchUdpFeedIntegrationTest
+    market_data/itch/ItchUdpFeedIntegrationTest.cpp
+)
+
+target_link_libraries(
+    ItchUdpFeedIntegrationTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchUdpFeedIntegrationTest)
+
+
+
+
+
+add_executable(
+    ItchUdpQuotePipelineIntegrationTest
+    market_data/itch/ItchUdpQuotePipelineIntegrationTest.cpp
+)
+
+target_link_libraries(
+    ItchUdpQuotePipelineIntegrationTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+include(Catch)
+
+catch_discover_tests(ItchUdpQuotePipelineIntegrationTest)
