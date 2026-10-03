@@ -970,3 +970,27 @@ target_link_libraries(
 include(Catch)
 
 catch_discover_tests(ItchUdpQuotePipelineIntegrationTest)
+
+
+
+
+
+
+
+
+add_executable(
+    ItchTradePublicationTest
+    market_data/itch/ItchTradePublicationTest.cpp
+)
+
+target_link_libraries(
+    ItchTradePublicationTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+catch_discover_tests(
+    ItchTradePublicationTest
+)

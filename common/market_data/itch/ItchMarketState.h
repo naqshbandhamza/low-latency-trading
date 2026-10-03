@@ -163,6 +163,14 @@ namespace llt::itch
                 market_data::Timestamp,
                 const market_data::Bbo &)>;
 
+        using TradeHandler =
+            std::function<void(
+                market_data::InstrumentId,
+                market_data::Timestamp,
+                market_data::Price,
+                market_data::Quantity,
+                market_data::Side)>;
+
         explicit ItchMarketState(
             BboChangeHandler handler = {})
             : bboChangeHandler_(
@@ -174,6 +182,13 @@ namespace llt::itch
             BboChangeHandler handler)
         {
             bboChangeHandler_ =
+                std::move(handler);
+        }
+
+        void setTradeHandler(
+            TradeHandler handler)
+        {
+            tradeHandler_ =
                 std::move(handler);
         }
 
@@ -195,6 +210,26 @@ namespace llt::itch
                 instrumentId,
                 timestamp,
                 after);
+        }
+
+        void notifyTrade(
+            market_data::InstrumentId instrumentId,
+            market_data::Timestamp timestamp,
+            market_data::Price price,
+            market_data::Quantity quantity,
+            market_data::Side side)
+        {
+            if (!tradeHandler_)
+            {
+                return;
+            }
+
+            tradeHandler_(
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side);
         }
 
         void handle(
@@ -347,6 +382,13 @@ namespace llt::itch
                 return;
             }
 
+            notifyTrade(
+                order->instrumentId,
+                message.timestamp,
+                order->price,
+                executed,
+                order->side);
+
             const auto before =
                 book->bbo();
 
@@ -434,6 +476,13 @@ namespace llt::itch
                 ++missingBooks_;
                 return;
             }
+
+            notifyTrade(
+                order->instrumentId,
+                message.timestamp,
+                message.executionPrice,
+                executed,
+                order->side);
 
             const auto before =
                 book->bbo();
@@ -735,6 +784,22 @@ namespace llt::itch
                 after);
         }
 
+        void handle(
+            const TradeMessage &message)
+        {
+            const auto side =
+                message.buySellIndicator == 'B'
+                    ? market_data::Side::Buy
+                    : market_data::Side::Sell;
+
+            notifyTrade(
+                message.stockLocate,
+                message.timestamp,
+                message.price,
+                message.shares,
+                side);
+        }
+
         // All other ITCH messages are intentionally
         // ignored at this stage.
         template <typename T>
@@ -772,6 +837,7 @@ namespace llt::itch
         std::uint64_t failedBookRemovals_{0};
 
         BboChangeHandler bboChangeHandler_;
+        TradeHandler tradeHandler_;
     };
 
 } // namespace llt::itch

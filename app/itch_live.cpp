@@ -16,66 +16,63 @@
 #include "ItchFeedHandler.h"
 #include "market_data/itch/ItchMarketState.h"
 #include "market_data/itch/ItchQuotePublisher.h"
+#include "market_data/itch/ItchTradePublisher.h"
 #include "market_data/itch/ItchSequenceRecovery.h"
 #include "market_data/itch/UdpItchMarketDataSource.h"
 
 namespace
 {
 
-std::atomic<bool> running{
-    true};
+    std::atomic<bool> running{
+        true};
 
-
-//
-// Signal handler.
-//
-// Keep this extremely small.
-// Do not use std::cout here.
-//
-void handleSignal(
-    int) noexcept
-{
-    running.store(
-        false,
-        std::memory_order_relaxed);
-}
-
-
-const char *feedStateToString(
-    llt::FeedHandlerState state) noexcept
-{
-    switch (state)
+    //
+    // Signal handler.
+    //
+    // Keep this extremely small.
+    // Do not use std::cout here.
+    //
+    void handleSignal(
+        int) noexcept
     {
-    case llt::FeedHandlerState::Stopped:
-        return "STOPPED";
-
-    case llt::FeedHandlerState::Running:
-        return "RUNNING";
-
-    case llt::FeedHandlerState::Failed:
-        return "FAILED";
+        running.store(
+            false,
+            std::memory_order_relaxed);
     }
 
-    return "UNKNOWN";
-}
+    const char *feedStateToString(
+        llt::FeedHandlerState state) noexcept
+    {
+        switch (state)
+        {
+        case llt::FeedHandlerState::Stopped:
+            return "STOPPED";
 
+        case llt::FeedHandlerState::Running:
+            return "RUNNING";
 
-void printUsage(
-    const char *executable)
-{
-    std::cerr
-        << "Usage: "
-        << executable
-        << " <udp-port>\n"
-        << '\n'
-        << "Example:\n"
-        << "  "
-        << executable
-        << " 19000\n";
-}
+        case llt::FeedHandlerState::Failed:
+            return "FAILED";
+        }
+
+        return "UNKNOWN";
+    }
+
+    void printUsage(
+        const char *executable)
+    {
+        std::cerr
+            << "Usage: "
+            << executable
+            << " <udp-port>\n"
+            << '\n'
+            << "Example:\n"
+            << "  "
+            << executable
+            << " 19000\n";
+    }
 
 } // namespace
-
 
 int main(
     int argc,
@@ -181,6 +178,15 @@ int main(
             marketEventQueue};
 
     //
+    // Converts ITCH executions/trade reports into
+    // the generic downstream Trade representation.
+    //
+    llt::itch::ItchTradePublisher
+        tradePublisher{
+            marketState.instruments(),
+            marketEventQueue};
+
+    //
     // Market state -> publisher boundary.
     //
     marketState.setBboChangeHandler(
@@ -193,6 +199,25 @@ int main(
                 instrumentId,
                 timestamp,
                 bbo);
+        });
+
+    //
+    // Market state -> trade publisher boundary.
+    //
+    marketState.setTradeHandler(
+        [&tradePublisher](
+            llt::market_data::InstrumentId instrumentId,
+            llt::market_data::Timestamp timestamp,
+            llt::market_data::Price price,
+            llt::market_data::Quantity quantity,
+            llt::market_data::Side side)
+        {
+            tradePublisher.onOrderExecution(
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side);
         });
 
     //
@@ -480,6 +505,15 @@ int main(
         << '\n'
         << "Events remaining in SPSC : "
         << marketEventQueue.size()
+        << '\n'
+        << "Published trades         : "
+        << tradePublisher.publishedTrades()
+        << '\n'
+        << "Dropped trades           : "
+        << tradePublisher.droppedTrades()
+        << '\n'
+        << "Trade unknown instruments: "
+        << tradePublisher.unknownInstruments()
         << '\n'
         << "========================================\n";
 

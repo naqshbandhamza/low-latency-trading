@@ -13,6 +13,7 @@ add_library(common STATIC
     market_data/itch/ItchUdpCodec.cpp
     market_data/itch/UdpItchMarketDataSource.cpp
     market_data/itch/ItchSequenceRecovery.cpp
+    market_data/itch/ItchTradePublisher.cpp
 )
 
 target_include_directories(common
