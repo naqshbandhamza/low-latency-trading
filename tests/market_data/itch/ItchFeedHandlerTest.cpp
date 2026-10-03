@@ -591,3 +591,256 @@ TEST_CASE(
         recovery.callCount ==
         1);
 }
+
+
+
+TEST_CASE(
+    "ITCH feed handler ignores old packet")
+{
+    llt::itch::test::MockItchMarketDataSource
+        source{
+            {
+                makeSystemEventPacket(100),
+                makeSystemEventPacket(101),
+                makeSystemEventPacket(102),
+
+                //
+                // Old packet.
+                //
+                makeSystemEventPacket(99),
+
+                makeSystemEventPacket(103)
+            }};
+
+    llt::itch::test::MockItchSequenceRecovery
+        recovery;
+
+    llt::itch::ItchMarketState
+        marketState;
+
+    llt::itch::ItchFeedHandler handler{
+        source,
+        recovery,
+        marketState};
+
+    //
+    // Accepted live packets:
+    //
+    // 100
+    // 101
+    // 102
+    // 103
+    //
+    // 99 must be ignored.
+    //
+    handler.start(4);
+
+    REQUIRE(
+        handler.state() ==
+        llt::FeedHandlerState::Stopped);
+
+    REQUIRE(
+        handler.processedPackets() ==
+        4);
+
+    REQUIRE(
+        handler.ignoredPackets() ==
+        1);
+
+    REQUIRE(
+        handler.gapsDetected() ==
+        0);
+
+    REQUIRE(
+        handler.recoveredPackets() ==
+        0);
+
+    REQUIRE(
+        recovery.callCount ==
+        0);
+
+    REQUIRE(
+        source.delivered() ==
+        5);
+}
+
+
+TEST_CASE(
+    "ITCH feed handler ignores late packet after recovery")
+{
+    llt::itch::test::MockItchMarketDataSource
+        source{
+            {
+                //
+                // Normal.
+                //
+                makeSystemEventPacket(100),
+
+                //
+                // 101 is missing.
+                //
+                // Receiving 102 triggers recovery
+                // of sequence 101.
+                //
+                makeSystemEventPacket(102),
+
+                //
+                // The original UDP 101 then arrives
+                // late after it has already been
+                // recovered and processed.
+                //
+                makeSystemEventPacket(101),
+
+                //
+                // Continue normally.
+                //
+                makeSystemEventPacket(103)
+            }};
+
+    llt::itch::test::MockItchSequenceRecovery
+        recovery;
+
+    recovery.packetsToReturn = {
+        makeSystemEventPacket(101)
+    };
+
+    llt::itch::ItchMarketState
+        marketState;
+
+    llt::itch::ItchFeedHandler handler{
+        source,
+        recovery,
+        marketState};
+
+    //
+    // Accepted LIVE packets:
+    //
+    // 100
+    // 102
+    // 103
+    //
+    // Recovered:
+    //
+    // 101
+    //
+    // Ignored:
+    //
+    // late live 101
+    //
+    handler.start(3);
+
+    REQUIRE(
+        handler.state() ==
+        llt::FeedHandlerState::Stopped);
+
+    REQUIRE(
+        handler.processedPackets() ==
+        3);
+
+    REQUIRE(
+        handler.recoveredPackets() ==
+        1);
+
+    REQUIRE(
+        handler.ignoredPackets() ==
+        1);
+
+    REQUIRE(
+        handler.gapsDetected() ==
+        1);
+
+    REQUIRE(
+        recovery.callCount ==
+        1);
+
+    REQUIRE(
+        recovery.lastExpectedSequence ==
+        101);
+
+    REQUIRE(
+        recovery.lastReceivedSequence ==
+        102);
+
+    REQUIRE(
+        source.delivered() ==
+        4);
+}
+
+
+TEST_CASE(
+    "ITCH feed handler ignores burst of stale packets")
+{
+    llt::itch::test::MockItchMarketDataSource
+        source{
+            {
+                makeSystemEventPacket(100),
+                makeSystemEventPacket(101),
+                makeSystemEventPacket(102),
+                makeSystemEventPacket(103),
+
+                //
+                // All of these are stale once
+                // expectedSequence == 104.
+                //
+                makeSystemEventPacket(98),
+                makeSystemEventPacket(99),
+                makeSystemEventPacket(100),
+                makeSystemEventPacket(101),
+                makeSystemEventPacket(102),
+
+                //
+                // Feed must still continue normally.
+                //
+                makeSystemEventPacket(104)
+            }};
+
+    llt::itch::test::MockItchSequenceRecovery
+        recovery;
+
+    llt::itch::ItchMarketState
+        marketState;
+
+    llt::itch::ItchFeedHandler handler{
+        source,
+        recovery,
+        marketState};
+
+    //
+    // Accepted:
+    //
+    // 100
+    // 101
+    // 102
+    // 103
+    // 104
+    //
+    handler.start(5);
+
+    REQUIRE(
+        handler.state() ==
+        llt::FeedHandlerState::Stopped);
+
+    REQUIRE(
+        handler.processedPackets() ==
+        5);
+
+    REQUIRE(
+        handler.ignoredPackets() ==
+        5);
+
+    REQUIRE(
+        handler.gapsDetected() ==
+        0);
+
+    REQUIRE(
+        handler.recoveredPackets() ==
+        0);
+
+    REQUIRE(
+        recovery.callCount ==
+        0);
+
+    REQUIRE(
+        source.delivered() ==
+        10);
+}
