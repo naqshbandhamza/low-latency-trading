@@ -12,7 +12,8 @@
 #include "market_data/MarketEvent.h"
 #include "market_data/MarketEventQueue.h"
 
-#include "market_data/itch/FailFastItchRecoverySource.h"
+// #include "market_data/itch/FailFastItchRecoverySource.h"
+#include "market_data/itch/FileItchRecoverySource.h"
 #include "ItchFeedHandler.h"
 #include "market_data/itch/ItchMarketState.h"
 #include "market_data/itch/ItchQuotePublisher.h"
@@ -84,10 +85,20 @@ int main(
     // =====================================================
     //
 
-    if (argc != 2)
+    // if (argc != 2)
+    // {
+    //     printUsage(
+    //         argv[0]);
+
+    //     return 2;
+    // }
+
+    if (argc != 3)
     {
-        printUsage(
-            argv[0]);
+        std::cerr
+            << "Usage: "
+            << argv[0]
+            << " <udp-port> <ITCH-recovery-file>\n";
 
         return 2;
     }
@@ -149,8 +160,12 @@ int main(
     // Until a real exchange/provider recovery
     // channel exists, fail on packet loss.
     //
-    llt::itch::FailFastItchRecoverySource
-        recoverySource;
+    // llt::itch::FailFastItchRecoverySource
+    //     recoverySource;
+    const std::string recoveryFilePath =
+        argv[2];
+    llt::itch::FileItchRecoverySource recoverySource{
+        recoveryFilePath};
 
     llt::itch::ItchSequenceRecovery
         recovery{
@@ -353,7 +368,7 @@ int main(
         << receiveTimeoutMs
         << " ms\n"
         << "Recovery                 : "
-        << "FAIL-FAST\n"
+        << "FILE-BACKED\n"
         << "MarketEventQueue capacity: "
         << 4096
         << '\n'

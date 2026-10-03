@@ -70,3 +70,32 @@ target_link_libraries(
     common
     feed_handler
 )
+
+
+
+add_executable(
+    itch_udp_replay_gap
+    itch_udp_replay_gap.cpp
+)
+
+target_link_libraries(
+    itch_udp_replay_gap
+    PRIVATE
+    common
+    feed_handler
+)
+
+
+
+
+add_executable(
+    itch_recovery_benchmark
+    itch_recovery_benchmark.cpp
+)
+
+target_link_libraries(
+    itch_recovery_benchmark
+    PRIVATE
+        common
+        feed_handler
+)

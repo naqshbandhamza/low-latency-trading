@@ -994,3 +994,24 @@ target_link_libraries(
 catch_discover_tests(
     ItchTradePublicationTest
 )
+
+
+
+
+add_executable(
+FileItchRecoverySourceTest
+market_data/itch/FileItchRecoverySourceTest.cpp
+)
+
+target_link_libraries(
+    FileItchRecoverySourceTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+catch_discover_tests(
+    FileItchRecoverySourceTest
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+)
