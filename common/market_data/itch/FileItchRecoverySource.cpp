@@ -671,7 +671,7 @@ bool FileItchRecoverySource::recover(
         if (
             record.status !=
                 ItchStreamReadStatus::Message ||
-            record.payload.empty())
+            record.empty())
         {
             packets.clear();
 
@@ -684,7 +684,7 @@ bool FileItchRecoverySource::recover(
             currentSequence;
 
         if (
-            record.payload.size() >
+            record.size >
             packet.payload.size())
         {
             packets.clear();
@@ -693,12 +693,12 @@ bool FileItchRecoverySource::recover(
         }
 
         packet.payloadSize =
-            record.payload.size();
+            record.size;
 
         std::memcpy(
             packet.payload.data(),
-            record.payload.data(),
-            record.payload.size());
+            record.data,
+            record.size);
 
         packets.push_back(
             std::move(packet));

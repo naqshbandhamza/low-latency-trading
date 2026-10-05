@@ -9,74 +9,81 @@
 namespace llt::market_data
 {
 
-class BookStore
-{
-public:
-    [[nodiscard]]
-    OrderBook& getOrCreate(
-        InstrumentId instrumentId
-    )
+    class BookStore
     {
-        auto [iterator, inserted] =
-            books_.try_emplace(
-                instrumentId
-            );
-
-        return iterator->second;
-    }
-
-    [[nodiscard]]
-    OrderBook* find(
-        InstrumentId instrumentId
-    ) noexcept
-    {
-        const auto iterator =
-            books_.find(instrumentId);
-
-        if (iterator == books_.end())
+    public:
+        [[nodiscard]]
+        OrderBook &getOrCreate(
+            InstrumentId instrumentId)
         {
-            return nullptr;
+            auto [iterator, inserted] =
+                books_.try_emplace(
+                    instrumentId);
+
+            return iterator->second;
         }
 
-        return &iterator->second;
-    }
-
-    [[nodiscard]]
-    const OrderBook* find(
-        InstrumentId instrumentId
-    ) const noexcept
-    {
-        const auto iterator =
-            books_.find(instrumentId);
-
-        if (iterator == books_.end())
+        [[nodiscard]]
+        OrderBook *find(
+            InstrumentId instrumentId) noexcept
         {
-            return nullptr;
+            const auto iterator =
+                books_.find(instrumentId);
+
+            if (iterator == books_.end())
+            {
+                return nullptr;
+            }
+
+            return &iterator->second;
         }
 
-        return &iterator->second;
-    }
+        [[nodiscard]]
+        const OrderBook *find(
+            InstrumentId instrumentId) const noexcept
+        {
+            const auto iterator =
+                books_.find(instrumentId);
 
-    [[nodiscard]]
-    bool contains(
-        InstrumentId instrumentId
-    ) const noexcept
-    {
-        return books_.find(instrumentId) !=
-               books_.end();
-    }
+            if (iterator == books_.end())
+            {
+                return nullptr;
+            }
 
-    [[nodiscard]]
-    std::size_t size() const noexcept
-    {
-        return books_.size();
-    }
+            return &iterator->second;
+        }
 
-private:
-    std::unordered_map<
-        InstrumentId,
-        OrderBook
-    > books_;
-};
+        [[nodiscard]]
+        bool contains(
+            InstrumentId instrumentId) const noexcept
+        {
+            return books_.find(instrumentId) !=
+                   books_.end();
+        }
+
+        [[nodiscard]]
+        std::size_t size() const noexcept
+        {
+            return books_.size();
+        }
+
+        template <typename Fn>
+        void forEach(
+            Fn &&fn) const
+        {
+            for (const auto &[instrumentId, book] : books_)
+            {
+                fn(
+                    instrumentId,
+                    book);
+            }
+        }
+
+    private:
+        std::unordered_map<
+            InstrumentId,
+            OrderBook>
+            books_;
+    };
 
 } // namespace llt::market_data

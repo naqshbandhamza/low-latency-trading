@@ -1,0 +1,5 @@
+if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/CrossTradeMessageTest-b12d07c_tests.cmake")
+  include("/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/CrossTradeMessageTest-b12d07c_tests.cmake")
+else()
+  add_test(CrossTradeMessageTest_NOT_BUILT-b12d07c CrossTradeMessageTest_NOT_BUILT-b12d07c)
+endif()

@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/common.dir/logging/ConsoleLogger.cpp.o"
+  "CMakeFiles/common.dir/logging/ConsoleLogger.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/SequenceRecovery.cpp.o"
+  "CMakeFiles/common.dir/market_data/SequenceRecovery.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/UdpMarketDataCodec.cpp.o"
+  "CMakeFiles/common.dir/market_data/UdpMarketDataCodec.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/UdpMarketDataSource.cpp.o"
+  "CMakeFiles/common.dir/market_data/UdpMarketDataSource.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/itch/FileItchRecoverySource.cpp.o"
+  "CMakeFiles/common.dir/market_data/itch/FileItchRecoverySource.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/itch/ItchDecoder.cpp.o"
+  "CMakeFiles/common.dir/market_data/itch/ItchDecoder.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/itch/ItchDispatcher.cpp.o"
+  "CMakeFiles/common.dir/market_data/itch/ItchDispatcher.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/itch/ItchQuotePublisher.cpp.o"
+  "CMakeFiles/common.dir/market_data/itch/ItchQuotePublisher.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/itch/ItchReplay.cpp.o"
+  "CMakeFiles/common.dir/market_data/itch/ItchReplay.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/itch/ItchSequenceRecovery.cpp.o"
+  "CMakeFiles/common.dir/market_data/itch/ItchSequenceRecovery.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/itch/ItchStreamReader.cpp.o"
+  "CMakeFiles/common.dir/market_data/itch/ItchStreamReader.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/itch/ItchTradePublisher.cpp.o"
+  "CMakeFiles/common.dir/market_data/itch/ItchTradePublisher.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/itch/ItchUdpCodec.cpp.o"
+  "CMakeFiles/common.dir/market_data/itch/ItchUdpCodec.cpp.o.d"
+  "CMakeFiles/common.dir/market_data/itch/UdpItchMarketDataSource.cpp.o"
+  "CMakeFiles/common.dir/market_data/itch/UdpItchMarketDataSource.cpp.o.d"
+  "CMakeFiles/common.dir/strategy/SimpleStrategy.cpp.o"
+  "CMakeFiles/common.dir/strategy/SimpleStrategy.cpp.o.d"
+  "CMakeFiles/common.dir/strategy/StrategyEngine.cpp.o"
+  "CMakeFiles/common.dir/strategy/StrategyEngine.cpp.o.d"
+  "libcommon.a"
+  "libcommon.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/common.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

@@ -184,9 +184,7 @@ namespace llt::itch
                     else if constexpr (
                         std::is_same_v<
                             T,
-                            LuldAuctionCollarMessage
-                        >
-                    )
+                            LuldAuctionCollarMessage>)
                     {
                         ++stats.luldAuctionCollars;
                     }
@@ -197,97 +195,94 @@ namespace llt::itch
     } // namespace
 
     ItchReplayResult ItchReplay::run(
-        std::istream& input,
-        const MessageHandler& handler
-    )
+        std::istream &input,
+        const MessageHandler &handler)
     {
         ItchReplayResult result{};
-    
+
         ItchStreamReader reader(input);
-    
+
         while (true)
         {
             auto record =
                 reader.readNext();
-    
+
             switch (record.status)
             {
             case ItchStreamReadStatus::Message:
             {
                 ++result.stats.recordsRead;
-    
-                if (record.payload.empty())
+
+                if (record.empty())
                 {
                     ++result.stats.malformedMessages;
                     continue;
                 }
-    
+
                 const std::uint8_t type =
-                    record.payload[0];
-    
+                    record.data[0];
+
                 if (!isSupportedMessageType(type))
                 {
                     ++result.stats.unsupportedMessages;
-    
-                    ++result.stats.unsupportedByType[
-                        type
-                    ];
-    
+
+                    ++result.stats.unsupportedByType[type];
+
                     continue;
                 }
-    
+
+                
+
                 auto decoded =
                     ItchDispatcher::dispatch(
-                        record.payload.data(),
-                        record.payload.size()
-                    );
-    
+                        record.data,
+                        record.size);
+
                 if (!decoded.has_value())
                 {
                     ++result.stats.malformedMessages;
                     continue;
                 }
-    
+
                 ++result.stats.decodedMessages;
-    
+
                 countDecodedMessage(
                     *decoded,
-                    result.stats
-                );
-    
+                    result.stats);
+
                 // Deliver only successfully decoded
                 // messages to downstream consumers.
                 if (handler)
                 {
                     handler(*decoded);
                 }
-    
+
                 break;
             }
-    
+
             case ItchStreamReadStatus::EndOfSession:
             {
                 result.stats.sessionComplete = true;
-    
+
                 result.status =
                     ItchReplayStatus::Complete;
-    
+
                 return result;
             }
-    
+
             case ItchStreamReadStatus::Incomplete:
             {
                 result.status =
                     ItchReplayStatus::IncompleteStream;
-    
+
                 return result;
             }
-    
+
             case ItchStreamReadStatus::Error:
             {
                 result.status =
                     ItchReplayStatus::StreamError;
-    
+
                 return result;
             }
             }

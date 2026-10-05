@@ -1,0 +1,1 @@
+/usr/bin/c++ -O2 -g -DNDEBUG -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/AtomicTest.dir/ring_buffer/AtomicTest.cpp.o -o AtomicTest  ../common/libcommon.a /opt/homebrew/lib/libCatch2Main.a /opt/homebrew/lib/libCatch2.a

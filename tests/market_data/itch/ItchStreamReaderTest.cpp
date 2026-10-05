@@ -45,15 +45,15 @@ TEST_CASE(
     );
 
     REQUIRE(
-        result.payload.size() == 12
+        result.size == 12
     );
 
     REQUIRE(
-        result.payload[0] == 'S'
+        result.data[0] == 'S'
     );
 
     REQUIRE(
-        result.payload[11] == 'O'
+        result.data[11] == 'O'
     );
 }
 
@@ -101,8 +101,17 @@ TEST_CASE(
         llt::itch::ItchStreamReadStatus::Message
     );
 
-    REQUIRE(first.payload.size() == 12);
-    REQUIRE(first.payload[0] == 'S');
+    REQUIRE(
+        first.size == 12
+    );
+
+    REQUIRE(
+        first.data[0] == 'S'
+    );
+
+    // Important:
+    // first.data points into the reader-owned reusable buffer.
+    // Finish inspecting it before calling readNext() again.
 
     const auto second =
         reader.readNext();
@@ -112,8 +121,13 @@ TEST_CASE(
         llt::itch::ItchStreamReadStatus::Message
     );
 
-    REQUIRE(second.payload.size() == 19);
-    REQUIRE(second.payload[0] == 'D');
+    REQUIRE(
+        second.size == 19
+    );
+
+    REQUIRE(
+        second.data[0] == 'D'
+    );
 }
 
 TEST_CASE(
@@ -143,7 +157,7 @@ TEST_CASE(
     );
 
     REQUIRE(
-        result.payload.empty()
+        result.empty()
     );
 }
 
@@ -168,6 +182,10 @@ TEST_CASE(
         result.status ==
         llt::itch::ItchStreamReadStatus::
             Incomplete
+    );
+
+    REQUIRE(
+        result.empty()
     );
 }
 
@@ -194,6 +212,10 @@ TEST_CASE(
         result.status ==
         llt::itch::ItchStreamReadStatus::
             Incomplete
+    );
+
+    REQUIRE(
+        result.empty()
     );
 }
 
@@ -232,7 +254,7 @@ TEST_CASE(
     );
 
     REQUIRE(
-        result.payload.empty()
+        result.empty()
     );
 }
 
@@ -274,9 +296,15 @@ TEST_CASE(
     );
 
     REQUIRE(
-        message.payload.size() == 12
+        message.size == 12
     );
 
+    REQUIRE(
+        message.data[0] == 'S'
+    );
+
+    // Inspect message before the next read because the
+    // underlying buffer belongs to ItchStreamReader.
     const auto end =
         reader.readNext();
 
@@ -284,5 +312,9 @@ TEST_CASE(
         end.status ==
         llt::itch::ItchStreamReadStatus::
             EndOfSession
+    );
+
+    REQUIRE(
+        end.empty()
     );
 }

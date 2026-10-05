@@ -1,0 +1,12 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/hamzalatif/Desktop/low-latency-trading/build-release/cmake_install.cmake",
+		"/Users/hamzalatif/Desktop/low-latency-trading/build-release/common/cmake_install.cmake",
+		"/Users/hamzalatif/Desktop/low-latency-trading/build-release/feed_handler/cmake_install.cmake",
+		"/Users/hamzalatif/Desktop/low-latency-trading/build-release/app/cmake_install.cmake",
+		"/Users/hamzalatif/Desktop/low-latency-trading/build-release/benchmarks/cmake_install.cmake",
+		"/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

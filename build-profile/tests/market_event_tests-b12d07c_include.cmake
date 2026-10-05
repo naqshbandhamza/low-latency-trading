@@ -1,0 +1,5 @@
+if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/market_event_tests-b12d07c_tests.cmake")
+  include("/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/market_event_tests-b12d07c_tests.cmake")
+else()
+  add_test(market_event_tests_NOT_BUILT-b12d07c market_event_tests_NOT_BUILT-b12d07c)
+endif()

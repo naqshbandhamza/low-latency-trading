@@ -1,0 +1,5 @@
+if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/BrokenTradeMessageTest-b12d07c_tests.cmake")
+  include("/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/BrokenTradeMessageTest-b12d07c_tests.cmake")
+else()
+  add_test(BrokenTradeMessageTest_NOT_BUILT-b12d07c BrokenTradeMessageTest_NOT_BUILT-b12d07c)
+endif()

@@ -1,4 +1,6 @@
 build/
+build-profile/
+build-release/
 .vscode/
 .idea/
 .DS_Store

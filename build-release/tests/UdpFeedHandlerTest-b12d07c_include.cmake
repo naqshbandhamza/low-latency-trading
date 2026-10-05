@@ -1,0 +1,5 @@
+if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/UdpFeedHandlerTest-b12d07c_tests.cmake")
+  include("/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/UdpFeedHandlerTest-b12d07c_tests.cmake")
+else()
+  add_test(UdpFeedHandlerTest_NOT_BUILT-b12d07c UdpFeedHandlerTest_NOT_BUILT-b12d07c)
+endif()

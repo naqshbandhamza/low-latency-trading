@@ -1,0 +1,5 @@
+if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/ItchReplayTest-b12d07c_tests.cmake")
+  include("/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/ItchReplayTest-b12d07c_tests.cmake")
+else()
+  add_test(ItchReplayTest_NOT_BUILT-b12d07c ItchReplayTest_NOT_BUILT-b12d07c)
+endif()

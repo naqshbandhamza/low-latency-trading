@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "market_data/normalized/OrderStore.h"
+#include "market_data/book/BookSide.h"
 
 using namespace llt::market_data;
 
@@ -23,6 +24,10 @@ TEST_CASE(
 {
     OrderStore store;
 
+    BookSide bookSide{
+        Side::Buy
+    };
+
     Order order{
         .orderId = 100,
         .instrumentId = 42,
@@ -32,7 +37,17 @@ TEST_CASE(
         .side = Side::Buy
     };
 
-    REQUIRE(store.add(order));
+    auto level =
+        bookSide.add(
+            order.price,
+            order.quantity);
+
+    REQUIRE(
+        store.add(
+            order,
+            level)
+    );
+
     REQUIRE(store.size() == 1);
     REQUIRE(store.contains(100));
 
@@ -54,6 +69,10 @@ TEST_CASE(
 {
     OrderStore store;
 
+    BookSide bookSide{
+        Side::Buy
+    };
+
     Order first{
         .orderId = 100,
         .instrumentId = 42,
@@ -70,8 +89,26 @@ TEST_CASE(
         .side = Side::Sell
     };
 
-    REQUIRE(store.add(first));
-    REQUIRE_FALSE(store.add(duplicate));
+    auto level =
+        bookSide.add(
+            first.price,
+            first.quantity);
+
+    REQUIRE(
+        store.add(
+            first,
+            level)
+    );
+
+    // We deliberately reuse a valid handle here.
+    //
+    // This test is testing OrderStore's duplicate-ID
+    // rejection, not BookSide mutation.
+    REQUIRE_FALSE(
+        store.add(
+            duplicate,
+            level)
+    );
 
     REQUIRE(store.size() == 1);
 
@@ -93,6 +130,14 @@ TEST_CASE(
 {
     OrderStore store;
 
+    BookSide bidSide{
+        Side::Buy
+    };
+
+    BookSide askSide{
+        Side::Sell
+    };
+
     Order first{
         .orderId = 100,
         .instrumentId = 42,
@@ -109,8 +154,27 @@ TEST_CASE(
         .side = Side::Sell
     };
 
-    REQUIRE(store.add(first));
-    REQUIRE(store.add(second));
+    auto firstLevel =
+        bidSide.add(
+            first.price,
+            first.quantity);
+
+    auto secondLevel =
+        askSide.add(
+            second.price,
+            second.quantity);
+
+    REQUIRE(
+        store.add(
+            first,
+            firstLevel)
+    );
+
+    REQUIRE(
+        store.add(
+            second,
+            secondLevel)
+    );
 
     REQUIRE(store.size() == 2);
 
@@ -130,6 +194,10 @@ TEST_CASE(
 {
     OrderStore store;
 
+    BookSide bookSide{
+        Side::Buy
+    };
+
     Order order{
         .orderId = 100,
         .instrumentId = 42,
@@ -138,7 +206,16 @@ TEST_CASE(
         .side = Side::Buy
     };
 
-    REQUIRE(store.add(order));
+    auto level =
+        bookSide.add(
+            order.price,
+            order.quantity);
+
+    REQUIRE(
+        store.add(
+            order,
+            level)
+    );
 
     auto* stored =
         store.find(100);
@@ -159,6 +236,10 @@ TEST_CASE(
 {
     OrderStore store;
 
+    BookSide bookSide{
+        Side::Buy
+    };
+
     Order order{
         .orderId = 100,
         .instrumentId = 42,
@@ -167,7 +248,16 @@ TEST_CASE(
         .side = Side::Buy
     };
 
-    REQUIRE(store.add(order));
+    auto level =
+        bookSide.add(
+            order.price,
+            order.quantity);
+
+    REQUIRE(
+        store.add(
+            order,
+            level)
+    );
 
     REQUIRE(store.remove(100));
 

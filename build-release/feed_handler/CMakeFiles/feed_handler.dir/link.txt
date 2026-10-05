@@ -1,0 +1,2 @@
+/usr/bin/ar qc libfeed_handler.a CMakeFiles/feed_handler.dir/FeedHandler.cpp.o CMakeFiles/feed_handler.dir/ItchFeedHandler.cpp.o
+/usr/bin/ranlib libfeed_handler.a

@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/itch_udp_replay_gap.dir/itch_udp_replay_gap.cpp.o -o itch_udp_replay_gap  ../common/libcommon.a ../feed_handler/libfeed_handler.a ../common/libcommon.a

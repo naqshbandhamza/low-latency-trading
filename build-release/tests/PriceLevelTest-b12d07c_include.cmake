@@ -1,0 +1,5 @@
+if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/PriceLevelTest-b12d07c_tests.cmake")
+  include("/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/PriceLevelTest-b12d07c_tests.cmake")
+else()
+  add_test(PriceLevelTest_NOT_BUILT-b12d07c PriceLevelTest_NOT_BUILT-b12d07c)
+endif()

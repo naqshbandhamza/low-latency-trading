@@ -1,0 +1,5 @@
+if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/ItchUdpQuotePipelineIntegrationTest-b12d07c_tests.cmake")
+  include("/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/ItchUdpQuotePipelineIntegrationTest-b12d07c_tests.cmake")
+else()
+  add_test(ItchUdpQuotePipelineIntegrationTest_NOT_BUILT-b12d07c ItchUdpQuotePipelineIntegrationTest_NOT_BUILT-b12d07c)
+endif()

@@ -157,6 +157,12 @@ namespace llt::itch
             return failedBookRemovals_;
         }
 
+        [[nodiscard]]
+        bool hasBboChangeHandler() const noexcept
+        {
+            return static_cast<bool>(bboChangeHandler_);
+        }
+
         using BboChangeHandler =
             std::function<void(
                 market_data::InstrumentId,
@@ -190,6 +196,46 @@ namespace llt::itch
         {
             tradeHandler_ =
                 std::move(handler);
+        }
+
+        [[nodiscard]]
+        std::uint64_t bookSideRemoveCalls() const noexcept
+        {
+            std::uint64_t total = 0;
+
+            books_.forEach(
+                [&total](
+                    const auto,
+                    const auto &book)
+                {
+                    total +=
+                        book.bids().removeCalls();
+
+                    total +=
+                        book.asks().removeCalls();
+                });
+
+            return total;
+        }
+
+        [[nodiscard]]
+        std::uint64_t priceLevelEraseCount() const noexcept
+        {
+            std::uint64_t total = 0;
+
+            books_.forEach(
+                [&total](
+                    const auto,
+                    const auto &book)
+                {
+                    total +=
+                        book.bids().levelEraseCount();
+
+                    total +=
+                        book.asks().levelEraseCount();
+                });
+
+            return total;
         }
 
     private:
@@ -284,7 +330,8 @@ namespace llt::itch
                 ItchNormalizer::normalizeOrder(
                     message);
 
-            if (!orders_.add(order))
+            if (orders_.contains(
+                    order.orderId))
             {
                 ++duplicateAddOrders_;
                 return;
@@ -294,23 +341,45 @@ namespace llt::itch
                 books_.getOrCreate(
                     order.instrumentId);
 
-            const auto before =
-                book.bbo();
+            const bool hasHandler =
+                hasBboChangeHandler();
 
-            book.side(
-                    order.side)
-                .add(
+            market_data::Bbo before{};
+
+            if (hasHandler)
+            {
+                before =
+                    book.bbo();
+            }
+
+            auto &side =
+                book.side(
+                    order.side);
+
+            auto level =
+                side.add(
                     order.price,
                     order.quantity);
 
-            const auto after =
-                book.bbo();
+            if (!orders_.add(
+                    order,
+                    level))
+            {
+                ++duplicateAddOrders_;
+                return;
+            }
 
-            notifyBboChange(
-                order.instrumentId,
-                message.timestamp,
-                before,
-                after);
+            if (hasHandler)
+            {
+                const auto after =
+                    book.bbo();
+
+                notifyBboChange(
+                    order.instrumentId,
+                    message.timestamp,
+                    before,
+                    after);
+            }
         }
 
         void handle(
@@ -320,7 +389,8 @@ namespace llt::itch
                 ItchNormalizer::normalizeOrder(
                     message);
 
-            if (!orders_.add(order))
+            if (orders_.contains(
+                    order.orderId))
             {
                 ++duplicateAddOrders_;
                 return;
@@ -330,43 +400,71 @@ namespace llt::itch
                 books_.getOrCreate(
                     order.instrumentId);
 
-            const auto before =
-                book.bbo();
+            const bool hasHandler =
+                hasBboChangeHandler();
 
-            book.side(
-                    order.side)
-                .add(
+            market_data::Bbo before{};
+
+            if (hasHandler)
+            {
+                before =
+                    book.bbo();
+            }
+
+            auto &side =
+                book.side(
+                    order.side);
+
+            auto level =
+                side.add(
                     order.price,
                     order.quantity);
 
-            const auto after =
-                book.bbo();
+            if (!orders_.add(
+                    order,
+                    level))
+            {
+                ++duplicateAddOrders_;
+                return;
+            }
 
-            notifyBboChange(
-                order.instrumentId,
-                message.timestamp,
-                before,
-                after);
+            if (hasHandler)
+            {
+                const auto after =
+                    book.bbo();
+
+                notifyBboChange(
+                    order.instrumentId,
+                    message.timestamp,
+                    before,
+                    after);
+            }
         }
 
         void handle(
             const OrderExecutedMessage &message)
         {
-            auto *order =
-                orders_.find(
+            auto orderIt =
+                orders_.findIterator(
                     message.orderReferenceNumber);
 
-            if (order == nullptr)
+            if (orderIt == orders_.end())
             {
                 ++unknownOrderExecutions_;
                 return;
             }
 
+            auto &stored =
+                orderIt->second;
+
+            auto &order =
+                stored.order;
+
             const auto executed =
                 static_cast<market_data::Quantity>(
                     message.executedShares);
 
-            if (executed > order->quantity)
+            if (executed > order.quantity)
             {
                 ++overExecutedOrders_;
                 return;
@@ -374,7 +472,7 @@ namespace llt::itch
 
             auto *book =
                 books_.find(
-                    order->instrumentId);
+                    order.instrumentId);
 
             if (book == nullptr)
             {
@@ -383,85 +481,112 @@ namespace llt::itch
             }
 
             notifyTrade(
-                order->instrumentId,
+                order.instrumentId,
                 message.timestamp,
-                order->price,
+                order.price,
                 executed,
-                order->side);
+                order.side);
 
-            const auto before =
-                book->bbo();
+            const bool hasHandler =
+                hasBboChangeHandler();
+
+            market_data::Bbo before{};
+
+            if (hasHandler)
+            {
+                before =
+                    book->bbo();
+            }
 
             auto &side =
                 book->side(
-                    order->side);
+                    order.side);
 
+            // Directly mutate the known price level.
             if (!side.reduce(
-                    order->price,
+                    stored.level,
                     executed))
             {
                 ++failedBookReductions_;
                 return;
             }
 
-            if (executed == order->quantity)
+            if (executed == order.quantity)
             {
                 const auto instrumentId =
-                    order->instrumentId;
+                    order.instrumentId;
 
+                // The quantity has already been reduced to zero.
+                // removeOrder() now removes the final order and,
+                // if empty, erases the level through its iterator.
                 if (!side.removeOrder(
-                        order->price,
+                        stored.level,
                         0))
                 {
                     ++failedBookRemovals_;
                     return;
                 }
 
+                // stored.level may now be invalid.
+                // order/stored remain valid until this erase.
                 orders_.remove(
-                    message.orderReferenceNumber);
+                    orderIt);
 
-                const auto after =
-                    book->bbo();
+                if (hasHandler)
+                {
+                    const auto after =
+                        book->bbo();
 
-                notifyBboChange(
-                    instrumentId,
-                    message.timestamp,
-                    before,
-                    after);
+                    notifyBboChange(
+                        instrumentId,
+                        message.timestamp,
+                        before,
+                        after);
+                }
 
                 return;
             }
 
-            order->quantity -= executed;
+            order.quantity -=
+                executed;
 
-            const auto after =
-                book->bbo();
+            if (hasHandler)
+            {
+                const auto after =
+                    book->bbo();
 
-            notifyBboChange(
-                order->instrumentId,
-                message.timestamp,
-                before,
-                after);
+                notifyBboChange(
+                    order.instrumentId,
+                    message.timestamp,
+                    before,
+                    after);
+            }
         }
 
         void handle(
             const OrderExecutedWithPriceMessage &message)
         {
-            auto *order =
-                orders_.find(
+            auto orderIt =
+                orders_.findIterator(
                     message.orderReferenceNumber);
 
-            if (order == nullptr)
+            if (orderIt == orders_.end())
             {
                 ++unknownOrderExecutionsWithPrice_;
                 return;
             }
 
+            auto &stored =
+                orderIt->second;
+
+            auto &order =
+                stored.order;
+
             const auto executed =
                 static_cast<market_data::Quantity>(
                     message.executedShares);
 
-            if (executed > order->quantity)
+            if (executed > order.quantity)
             {
                 ++overExecutedOrdersWithPrice_;
                 return;
@@ -469,7 +594,7 @@ namespace llt::itch
 
             auto *book =
                 books_.find(
-                    order->instrumentId);
+                    order.instrumentId);
 
             if (book == nullptr)
             {
@@ -477,35 +602,45 @@ namespace llt::itch
                 return;
             }
 
+            // Execution price comes from the ITCH message here,
+            // while the resting book level remains order.price.
             notifyTrade(
-                order->instrumentId,
+                order.instrumentId,
                 message.timestamp,
                 message.executionPrice,
                 executed,
-                order->side);
+                order.side);
 
-            const auto before =
-                book->bbo();
+            const bool hasHandler =
+                hasBboChangeHandler();
+
+            market_data::Bbo before{};
+
+            if (hasHandler)
+            {
+                before =
+                    book->bbo();
+            }
 
             auto &side =
                 book->side(
-                    order->side);
+                    order.side);
 
             if (!side.reduce(
-                    order->price,
+                    stored.level,
                     executed))
             {
                 ++failedBookReductions_;
                 return;
             }
 
-            if (executed == order->quantity)
+            if (executed == order.quantity)
             {
                 const auto instrumentId =
-                    order->instrumentId;
+                    order.instrumentId;
 
                 if (!side.removeOrder(
-                        order->price,
+                        stored.level,
                         0))
                 {
                     ++failedBookRemovals_;
@@ -513,49 +648,63 @@ namespace llt::itch
                 }
 
                 orders_.remove(
-                    message.orderReferenceNumber);
+                    orderIt);
 
+                if (hasHandler)
+                {
+                    const auto after =
+                        book->bbo();
+
+                    notifyBboChange(
+                        instrumentId,
+                        message.timestamp,
+                        before,
+                        after);
+                }
+
+                return;
+            }
+
+            order.quantity -=
+                executed;
+
+            if (hasHandler)
+            {
                 const auto after =
                     book->bbo();
 
                 notifyBboChange(
-                    instrumentId,
+                    order.instrumentId,
                     message.timestamp,
                     before,
                     after);
-                return;
             }
-
-            order->quantity -= executed;
-
-            const auto after =
-                book->bbo();
-
-            notifyBboChange(
-                order->instrumentId,
-                message.timestamp,
-                before,
-                after);
         }
 
         void handle(
             const OrderCancelMessage &message)
         {
-            auto *order =
-                orders_.find(
+            auto orderIt =
+                orders_.findIterator(
                     message.orderReferenceNumber);
 
-            if (order == nullptr)
+            if (orderIt == orders_.end())
             {
                 ++unknownOrderCancels_;
                 return;
             }
 
+            auto &stored =
+                orderIt->second;
+
+            auto &order =
+                stored.order;
+
             const auto cancelled =
                 static_cast<market_data::Quantity>(
                     message.cancelledShares);
 
-            if (cancelled > order->quantity)
+            if (cancelled > order.quantity)
             {
                 ++overCancelledOrders_;
                 return;
@@ -563,7 +712,7 @@ namespace llt::itch
 
             auto *book =
                 books_.find(
-                    order->instrumentId);
+                    order.instrumentId);
 
             if (book == nullptr)
             {
@@ -571,28 +720,36 @@ namespace llt::itch
                 return;
             }
 
-            const auto before =
-                book->bbo();
+            const bool hasHandler =
+                hasBboChangeHandler();
+
+            market_data::Bbo before{};
+
+            if (hasHandler)
+            {
+                before =
+                    book->bbo();
+            }
 
             auto &side =
                 book->side(
-                    order->side);
+                    order.side);
 
             if (!side.reduce(
-                    order->price,
+                    stored.level,
                     cancelled))
             {
                 ++failedBookReductions_;
                 return;
             }
 
-            if (cancelled == order->quantity)
+            if (cancelled == order.quantity)
             {
                 const auto instrumentId =
-                    order->instrumentId;
+                    order.instrumentId;
 
                 if (!side.removeOrder(
-                        order->price,
+                        stored.level,
                         0))
                 {
                     ++failedBookRemovals_;
@@ -600,8 +757,105 @@ namespace llt::itch
                 }
 
                 orders_.remove(
+                    orderIt);
+
+                if (hasHandler)
+                {
+                    const auto after =
+                        book->bbo();
+
+                    notifyBboChange(
+                        instrumentId,
+                        message.timestamp,
+                        before,
+                        after);
+                }
+
+                return;
+            }
+
+            order.quantity -=
+                cancelled;
+
+            if (hasHandler)
+            {
+                const auto after =
+                    book->bbo();
+
+                notifyBboChange(
+                    order.instrumentId,
+                    message.timestamp,
+                    before,
+                    after);
+            }
+        }
+
+        void handle(
+            const OrderDeleteMessage &message)
+        {
+            auto orderIt =
+                orders_.findIterator(
                     message.orderReferenceNumber);
 
+            if (orderIt == orders_.end())
+            {
+                ++unknownOrderDeletes_;
+                return;
+            }
+
+            auto &stored =
+                orderIt->second;
+
+            auto &order =
+                stored.order;
+
+            auto *book =
+                books_.find(
+                    order.instrumentId);
+
+            if (book == nullptr)
+            {
+                ++missingBooks_;
+                return;
+            }
+
+            const bool hasHandler =
+                hasBboChangeHandler();
+
+            market_data::Bbo before{};
+
+            if (hasHandler)
+            {
+                before =
+                    book->bbo();
+            }
+
+            auto &side =
+                book->side(
+                    order.side);
+
+            // Must save anything needed after OrderStore erase.
+            const auto instrumentId =
+                order.instrumentId;
+
+            if (!side.removeOrder(
+                    stored.level,
+                    order.quantity))
+            {
+                ++failedBookRemovals_;
+                return;
+            }
+
+            // The level iterator may now be invalid.
+            // Do not touch stored.level after this point.
+
+            orders_.remove(
+                orderIt);
+
+            // order/stored are now invalid too.
+
+            if (hasHandler)
+            {
                 const auto after =
                     book->bbo();
 
@@ -610,90 +864,27 @@ namespace llt::itch
                     message.timestamp,
                     before,
                     after);
-
-                return;
             }
-
-            order->quantity -= cancelled;
-
-            const auto after =
-                book->bbo();
-
-            notifyBboChange(
-                order->instrumentId,
-                message.timestamp,
-                before,
-                after);
-        }
-
-        void handle(
-            const OrderDeleteMessage &message)
-        {
-            auto *order =
-                orders_.find(
-                    message.orderReferenceNumber);
-
-            if (order == nullptr)
-            {
-                ++unknownOrderDeletes_;
-                return;
-            }
-
-            auto *book =
-                books_.find(
-                    order->instrumentId);
-
-            if (book == nullptr)
-            {
-                ++missingBooks_;
-                return;
-            }
-
-            const auto before =
-                book->bbo();
-
-            auto &side =
-                book->side(
-                    order->side);
-
-            // IMPORTANT:
-            // Save this BEFORE orders_.remove().
-            const auto instrumentId =
-                order->instrumentId;
-
-            if (!side.removeOrder(
-                    order->price,
-                    order->quantity))
-            {
-                ++failedBookRemovals_;
-                return;
-            }
-
-            orders_.remove(
-                message.orderReferenceNumber);
-
-            const auto after =
-                book->bbo();
-
-            notifyBboChange(
-                instrumentId,
-                message.timestamp,
-                before,
-                after);
         }
 
         void handle(
             const OrderReplaceMessage &message)
         {
-            auto *existing =
-                orders_.find(
+            auto orderIt =
+                orders_.findIterator(
                     message.originalOrderReferenceNumber);
 
-            if (existing == nullptr)
+            if (orderIt == orders_.end())
             {
                 ++unknownOrderReplaces_;
                 return;
             }
+
+            auto &stored =
+                orderIt->second;
+
+            auto &order =
+                stored.order;
 
             if (
                 message.newOrderReferenceNumber !=
@@ -705,19 +896,18 @@ namespace llt::itch
                 return;
             }
 
+            // Copy everything needed before either the level
+            // or OrderStore entry can be erased.
             const auto instrumentId =
-                existing->instrumentId;
+                order.instrumentId;
 
             const auto sideValue =
-                existing->side;
-
-            const auto oldPrice =
-                existing->price;
+                order.side;
 
             const auto oldQuantity =
-                existing->quantity;
+                order.quantity;
 
-            market_data::Order replacement{
+            const market_data::Order replacement{
                 .orderId =
                     message.newOrderReferenceNumber,
 
@@ -746,42 +936,61 @@ namespace llt::itch
                 return;
             }
 
-            const auto before =
-                book->bbo();
+            const bool hasHandler =
+                hasBboChangeHandler();
+
+            market_data::Bbo before{};
+
+            if (hasHandler)
+            {
+                before =
+                    book->bbo();
+            }
 
             auto &side =
                 book->side(
                     sideValue);
 
+            // Remove old order directly through its level handle.
             if (!side.removeOrder(
-                    oldPrice,
+                    stored.level,
                     oldQuantity))
             {
                 ++failedBookRemovals_;
                 return;
             }
 
-            side.add(
-                replacement.price,
-                replacement.quantity);
+            // stored.level may now be invalid.
 
             orders_.remove(
-                message.originalOrderReferenceNumber);
+                orderIt);
 
-            if (!orders_.add(replacement))
+            // Create/find the replacement's price level and retain
+            // its NEW handle.
+            auto newLevel =
+                side.add(
+                    replacement.price,
+                    replacement.quantity);
+
+            if (!orders_.add(
+                    replacement,
+                    newLevel))
             {
                 ++duplicateReplacementOrderIds_;
                 return;
             }
 
-            const auto after =
-                book->bbo();
+            if (hasHandler)
+            {
+                const auto after =
+                    book->bbo();
 
-            notifyBboChange(
-                instrumentId,
-                message.timestamp,
-                before,
-                after);
+                notifyBboChange(
+                    instrumentId,
+                    message.timestamp,
+                    before,
+                    after);
+            }
         }
 
         void handle(

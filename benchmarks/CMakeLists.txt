@@ -39,3 +39,47 @@ target_link_libraries(seq_cst_benchmark
     PRIVATE
         common
 )
+
+
+
+
+
+add_executable(
+    itch_pipeline_benchmark
+    ItchPipelineBenchmark.cpp
+)
+
+target_link_libraries(
+    itch_pipeline_benchmark
+    PRIVATE
+        common
+        feed_handler
+)
+
+
+add_executable(
+    itch_core_pipeline_benchmark
+    ItchCorePipelineBenchmark.cpp
+)
+
+target_link_libraries(
+    itch_core_pipeline_benchmark
+    PRIVATE
+        common
+        feed_handler
+)
+
+
+
+
+add_executable(
+    itch_decode_benchmark
+    ItchDecodeBenchmark.cpp
+)
+
+target_link_libraries(
+    itch_decode_benchmark
+    PRIVATE
+        common
+        feed_handler
+)

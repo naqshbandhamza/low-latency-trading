@@ -472,7 +472,7 @@ int main(
         {
             ++recordsRead;
 
-            if (record.payload.empty())
+            if (record.empty())
             {
                 std::cerr
                     << "Encountered empty ITCH payload "
@@ -493,7 +493,7 @@ int main(
                 nextSequence;
 
             if (
-                record.payload.size() >
+                record.size >
                 packet.payload.size())
             {
                 std::cerr
@@ -501,7 +501,7 @@ int main(
                     << "ItchUdpPacket at record "
                     << recordsRead
                     << ". Payload size: "
-                    << record.payload.size()
+                    << record.size
                     << '\n';
 
                 ::close(
@@ -511,12 +511,12 @@ int main(
             }
 
             packet.payloadSize =
-                record.payload.size();
+                record.size;
 
             std::memcpy(
                 packet.payload.data(),
-                record.payload.data(),
-                record.payload.size());
+                record.data,
+                record.size);
 
             const bool shouldDrop =
                 shouldDropSequence(
@@ -579,7 +579,7 @@ int main(
                 ++packetsSent;
 
                 bytesSent +=
-                    record.payload.size();
+                    record.size;
             }
 
             //

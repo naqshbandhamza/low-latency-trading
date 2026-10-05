@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <map>
 
 #include "market_data/book/PriceLevel.h"
@@ -9,138 +10,200 @@
 namespace llt::market_data
 {
 
-class BookSide
-{
-public:
-    explicit BookSide(
-        Side side
-    ) noexcept
-        : side_(side)
+    class BookSide
     {
-    }
+    private:
+        using Levels =
+            std::map<
+                Price,
+                PriceLevel>;
 
-    [[nodiscard]]
-    Side side() const noexcept
-    {
-        return side_;
-    }
+    public:
+        using LevelHandle =
+            Levels::iterator;
 
-    void add(
-        Price price,
-        Quantity quantity
-    )
-    {
-        auto [iterator, inserted] =
-            levels_.try_emplace(
-                price,
-                PriceLevel{
-                    .price = price
-                }
-            );
-
-        iterator->second.add(quantity);
-    }
-
-    [[nodiscard]]
-    bool reduce(
-        Price price,
-        Quantity quantity
-    ) noexcept
-    {
-        auto iterator =
-            levels_.find(price);
-
-        if (iterator == levels_.end())
+        explicit BookSide(
+            Side side) noexcept
+            : side_(side)
         {
-            return false;
         }
 
-        return iterator->second.reduce(
-            quantity
-        );
-    }
-
-    [[nodiscard]]
-    bool removeOrder(
-        Price price,
-        Quantity remainingQuantity
-    ) noexcept
-    {
-        auto iterator =
-            levels_.find(price);
-
-        if (iterator == levels_.end())
+        [[nodiscard]]
+        Side side() const noexcept
         {
-            return false;
+            return side_;
         }
 
-        if (!iterator->second.removeOrder(
-                remainingQuantity
-            ))
+        // void add(
+        //     Price price,
+        //     Quantity quantity)
+        // {
+        //     auto [iterator, inserted] =
+        //         levels_.try_emplace(
+        //             price,
+        //             PriceLevel{
+        //                 .price = price});
+
+        //     iterator->second.add(quantity);
+        // }
+
+        [[nodiscard]]
+        LevelHandle add(
+            Price price,
+            Quantity quantity)
         {
-            return false;
+            auto [iterator, inserted] =
+                levels_.try_emplace(
+                    price,
+                    PriceLevel{
+                        .price = price});
+
+            iterator->second.add(
+                quantity);
+
+            return iterator;
         }
 
-        if (iterator->second.empty())
+        [[nodiscard]]
+        bool reduce(
+            LevelHandle level,
+            Quantity quantity) noexcept
         {
-            levels_.erase(iterator);
+            return level->second.reduce(
+                quantity);
         }
 
-        return true;
-    }
-
-    [[nodiscard]]
-    const PriceLevel*
-    find(
-        Price price
-    ) const noexcept
-    {
-        const auto iterator =
-            levels_.find(price);
-
-        if (iterator == levels_.end())
+        [[nodiscard]]
+        bool reduce(
+            Price price,
+            Quantity quantity) noexcept
         {
-            return nullptr;
+            auto iterator =
+                levels_.find(price);
+
+            if (iterator == levels_.end())
+            {
+                return false;
+            }
+
+            return iterator->second.reduce(
+                quantity);
         }
 
-        return &iterator->second;
-    }
-
-    [[nodiscard]]
-    const PriceLevel*
-    best() const noexcept
-    {
-        if (levels_.empty())
+        [[nodiscard]]
+        bool removeOrder(
+            LevelHandle level,
+            Quantity remainingQuantity) noexcept
         {
-            return nullptr;
+            if (!level->second.removeOrder(
+                    remainingQuantity))
+            {
+                return false;
+            }
+
+            if (level->second.empty())
+            {
+                levels_.erase(
+                    level);
+            }
+
+            return true;
         }
 
-        if (side_ == Side::Buy)
+        [[nodiscard]]
+        bool removeOrder(
+            Price price,
+            Quantity remainingQuantity) noexcept
         {
-            return &levels_.rbegin()->second;
+            auto iterator =
+                levels_.find(price);
+
+            //++removeCalls_;
+
+            if (iterator == levels_.end())
+            {
+                return false;
+            }
+
+            if (!iterator->second.removeOrder(
+                    remainingQuantity))
+            {
+                return false;
+            }
+
+            if (iterator->second.empty())
+            {
+                //++levelEraseCount_;
+                levels_.erase(iterator);
+            }
+
+            return true;
         }
 
-        return &levels_.begin()->second;
-    }
+        [[nodiscard]]
+        const PriceLevel *
+        find(
+            Price price) const noexcept
+        {
+            const auto iterator =
+                levels_.find(price);
 
-    [[nodiscard]]
-    std::size_t levelCount() const noexcept
-    {
-        return levels_.size();
-    }
+            if (iterator == levels_.end())
+            {
+                return nullptr;
+            }
 
-    [[nodiscard]]
-    bool empty() const noexcept
-    {
-        return levels_.empty();
-    }
+            return &iterator->second;
+        }
 
-private:
-    Side side_;
-    std::map<
-        Price,
-        PriceLevel
-    > levels_;
-};
+        [[nodiscard]]
+        const PriceLevel *
+        best() const noexcept
+        {
+            if (levels_.empty())
+            {
+                return nullptr;
+            }
+
+            if (side_ == Side::Buy)
+            {
+                return &levels_.rbegin()->second;
+            }
+
+            return &levels_.begin()->second;
+        }
+
+        [[nodiscard]]
+        std::size_t levelCount() const noexcept
+        {
+            return levels_.size();
+        }
+
+        [[nodiscard]]
+        bool empty() const noexcept
+        {
+            return levels_.empty();
+        }
+
+        [[nodiscard]]
+        std::uint64_t removeCalls() const noexcept
+        {
+            return removeCalls_;
+        }
+
+        [[nodiscard]]
+        std::uint64_t levelEraseCount() const noexcept
+        {
+            return levelEraseCount_;
+        }
+
+    private:
+        Side side_;
+
+        Levels levels_;
+
+        uint64_t removeCalls_;
+        uint64_t levelEraseCount_;
+    };
 
 } // namespace llt::market_data
