@@ -9,7 +9,7 @@ namespace llt
 using MarketEventQueue =
     SpscRingBuffer<
         MarketEvent,
-        16384
+        65536
     >;
 
 } // namespace llt

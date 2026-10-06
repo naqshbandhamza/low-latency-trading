@@ -741,7 +741,7 @@ TEST_CASE(
     //
     // Therefore its usable capacity is 16383.
     constexpr std::size_t usableCapacity =
-        16383;
+        65535;
 
     // ---------------------------------------------------------
     // Completely fill the SPSC queue.
