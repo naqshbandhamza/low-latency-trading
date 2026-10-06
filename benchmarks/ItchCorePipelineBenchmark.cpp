@@ -116,6 +116,9 @@ int main(
     llt::itch::ItchMarketState
         marketState;
 
+    marketState.orders().reserve(
+    2'000'000);
+
     // =====================================================
     // Header
     // =====================================================
@@ -144,6 +147,8 @@ int main(
     // =====================================================
     // Timed region
     // =====================================================
+
+    
 
     const auto start =
         Clock::now();
@@ -231,6 +236,10 @@ int main(
 
         << "Instruments           : "
         << marketState.instruments().size()
+        << '\n'
+
+        << "Peak active orders    : "
+        << marketState.orders().peakSize()
         << '\n'
 
         << "Active orders         : "

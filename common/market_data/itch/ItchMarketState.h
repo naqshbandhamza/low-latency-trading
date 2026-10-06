@@ -455,7 +455,7 @@ namespace llt::itch
             }
 
             auto &stored =
-                orderIt->second;
+                orders_.stored(orderIt);
 
             auto &order =
                 stored.order;
@@ -529,7 +529,7 @@ namespace llt::itch
 
                 // stored.level may now be invalid.
                 // order/stored remain valid until this erase.
-                orders_.remove(
+                orders_.removeAt(
                     orderIt);
 
                 if (hasHandler)
@@ -577,7 +577,7 @@ namespace llt::itch
             }
 
             auto &stored =
-                orderIt->second;
+                orders_.stored(orderIt);
 
             auto &order =
                 stored.order;
@@ -647,7 +647,7 @@ namespace llt::itch
                     return;
                 }
 
-                orders_.remove(
+                orders_.removeAt(
                     orderIt);
 
                 if (hasHandler)
@@ -695,7 +695,7 @@ namespace llt::itch
             }
 
             auto &stored =
-                orderIt->second;
+                orders_.stored(orderIt);
 
             auto &order =
                 stored.order;
@@ -756,7 +756,7 @@ namespace llt::itch
                     return;
                 }
 
-                orders_.remove(
+                orders_.removeAt(
                     orderIt);
 
                 if (hasHandler)
@@ -804,7 +804,7 @@ namespace llt::itch
             }
 
             auto &stored =
-                orderIt->second;
+                orders_.stored(orderIt);
 
             auto &order =
                 stored.order;
@@ -849,7 +849,7 @@ namespace llt::itch
             // The level iterator may now be invalid.
             // Do not touch stored.level after this point.
 
-            orders_.remove(
+            orders_.removeAt(
                 orderIt);
 
             // order/stored are now invalid too.
@@ -881,7 +881,7 @@ namespace llt::itch
             }
 
             auto &stored =
-                orderIt->second;
+                orders_.stored(orderIt);
 
             auto &order =
                 stored.order;
@@ -962,7 +962,7 @@ namespace llt::itch
 
             // stored.level may now be invalid.
 
-            orders_.remove(
+            orders_.removeAt(
                 orderIt);
 
             // Create/find the replacement's price level and retain

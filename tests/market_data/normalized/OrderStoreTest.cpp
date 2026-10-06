@@ -279,3 +279,156 @@ TEST_CASE(
 
     REQUIRE(store.size() == 0);
 }
+
+
+TEST_CASE(
+    "OrderStore supports repeated insert remove churn")
+{
+    OrderStore store;
+    BookSide side{Side::Buy};
+
+    constexpr std::size_t Iterations =
+        10000;
+
+    for (std::size_t i = 0;
+         i < Iterations;
+         ++i)
+    {
+        const OrderId orderId =
+            static_cast<OrderId>(
+                100000 + i);
+
+        Order order{
+            .orderId = orderId,
+            .instrumentId = 42,
+            .timestamp =
+                static_cast<Timestamp>(i),
+            .price = 1000,
+            .quantity = 100,
+            .side = Side::Buy};
+
+        auto level =
+            side.add(
+                order.price,
+                order.quantity);
+
+        REQUIRE(
+            store.add(
+                order,
+                level));
+
+        REQUIRE(
+            store.contains(orderId));
+
+        REQUIRE(
+            store.remove(orderId));
+
+        REQUIRE_FALSE(
+            store.contains(orderId));
+
+        // Keep BookSide state consistent as well.
+        REQUIRE(
+            side.removeOrder(
+                level,
+                order.quantity));
+    }
+
+    REQUIRE(
+        store.size() == 0);
+
+    REQUIRE(
+        store.peakSize() == 1);
+}
+
+TEST_CASE(
+    "OrderStore remains correct across repeated population churn")
+{
+    OrderStore store;
+    BookSide side{Side::Buy};
+
+    constexpr std::size_t BatchSize =
+        10000;
+
+    constexpr std::size_t Rounds =
+        10;
+
+    for (std::size_t round = 0;
+         round < Rounds;
+         ++round)
+    {
+        for (std::size_t i = 0;
+             i < BatchSize;
+             ++i)
+        {
+            const OrderId orderId =
+                static_cast<OrderId>(
+                    round * 100000 +
+                    i + 1);
+
+            Order order{
+                .orderId = orderId,
+                .instrumentId = 42,
+                .timestamp =
+                    static_cast<Timestamp>(i),
+                .price =
+                    static_cast<Price>(
+                        1000 + (i % 100)),
+                .quantity = 100,
+                .side = Side::Buy};
+
+            auto level =
+                side.add(
+                    order.price,
+                    order.quantity);
+
+            REQUIRE(
+                store.add(
+                    order,
+                    level));
+        }
+
+        REQUIRE(
+            store.size() ==
+            BatchSize);
+
+        for (std::size_t i = 0;
+             i < BatchSize;
+             ++i)
+        {
+            const OrderId orderId =
+                static_cast<OrderId>(
+                    round * 100000 +
+                    i + 1);
+
+            REQUIRE(
+                store.find(orderId) !=
+                nullptr);
+        }
+
+        // Remove OrderStore entries.
+        //
+        // We intentionally don't use the stored level handle
+        // here because many orders share the same price level.
+        // BookSide is only being used to provide valid handles
+        // for StoredOrder construction.
+        for (std::size_t i = 0;
+             i < BatchSize;
+             ++i)
+        {
+            const OrderId orderId =
+                static_cast<OrderId>(
+                    round * 100000 +
+                    i + 1);
+
+            REQUIRE(
+                store.remove(orderId));
+        }
+
+        REQUIRE(
+            store.size() == 0);
+    }
+
+    REQUIRE(
+        store.peakSize() ==
+        BatchSize);
+}
