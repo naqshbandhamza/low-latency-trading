@@ -880,6 +880,8 @@ tests/CMakeFiles/FeedHandlerUdpIntegrationTest.dir/feed_handler/FeedHandlerUdpIn
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Instrument.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Trade.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Side.h \
+  /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketEventQueue.h \
+  /Users/hamzalatif/Desktop/low-latency-trading/common/ring_buffer/SpscRingBuffer.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/IMarketDataRecoverySource.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/UdpMarketDataCodec.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/UdpMarketDataPacket.h \
@@ -889,6 +891,5 @@ tests/CMakeFiles/FeedHandlerUdpIntegrationTest.dir/feed_handler/FeedHandlerUdpIn
   /Users/hamzalatif/Desktop/low-latency-trading/common/logging/ConsoleLogger.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/logging/ILogger.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/logging/LogLevel.h \
-  /Users/hamzalatif/Desktop/low-latency-trading/common/ring_buffer/SpscRingBuffer.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/ISequenceRecovery.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/SequenceRecovery.h

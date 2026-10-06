@@ -816,6 +816,7 @@ feed_handler/CMakeFiles/feed_handler.dir/FeedHandler.cpp.o: /Users/hamzalatif/De
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Level.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketDataMessage.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketEvent.h \
+  /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketEventQueue.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Quote.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Side.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Trade.h \
@@ -1736,6 +1737,8 @@ feed_handler/CMakeFiles/feed_handler.dir/ItchFeedHandler.cpp.o: /Users/hamzalati
 /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Side.h:
 
 /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Quote.h:
+
+/Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketEventQueue.h:
 
 /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketDataMessage.h:
 

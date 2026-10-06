@@ -736,12 +736,12 @@ TEST_CASE(
 
     llt::MarketEventQueue queue;
 
-    // SpscRingBuffer<..., 4096> reserves one slot
+    // SpscRingBuffer<..., 16384> reserves one slot
     // to distinguish full from empty.
     //
-    // Therefore its usable capacity is 4095.
+    // Therefore its usable capacity is 16383.
     constexpr std::size_t usableCapacity =
-        4095;
+        16383;
 
     // ---------------------------------------------------------
     // Completely fill the SPSC queue.

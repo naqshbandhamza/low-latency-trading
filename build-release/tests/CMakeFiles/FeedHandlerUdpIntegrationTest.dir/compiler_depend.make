@@ -839,6 +839,7 @@ tests/CMakeFiles/FeedHandlerUdpIntegrationTest.dir/feed_handler/FeedHandlerUdpIn
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Level.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketDataMessage.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketEvent.h \
+  /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketEventQueue.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Quote.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/SequenceRecovery.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Side.h \
@@ -965,6 +966,8 @@ tests/CMakeFiles/FeedHandlerUdpIntegrationTest.dir/feed_handler/FeedHandlerUdpIn
 /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Side.h:
 
 /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Quote.h:
+
+/Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketEventQueue.h:
 
 /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketDataMessage.h:
 

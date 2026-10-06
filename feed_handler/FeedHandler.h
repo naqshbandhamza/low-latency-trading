@@ -6,6 +6,7 @@
 #include "FeedHandlerState.h"
 
 #include "market_data/MarketEvent.h"
+#include "market_data/MarketEventQueue.h"
 
 namespace llt
 {
@@ -16,11 +17,11 @@ namespace llt
     class IMarketDataSource;
     class ISequenceRecovery;
     class MarketDataMessage;
-    template <typename T, std::size_t Capacity>
-    class SpscRingBuffer;
+    // template <typename T, std::size_t Capacity>
+    // class SpscRingBuffer;
 
-    using MarketEventQueue =
-        SpscRingBuffer<MarketEvent, 4096>;
+    // using MarketEventQueue =
+    //     SpscRingBuffer<MarketEvent, >;
 
     class FeedHandler
     {

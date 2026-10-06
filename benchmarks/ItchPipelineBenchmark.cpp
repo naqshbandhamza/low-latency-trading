@@ -20,49 +20,46 @@
 namespace
 {
 
-using Clock =
-    std::chrono::steady_clock;
+    using Clock =
+        std::chrono::steady_clock;
 
-
-const char* statusToString(
-    llt::itch::ItchReplayStatus status) noexcept
-{
-    switch (status)
+    const char *statusToString(
+        llt::itch::ItchReplayStatus status) noexcept
     {
-    case llt::itch::ItchReplayStatus::Complete:
-        return "COMPLETE";
+        switch (status)
+        {
+        case llt::itch::ItchReplayStatus::Complete:
+            return "COMPLETE";
 
-    case llt::itch::ItchReplayStatus::IncompleteStream:
-        return "INCOMPLETE";
+        case llt::itch::ItchReplayStatus::IncompleteStream:
+            return "INCOMPLETE";
 
-    case llt::itch::ItchReplayStatus::StreamError:
-        return "STREAM ERROR";
+        case llt::itch::ItchReplayStatus::StreamError:
+            return "STREAM ERROR";
+        }
+
+        return "UNKNOWN";
     }
 
-    return "UNKNOWN";
-}
-
-
-void printUsage(
-    const char* executable)
-{
-    std::cerr
-        << "Usage:\n"
-        << "  "
-        << executable
-        << " <ITCH BinaryFILE>\n\n"
-        << "Example:\n"
-        << "  "
-        << executable
-        << " data/itch/01302019.NASDAQ_ITCH50\n";
-}
+    void printUsage(
+        const char *executable)
+    {
+        std::cerr
+            << "Usage:\n"
+            << "  "
+            << executable
+            << " <ITCH BinaryFILE>\n\n"
+            << "Example:\n"
+            << "  "
+            << executable
+            << " data/itch/01302019.NASDAQ_ITCH50\n";
+    }
 
 } // namespace
 
-
 int main(
     int argc,
-    char* argv[])
+    char *argv[])
 {
     // =====================================================
     // CLI
@@ -78,7 +75,6 @@ int main(
 
     const std::string filePath =
         argv[1];
-
 
     // =====================================================
     // Open BinaryFILE
@@ -98,7 +94,6 @@ int main(
         return 2;
     }
 
-
     // =====================================================
     // Pipeline components
     // =====================================================
@@ -109,13 +104,22 @@ int main(
     llt::itch::ItchMarketState
         marketState;
 
+    std::cout
+        << "sizeof(MarketEvent)      : "
+        << sizeof(llt::MarketEvent)
+        << " bytes\n"
+        << "alignof(MarketEvent)     : "
+        << alignof(llt::MarketEvent)
+        << " bytes\n"
+        << "Queue payload @ 16384    : "
+        << sizeof(llt::MarketEvent) * 16384
+        << " bytes\n";
 
     //
     // Producer -> consumer normalized event queue.
     //
     llt::MarketEventQueue
         marketEventQueue;
-
 
     //
     // BBO -> Quote -> MarketEvent -> SPSC.
@@ -124,7 +128,6 @@ int main(
         quotePublisher{
             marketState.instruments(),
             marketEventQueue};
-
 
     //
     // Executions/trade reports
@@ -137,7 +140,6 @@ int main(
             marketState.instruments(),
             marketEventQueue};
 
-
     // =====================================================
     // Market-state publication callbacks
     // =====================================================
@@ -146,14 +148,13 @@ int main(
         [&quotePublisher](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp timestamp,
-            const llt::market_data::Bbo& bbo)
+            const llt::market_data::Bbo &bbo)
         {
             quotePublisher.onBboChange(
                 instrumentId,
                 timestamp,
                 bbo);
         });
-
 
     marketState.setTradeHandler(
         [&tradePublisher](
@@ -171,7 +172,6 @@ int main(
                 side);
         });
 
-
     // =====================================================
     // Consumer state
     // =====================================================
@@ -188,7 +188,6 @@ int main(
 
     std::uint64_t
         consumedTrades{0};
-
 
     // =====================================================
     // Consumer thread
@@ -260,7 +259,6 @@ int main(
             }
         });
 
-
     // =====================================================
     // Benchmark header
     // =====================================================
@@ -273,7 +271,7 @@ int main(
         << filePath
         << '\n'
         << "Queue capacity        : "
-        << 4096
+        << 16384
         << '\n'
         << "Consumer threads      : "
         << 1
@@ -281,7 +279,6 @@ int main(
         << "Build recommendation  : RELEASE\n"
         << "----------------------------------------\n"
         << "Running...\n";
-
 
     // =====================================================
     // Timed pipeline
@@ -307,17 +304,15 @@ int main(
     const auto start =
         Clock::now();
 
-
     const auto result =
         llt::itch::ItchReplay::run(
             file,
             [&marketState](
-                const llt::itch::ItchMessage& message)
+                const llt::itch::ItchMessage &message)
             {
                 marketState.onMessage(
                     message);
             });
-
 
     //
     // No further MarketEvents can be produced.
@@ -326,17 +321,14 @@ int main(
         true,
         std::memory_order_release);
 
-
     //
     // Include complete downstream queue drain in the
     // end-to-end measurement.
     //
     consumerThread.join();
 
-
     const auto end =
         Clock::now();
-
 
     // =====================================================
     // Calculate results
@@ -347,10 +339,8 @@ int main(
             end - start)
             .count();
 
-
     const std::uint64_t messagesProcessed =
         result.stats.decodedMessages;
-
 
     const double messagesPerSecond =
         elapsedSeconds > 0.0
@@ -359,11 +349,9 @@ int main(
                   elapsedSeconds
             : 0.0;
 
-
     const double millionMessagesPerSecond =
         messagesPerSecond /
         1'000'000.0;
-
 
     // =====================================================
     // Results
@@ -470,7 +458,6 @@ int main(
 
         << "========================================\n";
 
-
     // =====================================================
     // Validation
     // =====================================================
@@ -478,11 +465,10 @@ int main(
     bool valid =
         true;
 
-
     if (
         consumedEvents !=
         quotePublisher.publishedQuotes() +
-        tradePublisher.publishedTrades())
+            tradePublisher.publishedTrades())
     {
         std::cerr
             << "ERROR: consumed event count does not "
@@ -491,7 +477,6 @@ int main(
         valid =
             false;
     }
-
 
     if (
         consumedQuotes !=
@@ -505,7 +490,6 @@ int main(
             false;
     }
 
-
     if (
         consumedTrades !=
         tradePublisher.publishedTrades())
@@ -518,7 +502,6 @@ int main(
             false;
     }
 
-
     if (
         marketEventQueue.size() != 0)
     {
@@ -530,7 +513,6 @@ int main(
             false;
     }
 
-
     if (
         quotePublisher.droppedQuotes() != 0)
     {
@@ -540,7 +522,6 @@ int main(
         valid =
             false;
     }
-
 
     if (
         tradePublisher.droppedTrades() != 0)
@@ -552,12 +533,10 @@ int main(
             false;
     }
 
-
     if (!valid)
     {
         return 1;
     }
-
 
     if (
         result.status ==
@@ -565,7 +544,6 @@ int main(
     {
         return 1;
     }
-
 
     return 0;
 }

@@ -656,6 +656,8 @@ feed_handler/CMakeFiles/feed_handler.dir/FeedHandler.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__utility/empty.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Trade.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Side.h \
+  /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketEventQueue.h \
+  /Users/hamzalatif/Desktop/low-latency-trading/common/ring_buffer/SpscRingBuffer.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/thread \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__thread/formatter.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__format/concepts.h \
@@ -824,5 +826,4 @@ feed_handler/CMakeFiles/feed_handler.dir/FeedHandler.cpp.o: \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/IMarketDataSource.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/ISequenceRecovery.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketDataMessage.h \
-  /Users/hamzalatif/Desktop/low-latency-trading/common/ring_buffer/SpscRingBuffer.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/types/SequenceCheckResult.h

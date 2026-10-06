@@ -822,6 +822,8 @@ app/CMakeFiles/trading_app.dir/main.cpp.o: \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Instrument.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Trade.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/Side.h \
+  /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketEventQueue.h \
+  /Users/hamzalatif/Desktop/low-latency-trading/common/ring_buffer/SpscRingBuffer.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/logging/ConsoleLogger.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/logging/ILogger.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/logging/LogLevel.h \
@@ -832,11 +834,9 @@ app/CMakeFiles/trading_app.dir/main.cpp.o: \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/ISequenceRecovery.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/UdpMarketDataSource.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/IMarketDataSource.h \
-  /Users/hamzalatif/Desktop/low-latency-trading/common/ring_buffer/SpscRingBuffer.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/strategy/OrderIntentQueue.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/strategy/OrderIntent.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/strategy/SimpleStrategy.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/strategy/IStrategy.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/strategy/StrategyEngine.h \
-  /Users/hamzalatif/Desktop/low-latency-trading/common/market_data/MarketEventQueue.h \
   /Users/hamzalatif/Desktop/low-latency-trading/common/strategy/StrategyEngineState.h
