@@ -1,6 +1,7 @@
 add_library(feed_handler STATIC
     FeedHandler.cpp
     ItchFeedHandler.cpp
+    MoldItchFeedHandler.cpp
 )
 
 

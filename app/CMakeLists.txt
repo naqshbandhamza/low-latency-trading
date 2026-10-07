@@ -115,3 +115,32 @@ target_link_libraries(
         common
         feed_handler
 )
+
+
+
+add_executable(
+    itch_mold_udp_load_gen
+    itch_mold_udp_load_gen.cpp
+)
+
+target_link_libraries(
+    itch_mold_udp_load_gen
+    PRIVATE
+        common
+        feed_handler
+)
+
+
+
+
+add_executable(
+    itch_mold_live
+    itch_mold_live.cpp
+)
+
+target_link_libraries(
+    itch_mold_live
+    PRIVATE
+        common
+        feed_handler
+)

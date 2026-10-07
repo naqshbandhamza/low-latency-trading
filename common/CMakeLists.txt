@@ -15,6 +15,10 @@ add_library(common STATIC
     market_data/itch/ItchSequenceRecovery.cpp
     market_data/itch/ItchTradePublisher.cpp
     market_data/itch/FileItchRecoverySource.cpp
+    market_data/moldudp64/MoldUdp64Codec.cpp
+    market_data/moldudp64/UdpMoldMarketDataSource.cpp
+    market_data/moldudp64/FileMoldItchRecoverySource.cpp
+    market_data/moldudp64/MoldItchSequenceRecovery.cpp
 )
 
 target_include_directories(common

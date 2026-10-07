@@ -1015,3 +1015,155 @@ catch_discover_tests(
     FileItchRecoverySourceTest
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 )
+
+
+
+
+
+
+
+
+add_executable(
+MoldUdp64CodecTest
+market_data/moldudp64/MoldUdp64CodecTest.cpp
+)
+
+target_link_libraries(
+    MoldUdp64CodecTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+catch_discover_tests(
+    MoldUdp64CodecTest
+)
+
+
+
+
+add_executable(
+UdpMoldMarketDataSourceTest
+market_data/moldudp64/UdpMoldMarketDataSourceTest.cpp
+)
+
+target_link_libraries(
+    UdpMoldMarketDataSourceTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+catch_discover_tests(
+    UdpMoldMarketDataSourceTest
+)
+
+
+
+add_executable(
+FileMoldItchRecoverySourceTest
+market_data/moldudp64/FileMoldItchRecoverySourceTest.cpp
+)
+
+target_link_libraries(
+    FileMoldItchRecoverySourceTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+catch_discover_tests(
+    FileMoldItchRecoverySourceTest
+)
+
+
+
+
+
+
+
+
+
+add_executable(
+    MoldItchSequenceRecoveryTest
+    market_data/moldudp64/MoldItchSequenceRecoveryTest.cpp
+)
+
+target_link_libraries(
+    MoldItchSequenceRecoveryTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+catch_discover_tests(
+    MoldItchSequenceRecoveryTest
+)
+
+
+add_executable(
+    MoldItchFeedHandlerTest
+    feed_handler/MoldItchFeedHandlerTest.cpp
+)
+
+target_link_libraries(
+    MoldItchFeedHandlerTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+catch_discover_tests(
+    MoldItchFeedHandlerTest
+)
+
+
+
+
+
+add_executable(
+    MoldItchRecoveryIntegrationTest
+    feed_handler/MoldItchRecoveryIntegrationTest.cpp
+)
+
+target_link_libraries(
+    MoldItchRecoveryIntegrationTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+catch_discover_tests(
+    MoldItchRecoveryIntegrationTest
+)
+
+
+
+
+
+
+
+
+
+add_executable(
+    MoldItchUdpPipelineIntegrationTest
+    feed_handler/MoldItchUdpPipelineIntegrationTest.cpp
+)
+
+target_link_libraries(
+    MoldItchUdpPipelineIntegrationTest
+    PRIVATE
+        common
+        feed_handler
+        Catch2::Catch2WithMain
+)
+
+catch_discover_tests(
+    MoldItchUdpPipelineIntegrationTest
+)
