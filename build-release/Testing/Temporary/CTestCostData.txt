@@ -1,436 +1,436 @@
-Console logger can be created 37 6.7125e-05
-Price comparison 37 5.64741e-05
-Price stores its value 37 6.60124e-05
-Level stores price and quantity 37 7.97027e-05
-Quote stores all fields 37 5.97849e-05
-Trade stores all fields 37 5.25563e-05
-MarketEvent can be visited 37 6.08333e-05
-MarketEvent can contain a Quote 37 5.35585e-05
-MarketEvent can contain a Trade 37 5.51948e-05
-Ring buffer cannot pop from empty buffer 37 5.90124e-05
-Ring buffer detects full state 37 7.37691e-05
-Ring buffer pushes and pops 37 5.3786e-05
-Ring buffer starts empty 37 5.69662e-05
-Ring buffer wraps around 37 5.1777e-05
-SPSC ring buffer works between producer and consumer 37 0.000111833
-size_t atomic is lock-free 37 5.97038e-05
-SPSC ring buffer transports MarketEvent 37 7.19054e-05
-SPSC ring buffer transports Trade 37 5.81126e-05
-FeedHandler converts Quote messages 37 7.5875e-05
-FeedHandler converts Trade messages 37 7.72016e-05
-FeedHandler publishes Quote and Trade market events 37 7.61543e-05
-FeedHandler recovers missing sequence 37 9.79516e-05
-FeedHandler stops cleanly while market event queue is full 34 0.000866649
-FeedHandler stops when sequence recovery fails 37 8.23581e-05
-SequenceRecovery handles maximum sequence 37 5.59955e-05
-SequenceRecovery logs sequence gap 37 6.00574e-05
-SequenceRecovery rejects backward sequence 37 5.78311e-05
-SequenceRecovery rejects incomplete recovered sequence 37 5.89437e-05
-SequenceRecovery rejects out-of-order recovered sequence 37 5.39471e-05
-SequenceRecovery rejects zero received sequence 37 6.36757e-05
-SequenceRecovery validates recovered sequence range 37 7.02207e-05
-UdpMarketDataSource handles bind failure 37 6.40484e-05
-UdpMarketDataSource receive times out when no packet arrives 37 0.000623543
-UdpMarketDataSource receives Quote packet 37 0.000226376
-UdpMarketDataSource receives Trade packet 37 0.00032652
-UdpMarketDataSource rejects oversized datagram 37 0.000218538
-UdpMarketDataSource rejects short datagram 37 0.000273312
-UdpMarketDataSource remains safe after construction failure 37 6.94978e-05
-UDP market data flows through FeedHandler into SPSC queue 37 0.000229378
-UDP codec encodes and decodes quote packet 37 6.87748e-05
-UDP codec encodes and decodes trade packet 37 7.69538e-05
-UDP codec preserves maximum integer values 37 6.1223e-05
-UDP codec preserves minimum int64 price 37 5.36689e-05
-UDP codec preserves negative prices 37 5.7491e-05
-UDP codec rejects invalid packet side 37 5.5786e-05
-UDP codec rejects invalid packet type 37 5.0768e-05
-UDP codec rejects truncated packet 37 5.60676e-05
-UDP FeedHandler establishes sequence from non-zero first packet 37 0.000235885
-UDP FeedHandler handles normal contiguous sequence 37 0.000230561
-UDP FeedHandler ignores duplicate old packet 37 0.00100855
-UDP FeedHandler recovers missing packet sequence 37 0.000267601
-UDP FeedHandler recovers multiple missing packets 37 0.000222448
-UDP FeedHandler stops safely when recovery fails 37 0.000213902
-SimpleStrategy creates buy intent for tight quote 37 5.89392e-05
-SimpleStrategy ignores trade event 37 4.87973e-05
-SimpleStrategy ignores wide quote 37 5.39054e-05
-StrategyEngine consumes market event and publishes order intent 37 6.13592e-05
-ITCH decoder decodes Add Order message 37 5.49966e-05
-ITCH decoder decodes Order Cancel message 37 5.81441e-05
-ITCH decoder decodes Order Delete message 37 6.10856e-05
-ITCH decoder decodes Order Executed With Price message 37 5.85507e-05
-ITCH decoder decodes Order Executed message 37 4.90473e-05
-ITCH decoder decodes Order Replace message 37 4.94471e-05
-ITCH decoder decodes Stock Directory message 37 5.23345e-05
-ITCH decoder decodes System Event message 37 5.15901e-05
-ITCH decoder decodes maximum 48 bit timestamp 37 4.96757e-05
-ITCH decoder decodes non printable Order Executed With Price message 37 5.58772e-05
-ITCH decoder decodes sell Add Order message 37 6.78727e-05
-ITCH decoder preserves 64 bit Order Cancel reference number 37 5.44043e-05
-ITCH decoder preserves 64 bit Order Delete reference number 37 5.19212e-05
-ITCH decoder preserves 64 bit Order Executed With Price fields 37 5.14414e-05
-ITCH decoder preserves 64 bit Order Executed match number 37 5.53108e-05
-ITCH decoder preserves 64 bit Order Replace reference numbers 37 4.96396e-05
-ITCH decoder preserves 64 bit order reference number 37 5.64831e-05
-ITCH decoder preserves eight character stock symbol 37 6.57342e-05
-ITCH decoder preserves maximum Add Order integer fields 37 5.38232e-05
-ITCH decoder preserves maximum Order Cancel shares 37 6.28288e-05
-ITCH decoder preserves maximum Order Executed With Price integer fields 37 5.36802e-05
-ITCH decoder preserves maximum Order Executed shares 37 5.26723e-05
-ITCH decoder preserves maximum Order Replace shares and price 37 4.83784e-05
-ITCH decoder rejects incorrect Add Order message type 37 5.08908e-05
-ITCH decoder rejects incorrect Order Cancel message type 37 5.48525e-05
-ITCH decoder rejects incorrect Order Delete message type 37 6.6786e-05
-ITCH decoder rejects incorrect Order Executed With Price message type 37 5.40282e-05
-ITCH decoder rejects incorrect Order Executed message type 37 5.25878e-05
-ITCH decoder rejects incorrect Order Replace message type 37 5.73513e-05
-ITCH decoder rejects incorrect Stock Directory message type 37 5.74448e-05
-ITCH decoder rejects incorrect message type 37 5.32275e-05
-ITCH decoder rejects null Order Cancel data 37 6.26959e-05
-ITCH decoder rejects null Order Delete data 37 7.61689e-05
-ITCH decoder rejects null Order Replace data 37 5.72185e-05
-ITCH decoder rejects null data 37 5.58457e-05
-ITCH decoder rejects oversized Add Order message 37 6.35293e-05
-ITCH decoder rejects oversized Order Cancel message 37 5.17432e-05
-ITCH decoder rejects oversized Order Delete message 37 4.93896e-05
-ITCH decoder rejects oversized Order Executed With Price message 37 5.69166e-05
-ITCH decoder rejects oversized Order Executed message 37 6.73131e-05
-ITCH decoder rejects oversized Order Replace message 37 5.31115e-05
-ITCH decoder rejects oversized System Event message 37 5.242e-05
-ITCH decoder rejects truncated Add Order message 37 5.03773e-05
-ITCH decoder rejects truncated Order Cancel message 37 5.08829e-05
-ITCH decoder rejects truncated Order Delete message 37 4.96903e-05
-ITCH decoder rejects truncated Order Executed With Price message 37 5.75833e-05
-ITCH decoder rejects truncated Order Executed message 37 6.61959e-05
-ITCH decoder rejects truncated Order Replace message 37 5.49403e-05
-ITCH decoder rejects truncated Stock Directory message 37 4.85281e-05
-ITCH decoder rejects truncated System Event message 37 5.04617e-05
-ITCH dispatcher rejects known message type with incorrect length 37 5.11498e-05
-ITCH dispatcher rejects null data 37 4.68052e-05
-ITCH dispatcher rejects unsupported message type 37 5.15079e-05
-ITCH dispatcher rejects zero length message 37 6.48491e-05
-ITCH dispatcher routes Add Order message 37 6.02939e-05
-ITCH dispatcher routes Order Cancel message 37 5.23446e-05
-ITCH dispatcher routes Order Delete message 37 4.72016e-05
-ITCH dispatcher routes Order Executed With Price message 37 5.41971e-05
-ITCH dispatcher routes Order Executed message 37 4.85811e-05
-ITCH dispatcher routes Order Replace message 37 4.6634e-05
-ITCH dispatcher routes Stock Directory message 37 5.65563e-05
-ITCH dispatcher routes System Event message 37 7.55507e-05
-ITCH stream reader reads BinaryFILE message 37 5.85282e-05
-ITCH stream reader reads message then end of session 37 5.49482e-05
-ITCH stream reader reads multiple BinaryFILE messages 37 5.32624e-05
-ITCH stream reader recognizes BinaryFILE end of session 37 5.61622e-05
-ITCH stream reader rejects truncated BinaryFILE length prefix 37 5.11926e-05
-ITCH stream reader rejects truncated BinaryFILE payload 37 6.38818e-05
-ITCH stream reader reports empty BinaryFILE as incomplete 37 7.47714e-05
-ITCH replay can populate market state 35 0.000781119
-ITCH replay counts every supported message type 37 0.000130328
-ITCH replay counts malformed supported message 37 6.12748e-05
-ITCH replay delivers decoded messages to handler 37 5.44932e-05
-ITCH replay does not deliver unsupported messages to handler 37 5.74403e-05
-ITCH replay processes complete BinaryFILE session 37 5.85405e-05
-ITCH replay reports incomplete BinaryFILE 37 5.44369e-05
-ITCH replay skips unsupported message types 37 6.21858e-05
-ItchReplay counts unsupported messages by type 37 6.99673e-05
-Add Order with MPID trims padded attribution 37 5.55428e-05
-ItchDecoder decodes Add Order with MPID 37 5.62973e-05
-ItchDecoder rejects null Add Order with MPID data 37 5.25743e-05
-ItchDecoder rejects oversized Add Order with MPID 37 5.13243e-05
-ItchDecoder rejects truncated Add Order with MPID 37 5.1741e-05
-ItchDecoder rejects wrong Add Order with MPID type 37 5.07511e-05
-ItchDispatcher routes Add Order with MPID 37 6.05507e-05
-ItchReplay counts Add Order with MPID as supported 37 7.53424e-05
-ItchDecoder decodes Trade message 37 5.66464e-05
-ItchDecoder decodes maximum Trade numeric fields 37 5.06103e-05
-ItchDecoder rejects null Trade message data 37 5.43502e-05
-ItchDecoder rejects oversized Trade message 37 4.98761e-05
-ItchDecoder rejects truncated Trade message 37 5.34392e-05
-ItchDecoder rejects wrong Trade message type 37 6.1018e-05
-ItchDispatcher routes Trade message 37 6.44043e-05
-ItchReplay counts Trade message as supported 37 5.84527e-05
-Trade message preserves eight character stock 37 5.45597e-05
-Cross Trade preserves eight character stock 37 5.83311e-05
-ItchDecoder decodes Cross Trade message 37 5.35698e-05
-ItchDecoder decodes maximum Cross Trade shares 37 5.20755e-05
-ItchDecoder preserves Cross Trade type 37 5.75191e-05
-ItchDecoder rejects null Cross Trade data 37 7.2223e-05
-ItchDecoder rejects oversized Cross Trade message 37 5.38502e-05
-ItchDecoder rejects truncated Cross Trade message 37 5.40822e-05
-ItchDecoder rejects wrong Cross Trade message type 37 5.05709e-05
-ItchDispatcher routes Cross Trade message 37 5.51228e-05
-ItchReplay counts Cross Trade as supported 37 5.03299e-05
-ItchDecoder decodes Broken Trade message 37 5.8839e-05
-ItchDecoder decodes maximum Broken Trade header fields 37 6.50856e-05
-ItchDecoder decodes maximum Broken Trade match number 37 5.46622e-05
-ItchDecoder rejects null Broken Trade data 37 5.47973e-05
-ItchDecoder rejects oversized Broken Trade message 37 5.32646e-05
-ItchDecoder rejects truncated Broken Trade message 37 5.22838e-05
-ItchDecoder rejects wrong Broken Trade message type 37 4.90022e-05
-ItchDispatcher rejects malformed Broken Trade message 37 5.72387e-05
-ItchDispatcher routes Broken Trade message 37 6.40698e-05
-ItchReplay counts Broken Trade as supported 37 6.31757e-05
-ItchDecoder decodes Stock Trading Action message 37 5.54459e-05
-ItchDecoder decodes maximum Stock Trading Action header fields 37 5.1795e-05
-ItchDecoder rejects null Stock Trading Action data 37 5.57872e-05
-ItchDecoder rejects oversized Stock Trading Action 37 5.06059e-05
-ItchDecoder rejects truncated Stock Trading Action 37 5.54854e-05
-ItchDecoder rejects wrong Stock Trading Action type 37 5.98153e-05
-ItchDispatcher rejects malformed Stock Trading Action 37 6.61396e-05
-ItchDispatcher routes Stock Trading Action 37 5.78423e-05
-ItchReplay counts Stock Trading Action as supported 37 5.3214e-05
-Stock Trading Action preserves eight character stock 37 5.40889e-05
-Stock Trading Action preserves reason code 37 5.22996e-05
-Stock Trading Action preserves trading state 37 5.27669e-05
-Stock Trading Action trims padded reason 37 6.11847e-05
-ItchDecoder decodes Market Participant Position message 37 7.27207e-05
-ItchDecoder decodes maximum Market Participant Position header fields 37 5.64212e-05
-ItchDecoder rejects null Market Participant Position data 37 5.30507e-05
-ItchDecoder rejects oversized Market Participant Position 37 5.21971e-05
-ItchDecoder rejects truncated Market Participant Position 37 5.1589e-05
-ItchDecoder rejects wrong Market Participant Position type 37 5.11948e-05
-ItchDispatcher rejects malformed Market Participant Position 37 7.04459e-05
-ItchDispatcher routes Market Participant Position 37 5.66858e-05
-ItchReplay counts Market Participant Position as supported 37 5.0464e-05
-Market Participant Position preserves eight character stock 37 5.31565e-05
-Market Participant Position preserves four character MPID 37 5.38547e-05
-Market Participant Position preserves status fields 37 5.05495e-05
-Market Participant Position trims padded MPID 37 5.03558e-05
-ItchDecoder decodes LULD Auction Collar 37 5.69493e-05
-ItchDecoder decodes MWCB Decline Level message 37 6.3732e-05
-ItchDecoder decodes MWCB Status message 37 5.95743e-05
-ItchDecoder decodes NOII message 37 5.10755e-05
-ItchDecoder decodes Reg SHO Restriction message 37 5.57444e-05
-ItchDecoder rejects malformed LULD Auction Collar 37 5.28885e-05
-ItchDecoder rejects malformed MWCB Decline Level messages 37 4.91081e-05
-ItchDecoder rejects malformed MWCB Status messages 37 6.04336e-05
-ItchDecoder rejects malformed NOII messages 37 6.53649e-05
-ItchDecoder rejects malformed Reg SHO Restriction messages 37 5.32072e-05
-ItchDispatcher routes LULD Auction Collar 37 6.73998e-05
-ItchDispatcher routes MWCB Decline Level 37 8.64392e-05
-ItchDispatcher routes MWCB Status 37 8.2214e-05
-ItchDispatcher routes NOII 37 6.02207e-05
-ItchDispatcher routes Reg SHO Restriction 37 5.75642e-05
-ItchReplay counts LULD Auction Collar 37 4.79842e-05
-ItchReplay counts MWCB Decline Level 37 5.08986e-05
-ItchReplay counts MWCB Status 37 4.84223e-05
-ItchReplay counts NOII as supported 37 5.24381e-05
-ItchReplay counts Reg SHO Restriction 37 4.93829e-05
-LULD Auction Collar supports maximum values 37 4.71599e-05
-MWCB Decline Level supports maximum 64 bit values 37 6.55541e-05
-MWCB Status preserves breached level 37 5.60845e-05
-NOII preserves eight character stock 37 4.82624e-05
-NOII preserves imbalance and auction indicators 37 4.94505e-05
-NOII supports maximum 64 bit share quantities 37 5.01036e-05
-NOII supports maximum price values 37 4.91486e-05
-Reg SHO Restriction preserves action 37 5.14775e-05
-Reg SHO Restriction preserves eight character stock 37 5.02264e-05
-InstrumentStore adds instrument 37 6.12951e-05
-InstrumentStore keeps missing ids absent 37 6.03525e-05
-InstrumentStore mutable lookup updates state 37 5.26025e-05
-InstrumentStore rejects duplicate instrument 37 5.17252e-05
-InstrumentStore starts empty 37 5.43536e-05
-InstrumentStore stores instruments independently 37 5.23063e-05
-InstrumentStore supports maximum instrument id 37 5.39403e-05
-ITCH market state applies Reg SHO state transitions 35 0.000698787
-ITCH market state applies multiple cancellations 35 0.000717107
-ITCH market state applies trading state transitions 35 0.000797982
-ITCH market state can execute then cancel same order 35 0.000750725
-ITCH market state counts cancel for unknown order 35 0.000853905
-ITCH market state counts delete for unknown order 35 0.000783995
-ITCH market state counts execution for unknown order 35 0.000723562
-ITCH market state counts priced execution for unknown order 35 0.000684416
-ITCH market state counts replace for unknown order 35 0.000701371
-ITCH market state creates instrument from Stock Directory 35 0.00070392
-ITCH market state deletes order 35 0.000704493
-ITCH market state deletes partially cancelled order 35 0.000682219
-ITCH market state deletes partially executed order 35 0.00070432
-ITCH market state deleting one order does not affect another 35 0.000685146
-ITCH market state handles duplicate Stock Directory idempotently 35 0.00068432
-ITCH market state ignores Reg SHO update for unknown instrument 35 0.000710898
-ITCH market state ignores non reference messages 35 0.000779026
-ITCH market state ignores trading action for unknown instrument 35 0.000805069
-ITCH market state partially cancels order 35 0.00074523
-ITCH market state partially executes order 35 0.000706524
-ITCH market state partially executes order with price 35 0.000714577
-ITCH market state rejects cancel larger than remaining quantity 35 0.00072426
-ITCH market state rejects execution larger than remaining quantity 35 0.000728199
-ITCH market state rejects priced execution larger than remaining quantity 35 0.000719681
-ITCH market state rejects replacement when new order id already exists 35 0.000716257
-ITCH market state removes fully cancelled order 35 0.000724921
-ITCH market state removes fully executed order 35 0.000700592
-ITCH market state removes fully executed order with price 35 0.000707344
-ITCH market state replaces order 35 0.000704887
-ITCH market state stores Add Order 35 0.000697556
-ITCH market state stores Add Order with MPID 35 0.000688806
-ITCH market state stores multiple instruments 35 0.000730886
-ITCH market state updates instrument Reg SHO state 35 0.000688514
-ITCH market state updates instrument trading state 35 0.000705518
-ITCH normalizer converts Add Order to normalized Order 37 6.31543e-05
-ITCH normalizer converts Add Order with MPID to normalized Order 37 4.98176e-05
-ITCH normalizer converts Reg SHO restriction states 37 5.16408e-05
-ITCH normalizer converts Stock Directory to Instrument 37 5.57748e-05
-ITCH normalizer converts trading action states 37 5.1223e-05
-ITCH normalizer maps unknown Reg SHO state to Unknown 37 5.89685e-05
-ITCH normalizer maps unknown trading state to Unknown 37 6.29155e-05
-ITCH normalizer preserves eight character symbol 37 5.28592e-05
-ITCH normalizer preserves maximum instrument id 37 5.11036e-05
-ITCH order replace preserves sell side 35 0.000688438
-ITCH replacement order participates in later lifecycle 35 0.000701336
-OrderStore adds order 38 0.000605839
-OrderStore mutable lookup can update quantity 38 0.000610817
-OrderStore rejects duplicate order id 38 0.0005924
-OrderStore removes order 37 0.000625425
-OrderStore removing unknown order returns false 38 0.000605518
-OrderStore starts empty 39 0.000578268
-OrderStore stores independent orders 38 0.00062663
-PriceLevel adds order quantity 37 7.06701e-05
-PriceLevel aggregates multiple orders 37 5.32973e-05
-PriceLevel becomes empty after last order removed 37 5.24347e-05
-PriceLevel handles partial execution then order removal 37 4.78739e-05
-PriceLevel reduces quantity without removing order 37 5.17804e-05
-PriceLevel rejects reduction larger than quantity 37 5.26092e-05
-PriceLevel rejects removing order when empty 37 4.88998e-05
-PriceLevel removes remaining order quantity 37 5.16554e-05
-PriceLevel starts empty 37 5.59955e-05
-BookSide aggregates orders at same price 37 5.06779e-05
-BookSide creates independent price levels 37 5.46779e-05
-BookSide creates price level 37 4.7848e-05
-BookSide keeps price level while other orders remain 37 4.95372e-05
-BookSide reduces price level quantity 37 5.23716e-05
-BookSide rejects reduction for unknown price 37 4.79595e-05
-BookSide removes empty price level 37 5.87387e-05
-BookSide starts empty 37 6.29617e-05
-Buy BookSide best price changes after best level removed 37 4.94842e-05
-Buy BookSide chooses highest price as best 37 5.00045e-05
-Sell BookSide best price changes after best level removed 37 4.70439e-05
-Sell BookSide chooses lowest price as best 37 6.00338e-05
-OrderBook aggregates quantity at best bid 37 5.14279e-05
-OrderBook becomes empty after both sides removed 37 4.69471e-05
-OrderBook best ask changes when level disappears 37 6.40236e-05
-OrderBook best bid changes when level disappears 37 5.48446e-05
-OrderBook can have only ask side 37 4.81453e-05
-OrderBook can have only bid side 37 5.22782e-05
-OrderBook produces best bid and ask 37 5.48446e-05
-OrderBook starts empty 37 5.3866e-05
-OrderBook stores ask 37 5.00946e-05
-OrderBook stores bid 37 4.82106e-05
-BookStore aggregates orders independently per instrument 37 8.75619e-05
-BookStore creates order book 37 7.66892e-05
-BookStore find does not create missing book 37 7.20709e-05
-BookStore keeps instruments independent 37 8.27038e-05
-BookStore maintains independent bid and ask BBO 37 7.39763e-05
-BookStore returns existing order book 37 8.11802e-05
-BookStore starts empty 37 7.74595e-05
-Duplicate ITCH Add Order does not duplicate book quantity 35 0.000695005
-ITCH Add Order creates book price level 35 0.000706176
-ITCH Add Order routes sell order to ask side 35 0.000741331
-ITCH Add Order with MPID updates order book 35 0.000731939
-ITCH Add Orders aggregate at same price 35 0.000673451
-ITCH Add Orders create correct BBO 35 0.000713598
-ITCH Add Orders maintain independent instrument books 35 0.000694585
-Complex order lifecycle keeps order store and book synchronized 35 0.000953446
-Deleting one order preserves other quantity at same price 35 0.00135749
-Full order execution removes price level 35 0.000924856
-Order cancel reduces book quantity 35 0.00140757
-Order delete removes remaining quantity from book 35 0.000792023
-Order execution reduces book quantity 35 0.000753961
-Order lifecycle updates BBO 35 0.000764779
-Order replace moves quantity between price levels 35 0.00077656
-Priced execution reduces resting price level 35 0.000734367
-Complete lifecycle leaves no book integrity errors 35 0.000781489
-Valid cancellation produces no book integrity errors 35 0.000663036
-Valid deletion produces no book integrity errors 35 0.00067183
-Valid full execution produces no book integrity errors 35 0.00065155
-Valid order execution produces no book integrity errors 35 0.00062025
-BBO detects ask appearance 37 6.2777e-05
-BBO detects ask disappearance 37 4.90281e-05
-BBO detects best ask price change 37 5.34955e-05
-BBO detects best ask quantity change 37 4.92185e-05
-BBO detects best bid price change 37 4.9732e-05
-BBO detects best bid quantity change 37 5.17466e-05
-BBO detects bid appearance 37 4.89426e-05
-BBO detects bid disappearance 37 4.80653e-05
-BBO ignores values for absent ask 37 5.08378e-05
-BBO ignores values for absent bid 37 4.81182e-05
-Empty BBO values are equal 37 4.95248e-05
-Identical two sided BBO values are equal 37 5.15022e-05
-Adding better bid emits BBO change 35 0.000632133
-Adding first bid emits BBO change 35 0.000634152
-Adding order behind best bid does not emit BBO change 35 0.000639114
-Adding quantity at current best bid emits BBO change 35 0.000619459
-BBO notifications remain independent between instruments 35 0.000633024
-Deleting best bid emits next best BBO 35 0.000627686
-ITCH quote publisher assigns increasing sequence numbers 37 7.57601e-05
-ITCH quote publisher does not publish ask only BBO 37 6.36329e-05
-ITCH quote publisher does not publish bid only BBO 37 6.27174e-05
-ITCH quote publisher publishes normalized quote 37 6.31498e-05
-ITCH quote publisher records unknown instrument diagnostics 37 6.73671e-05
-ITCH quote publisher rejects unknown instrument 37 6.36779e-05
-Full C execution publishes next BBO with correct instrument 35 0.000642871
-Full E execution publishes next BBO with correct instrument 35 0.000667835
-Full X cancellation publishes next BBO with correct instrument 35 0.000705745
-ITCH pipeline assigns increasing normalized quote sequences 35 0.000781715
-ITCH pipeline ignores order behind current BBO 35 0.000728443
-ITCH pipeline publishes another quote when BBO changes 35 0.000735552
-ITCH pipeline publishes correct normalized quote data 35 0.000780225
-ITCH pipeline publishes quote when book becomes two sided 35 0.000717782
-Market event consumer drains SPSC across thread boundary 37 0.000136044
-ITCH UDP codec handles maximum payload 37 6.61081e-05
-ITCH UDP codec preserves maximum sequence 37 5.04786e-05
-ITCH UDP codec rejects null input 37 5.00383e-05
-ITCH UDP codec rejects trailing bytes 37 5.04043e-05
-ITCH UDP codec rejects truncated header 37 4.94854e-05
-ITCH UDP codec rejects truncated payload 37 4.97038e-05
-ITCH UDP codec round trips packet 37 6.2473e-05
-ITCH UDP codec supports empty payload 37 6.14651e-05
-UDP ITCH market data source receives packet 37 0.000219417
-UDP ITCH market data source rejects malformed datagram 37 0.000199672
-UDP ITCH market data source returns false on timeout 37 0.000356422
-ITCH sequence recovery ignores non forward recovery request 37 7.13807e-05
-ITCH sequence recovery recovers multiple missing packets 37 6.68153e-05
-ITCH sequence recovery recovers single missing packet 37 6.03604e-05
-ITCH sequence recovery rejects incomplete recovery 37 5.63401e-05
-ITCH sequence recovery rejects out of order packets 37 5.70416e-05
-ITCH sequence recovery rejects wrong recovered sequence 37 5.51791e-05
-ITCH sequence recovery stops when source fails 37 6.66126e-05
-ITCH feed handler fails on malformed ITCH payload 35 0.00072057
-ITCH feed handler fails when recovered packet is malformed 35 0.000770798
-ITCH feed handler fails when sequence recovery fails 35 0.000745751
-ITCH feed handler ignores burst of stale packets 35 0.000732338
-ITCH feed handler ignores duplicate packet 35 0.000712887
-ITCH feed handler ignores late packet after recovery 35 0.000742157
-ITCH feed handler ignores old packet 35 0.000709123
-ITCH feed handler processes contiguous packets 35 0.000706733
-ITCH feed handler processes first packet 35 0.000679489
-ITCH feed handler recovers multiple missing packets 35 0.000648182
-ITCH feed handler recovers single missing packet 35 0.000656773
-ITCH feed handler supports arbitrary starting sequence 35 0.00319461
-UDP ITCH feed recovers transport gap through real sequence recovery 35 0.00201125
-UDP ITCH pipeline recovers gap and publishes normalized BBO quotes 35 0.000907308
-ITCH C execution publishes trade using explicit execution price 35 0.000674493
-ITCH E execution publishes trade using resting order data 35 0.000674769
-ITCH P message publishes trade without modifying order state 35 0.000671906
-ITCH full E execution publishes trade and removes order 35 0.00066522
-ItchMarketState and ItchTradePublisher publish E end to end 35 0.000688013
-ItchTradePublisher publishes normalized Trade into MarketEventQueue 35 0.000684144
-ItchTradePublisher rejects unknown instrument 35 0.000698227
-Over-executed ITCH C order does not publish trade 35 0.000650204
-Over-executed ITCH E order does not publish trade 35 0.000882031
-Unknown ITCH C order does not publish trade 35 0.000649908
-Unknown ITCH E order does not publish trade 35 0.000639569
-File ITCH recovery source builds record index 37 7.65101e-05
-File ITCH recovery source fails for missing file 37 5.03424e-05
-File ITCH recovery source invalidates index when source file size changes 37 7.04493e-05
-File ITCH recovery source loads persisted sparse index 37 6.47815e-05
-File ITCH recovery source persists sparse index 37 6.25642e-05
-File ITCH recovery source rebuilds corrupted persisted index 37 7.10912e-05
-File ITCH recovery source recovers exact packet range 37 6.18581e-05
-File ITCH recovery source recovers single packet 37 5.81329e-05
-File ITCH recovery source rejects invalid range 37 7.39246e-05
-File ITCH recovery source rejects range beyond indexed file 37 6.31836e-05
-File ITCH recovery source rejects sequence zero 37 5.86588e-05
-File ITCH recovery source rejects zero checkpoint interval 37 5.81926e-05
-OrderStore remains correct across repeated population churn 14 0.00257667
-OrderStore supports repeated insert remove churn 14 0.00184816
+Console logger can be created 44 5.91865e-05
+Price comparison 44 4.82396e-05
+Price stores its value 44 5.84233e-05
+Level stores price and quantity 44 5.18968e-05
+Quote stores all fields 44 5.38229e-05
+Trade stores all fields 44 5.81847e-05
+MarketEvent can be visited 44 6.3697e-05
+MarketEvent can contain a Quote 44 4.7429e-05
+MarketEvent can contain a Trade 44 4.48125e-05
+Ring buffer cannot pop from empty buffer 44 4.76127e-05
+Ring buffer detects full state 44 4.44953e-05
+Ring buffer pushes and pops 44 6.09015e-05
+Ring buffer starts empty 44 6.20739e-05
+Ring buffer wraps around 44 5.25975e-05
+SPSC ring buffer works between producer and consumer 44 9.82509e-05
+size_t atomic is lock-free 44 4.75426e-05
+SPSC ring buffer transports MarketEvent 44 4.65369e-05
+SPSC ring buffer transports Trade 44 4.9321e-05
+FeedHandler converts Quote messages 44 8.45133e-05
+FeedHandler converts Trade messages 44 6.11345e-05
+FeedHandler publishes Quote and Trade market events 44 5.72945e-05
+FeedHandler recovers missing sequence 44 5.89044e-05
+FeedHandler stops cleanly while market event queue is full 41 0.000705378
+FeedHandler stops when sequence recovery fails 44 6.8249e-05
+SequenceRecovery handles maximum sequence 44 5.08693e-05
+SequenceRecovery logs sequence gap 44 6.21922e-05
+SequenceRecovery rejects backward sequence 44 4.70265e-05
+SequenceRecovery rejects incomplete recovered sequence 44 5.15028e-05
+SequenceRecovery rejects out-of-order recovered sequence 44 4.56241e-05
+SequenceRecovery rejects zero received sequence 44 5.17955e-05
+SequenceRecovery validates recovered sequence range 44 4.55881e-05
+UdpMarketDataSource handles bind failure 44 4.99328e-05
+UdpMarketDataSource receive times out when no packet arrives 44 0.000537774
+UdpMarketDataSource receives Quote packet 44 0.00027595
+UdpMarketDataSource receives Trade packet 44 0.000212749
+UdpMarketDataSource rejects oversized datagram 44 0.00018498
+UdpMarketDataSource rejects short datagram 44 0.000177499
+UdpMarketDataSource remains safe after construction failure 44 6.05275e-05
+UDP market data flows through FeedHandler into SPSC queue 44 0.000283264
+UDP codec encodes and decodes quote packet 44 6.42358e-05
+UDP codec encodes and decodes trade packet 44 6.36155e-05
+UDP codec preserves maximum integer values 44 5.44299e-05
+UDP codec preserves minimum int64 price 44 4.74365e-05
+UDP codec preserves negative prices 44 4.54763e-05
+UDP codec rejects invalid packet side 44 4.45597e-05
+UDP codec rejects invalid packet type 44 4.40294e-05
+UDP codec rejects truncated packet 44 4.93551e-05
+UDP FeedHandler establishes sequence from non-zero first packet 44 0.000191462
+UDP FeedHandler handles normal contiguous sequence 44 0.000188836
+UDP FeedHandler ignores duplicate old packet 44 0.00019072
+UDP FeedHandler recovers missing packet sequence 44 0.000194052
+UDP FeedHandler recovers multiple missing packets 44 0.000188905
+UDP FeedHandler stops safely when recovery fails 44 0.000178778
+SimpleStrategy creates buy intent for tight quote 44 6.0982e-05
+SimpleStrategy ignores trade event 44 4.76894e-05
+SimpleStrategy ignores wide quote 44 4.62349e-05
+StrategyEngine consumes market event and publishes order intent 44 7.3589e-05
+ITCH decoder decodes Add Order message 44 5.09896e-05
+ITCH decoder decodes Order Cancel message 44 4.21127e-05
+ITCH decoder decodes Order Delete message 44 5.50956e-05
+ITCH decoder decodes Order Executed With Price message 44 5.03078e-05
+ITCH decoder decodes Order Executed message 44 4.38939e-05
+ITCH decoder decodes Order Replace message 44 4.56458e-05
+ITCH decoder decodes Stock Directory message 44 4.3965e-05
+ITCH decoder decodes System Event message 44 4.40076e-05
+ITCH decoder decodes maximum 48 bit timestamp 44 4.36449e-05
+ITCH decoder decodes non printable Order Executed With Price message 44 4.31932e-05
+ITCH decoder decodes sell Add Order message 44 6.05189e-05
+ITCH decoder preserves 64 bit Order Cancel reference number 44 4.741e-05
+ITCH decoder preserves 64 bit Order Delete reference number 44 4.27926e-05
+ITCH decoder preserves 64 bit Order Executed With Price fields 44 4.79252e-05
+ITCH decoder preserves 64 bit Order Executed match number 44 4.70966e-05
+ITCH decoder preserves 64 bit Order Replace reference numbers 44 4.40767e-05
+ITCH decoder preserves 64 bit order reference number 44 4.30502e-05
+ITCH decoder preserves eight character stock symbol 44 5.48475e-05
+ITCH decoder preserves maximum Add Order integer fields 44 5.24043e-05
+ITCH decoder preserves maximum Order Cancel shares 44 4.47651e-05
+ITCH decoder preserves maximum Order Executed With Price integer fields 44 4.40578e-05
+ITCH decoder preserves maximum Order Executed shares 44 4.35436e-05
+ITCH decoder preserves maximum Order Replace shares and price 44 4.35417e-05
+ITCH decoder rejects incorrect Add Order message type 44 4.3321e-05
+ITCH decoder rejects incorrect Order Cancel message type 44 4.63011e-05
+ITCH decoder rejects incorrect Order Delete message type 44 5.47917e-05
+ITCH decoder rejects incorrect Order Executed With Price message type 44 4.46203e-05
+ITCH decoder rejects incorrect Order Executed message type 44 4.34129e-05
+ITCH decoder rejects incorrect Order Replace message type 44 4.47964e-05
+ITCH decoder rejects incorrect Stock Directory message type 44 4.27434e-05
+ITCH decoder rejects incorrect message type 44 4.70937e-05
+ITCH decoder rejects null Order Cancel data 44 4.69583e-05
+ITCH decoder rejects null Order Delete data 44 5.95199e-05
+ITCH decoder rejects null Order Replace data 44 5.19905e-05
+ITCH decoder rejects null data 44 4.63277e-05
+ITCH decoder rejects oversized Add Order message 44 5.76288e-05
+ITCH decoder rejects oversized Order Cancel message 44 4.89773e-05
+ITCH decoder rejects oversized Order Delete message 44 4.74886e-05
+ITCH decoder rejects oversized Order Executed With Price message 44 5.81468e-05
+ITCH decoder rejects oversized Order Executed message 44 4.86657e-05
+ITCH decoder rejects oversized Order Replace message 44 4.90294e-05
+ITCH decoder rejects oversized System Event message 44 4.43598e-05
+ITCH decoder rejects truncated Add Order message 44 5.45511e-05
+ITCH decoder rejects truncated Order Cancel message 44 4.61884e-05
+ITCH decoder rejects truncated Order Delete message 44 4.51098e-05
+ITCH decoder rejects truncated Order Executed With Price message 44 4.91269e-05
+ITCH decoder rejects truncated Order Executed message 44 4.50947e-05
+ITCH decoder rejects truncated Order Replace message 44 4.16875e-05
+ITCH decoder rejects truncated Stock Directory message 44 4.0946e-05
+ITCH decoder rejects truncated System Event message 44 3.93333e-05
+ITCH dispatcher rejects known message type with incorrect length 44 4.5643e-05
+ITCH dispatcher rejects null data 44 3.97879e-05
+ITCH dispatcher rejects unsupported message type 44 3.80473e-05
+ITCH dispatcher rejects zero length message 44 4.42765e-05
+ITCH dispatcher routes Add Order message 44 5.10511e-05
+ITCH dispatcher routes Order Cancel message 44 4.16269e-05
+ITCH dispatcher routes Order Delete message 44 4.29328e-05
+ITCH dispatcher routes Order Executed With Price message 44 4.12386e-05
+ITCH dispatcher routes Order Executed message 44 4.10151e-05
+ITCH dispatcher routes Order Replace message 44 3.9785e-05
+ITCH dispatcher routes Stock Directory message 44 3.92983e-05
+ITCH dispatcher routes System Event message 44 5.01818e-05
+ITCH stream reader reads BinaryFILE message 44 5.02699e-05
+ITCH stream reader reads message then end of session 44 3.90748e-05
+ITCH stream reader reads multiple BinaryFILE messages 44 4.12235e-05
+ITCH stream reader recognizes BinaryFILE end of session 44 4.18949e-05
+ITCH stream reader rejects truncated BinaryFILE length prefix 44 4.0126e-05
+ITCH stream reader rejects truncated BinaryFILE payload 44 3.99318e-05
+ITCH stream reader reports empty BinaryFILE as incomplete 44 3.91392e-05
+ITCH replay can populate market state 42 0.00130631
+ITCH replay counts every supported message type 44 5.67235e-05
+ITCH replay counts malformed supported message 44 4.63229e-05
+ITCH replay delivers decoded messages to handler 44 5.08087e-05
+ITCH replay does not deliver unsupported messages to handler 44 4.6125e-05
+ITCH replay processes complete BinaryFILE session 44 0.000326308
+ITCH replay reports incomplete BinaryFILE 44 0.000268054
+ITCH replay skips unsupported message types 44 0.000238187
+ItchReplay counts unsupported messages by type 44 5.74441e-05
+Add Order with MPID trims padded attribution 44 5.80966e-05
+ItchDecoder decodes Add Order with MPID 44 5.80246e-05
+ItchDecoder rejects null Add Order with MPID data 44 4.90919e-05
+ItchDecoder rejects oversized Add Order with MPID 44 4.76203e-05
+ItchDecoder rejects truncated Add Order with MPID 44 4.63447e-05
+ItchDecoder rejects wrong Add Order with MPID type 44 5.10246e-05
+ItchDispatcher routes Add Order with MPID 44 4.50199e-05
+ItchReplay counts Add Order with MPID as supported 44 6.92633e-05
+ItchDecoder decodes Trade message 44 5.29735e-05
+ItchDecoder decodes maximum Trade numeric fields 44 4.47888e-05
+ItchDecoder rejects null Trade message data 44 4.68295e-05
+ItchDecoder rejects oversized Trade message 44 4.83106e-05
+ItchDecoder rejects truncated Trade message 44 4.29432e-05
+ItchDecoder rejects wrong Trade message type 44 4.48456e-05
+ItchDispatcher routes Trade message 44 5.56534e-05
+ItchReplay counts Trade message as supported 44 4.93807e-05
+Trade message preserves eight character stock 44 4.17481e-05
+Cross Trade preserves eight character stock 44 4.99527e-05
+ItchDecoder decodes Cross Trade message 44 4.43864e-05
+ItchDecoder decodes maximum Cross Trade shares 44 4.18295e-05
+ItchDecoder preserves Cross Trade type 44 4.6822e-05
+ItchDecoder rejects null Cross Trade data 44 5.99025e-05
+ItchDecoder rejects oversized Cross Trade message 44 4.79365e-05
+ItchDecoder rejects truncated Cross Trade message 44 4.73608e-05
+ItchDecoder rejects wrong Cross Trade message type 44 4.50985e-05
+ItchDispatcher routes Cross Trade message 44 4.89877e-05
+ItchReplay counts Cross Trade as supported 44 4.50559e-05
+ItchDecoder decodes Broken Trade message 44 4.81335e-05
+ItchDecoder decodes maximum Broken Trade header fields 44 6.00009e-05
+ItchDecoder decodes maximum Broken Trade match number 44 4.59413e-05
+ItchDecoder rejects null Broken Trade data 44 4.43418e-05
+ItchDecoder rejects oversized Broken Trade message 44 4.29763e-05
+ItchDecoder rejects truncated Broken Trade message 44 4.67055e-05
+ItchDecoder rejects wrong Broken Trade message type 44 4.60758e-05
+ItchDispatcher rejects malformed Broken Trade message 44 4.18116e-05
+ItchDispatcher routes Broken Trade message 44 4.81326e-05
+ItchReplay counts Broken Trade as supported 44 5.33362e-05
+ItchDecoder decodes Stock Trading Action message 44 5.50938e-05
+ItchDecoder decodes maximum Stock Trading Action header fields 44 4.35199e-05
+ItchDecoder rejects null Stock Trading Action data 44 4.19413e-05
+ItchDecoder rejects oversized Stock Trading Action 44 4.40208e-05
+ItchDecoder rejects truncated Stock Trading Action 44 4.22831e-05
+ItchDecoder rejects wrong Stock Trading Action type 44 4.06723e-05
+ItchDispatcher rejects malformed Stock Trading Action 44 5.68371e-05
+ItchDispatcher routes Stock Trading Action 44 4.80312e-05
+ItchReplay counts Stock Trading Action as supported 44 4.19612e-05
+Stock Trading Action preserves eight character stock 44 4.24337e-05
+Stock Trading Action preserves reason code 44 4.39583e-05
+Stock Trading Action preserves trading state 44 4.34186e-05
+Stock Trading Action trims padded reason 44 4.21922e-05
+ItchDecoder decodes Market Participant Position message 44 6.05994e-05
+ItchDecoder decodes maximum Market Participant Position header fields 44 5.11828e-05
+ItchDecoder rejects null Market Participant Position data 44 4.57888e-05
+ItchDecoder rejects oversized Market Participant Position 44 4.12926e-05
+ItchDecoder rejects truncated Market Participant Position 44 4.33816e-05
+ItchDecoder rejects wrong Market Participant Position type 44 4.43191e-05
+ItchDispatcher rejects malformed Market Participant Position 44 4.19242e-05
+ItchDispatcher routes Market Participant Position 44 4.37983e-05
+ItchReplay counts Market Participant Position as supported 44 5.26818e-05
+Market Participant Position preserves eight character stock 44 4.5447e-05
+Market Participant Position preserves four character MPID 44 4.62415e-05
+Market Participant Position preserves status fields 44 4.36534e-05
+Market Participant Position trims padded MPID 44 5.16477e-05
+ItchDecoder decodes LULD Auction Collar 44 4.79167e-05
+ItchDecoder decodes MWCB Decline Level message 44 4.24725e-05
+ItchDecoder decodes MWCB Status message 44 4.6053e-05
+ItchDecoder decodes NOII message 44 5.14119e-05
+ItchDecoder decodes Reg SHO Restriction message 44 4.17727e-05
+ItchDecoder rejects malformed LULD Auction Collar 44 4.1321e-05
+ItchDecoder rejects malformed MWCB Decline Level messages 44 4.12159e-05
+ItchDecoder rejects malformed MWCB Status messages 44 4.26563e-05
+ItchDecoder rejects malformed NOII messages 44 4.22358e-05
+ItchDecoder rejects malformed Reg SHO Restriction messages 44 4.0858e-05
+ItchDispatcher routes LULD Auction Collar 44 4.73958e-05
+ItchDispatcher routes MWCB Decline Level 44 4.63655e-05
+ItchDispatcher routes MWCB Status 44 4.04451e-05
+ItchDispatcher routes NOII 44 4.12945e-05
+ItchDispatcher routes Reg SHO Restriction 44 4.04602e-05
+ItchReplay counts LULD Auction Collar 44 3.96714e-05
+ItchReplay counts MWCB Decline Level 44 3.99214e-05
+ItchReplay counts MWCB Status 44 3.93778e-05
+ItchReplay counts NOII as supported 44 5.01657e-05
+ItchReplay counts Reg SHO Restriction 44 4.93182e-05
+LULD Auction Collar supports maximum values 44 4.16875e-05
+MWCB Decline Level supports maximum 64 bit values 44 4.04299e-05
+MWCB Status preserves breached level 44 4.19744e-05
+NOII preserves eight character stock 44 4.2858e-05
+NOII preserves imbalance and auction indicators 44 3.97188e-05
+NOII supports maximum 64 bit share quantities 44 4.10606e-05
+NOII supports maximum price values 44 5.37424e-05
+Reg SHO Restriction preserves action 44 4.4178e-05
+Reg SHO Restriction preserves eight character stock 44 4.41297e-05
+InstrumentStore adds instrument 44 4.84905e-05
+InstrumentStore keeps missing ids absent 44 4.37434e-05
+InstrumentStore mutable lookup updates state 44 4.47083e-05
+InstrumentStore rejects duplicate instrument 44 4.48305e-05
+InstrumentStore starts empty 44 4.6053e-05
+InstrumentStore stores instruments independently 44 5.85748e-05
+InstrumentStore supports maximum instrument id 44 4.58381e-05
+ITCH market state applies Reg SHO state transitions 42 0.00065571
+ITCH market state applies multiple cancellations 42 0.000641351
+ITCH market state applies trading state transitions 42 0.00061255
+ITCH market state can execute then cancel same order 42 0.000598229
+ITCH market state counts cancel for unknown order 42 0.000623358
+ITCH market state counts delete for unknown order 42 0.000576457
+ITCH market state counts execution for unknown order 42 0.000587141
+ITCH market state counts priced execution for unknown order 42 0.000580962
+ITCH market state counts replace for unknown order 42 0.000668001
+ITCH market state creates instrument from Stock Directory 42 0.000562784
+ITCH market state deletes order 42 0.000596313
+ITCH market state deletes partially cancelled order 42 0.000648543
+ITCH market state deletes partially executed order 42 0.000644922
+ITCH market state deleting one order does not affect another 42 0.000634991
+ITCH market state handles duplicate Stock Directory idempotently 42 0.000569181
+ITCH market state ignores Reg SHO update for unknown instrument 42 0.00066345
+ITCH market state ignores non reference messages 42 0.000565708
+ITCH market state ignores trading action for unknown instrument 42 0.000577606
+ITCH market state partially cancels order 42 0.000571781
+ITCH market state partially executes order 42 0.000575313
+ITCH market state partially executes order with price 42 0.000577022
+ITCH market state rejects cancel larger than remaining quantity 42 0.000583887
+ITCH market state rejects execution larger than remaining quantity 42 0.000575276
+ITCH market state rejects priced execution larger than remaining quantity 42 0.00058905
+ITCH market state rejects replacement when new order id already exists 42 0.000561944
+ITCH market state removes fully cancelled order 42 0.000568272
+ITCH market state removes fully executed order 42 0.00057308
+ITCH market state removes fully executed order with price 42 0.000548701
+ITCH market state replaces order 42 0.000570595
+ITCH market state stores Add Order 42 0.000551898
+ITCH market state stores Add Order with MPID 42 0.00057841
+ITCH market state stores multiple instruments 42 0.000569895
+ITCH market state updates instrument Reg SHO state 42 0.000573729
+ITCH market state updates instrument trading state 42 0.000573964
+ITCH normalizer converts Add Order to normalized Order 44 5.39735e-05
+ITCH normalizer converts Add Order with MPID to normalized Order 44 4.70142e-05
+ITCH normalizer converts Reg SHO restriction states 44 4.80095e-05
+ITCH normalizer converts Stock Directory to Instrument 44 3.97169e-05
+ITCH normalizer converts trading action states 44 4.14072e-05
+ITCH normalizer maps unknown Reg SHO state to Unknown 44 4.14148e-05
+ITCH normalizer maps unknown trading state to Unknown 44 4.16061e-05
+ITCH normalizer preserves eight character symbol 44 4.05852e-05
+ITCH normalizer preserves maximum instrument id 44 4.18902e-05
+ITCH order replace preserves sell side 42 0.000587252
+ITCH replacement order participates in later lifecycle 42 0.000554302
+OrderStore adds order 45 0.000516038
+OrderStore mutable lookup can update quantity 45 0.000500656
+OrderStore rejects duplicate order id 45 0.000484999
+OrderStore removes order 44 0.000520789
+OrderStore removing unknown order returns false 45 0.000487927
+OrderStore starts empty 46 0.000503039
+OrderStore stores independent orders 45 0.000493677
+PriceLevel adds order quantity 44 5.63295e-05
+PriceLevel aggregates multiple orders 44 4.32879e-05
+PriceLevel becomes empty after last order removed 44 4.68646e-05
+PriceLevel handles partial execution then order removal 44 4.3232e-05
+PriceLevel reduces quantity without removing order 44 4.26856e-05
+PriceLevel rejects reduction larger than quantity 44 4.25e-05
+PriceLevel rejects removing order when empty 44 5.04508e-05
+PriceLevel removes remaining order quantity 44 4.66051e-05
+PriceLevel starts empty 44 4.24773e-05
+BookSide aggregates orders at same price 44 4.97576e-05
+BookSide creates independent price levels 44 4.36288e-05
+BookSide creates price level 44 4.01989e-05
+BookSide keeps price level while other orders remain 44 4.06553e-05
+BookSide reduces price level quantity 44 4.2107e-05
+BookSide rejects reduction for unknown price 44 5.25994e-05
+BookSide removes empty price level 44 4.334e-05
+BookSide starts empty 44 4.06989e-05
+Buy BookSide best price changes after best level removed 44 3.87765e-05
+Buy BookSide chooses highest price as best 44 4.49299e-05
+Sell BookSide best price changes after best level removed 44 4.27282e-05
+Sell BookSide chooses lowest price as best 44 3.96496e-05
+OrderBook aggregates quantity at best bid 44 4.9054e-05
+OrderBook becomes empty after both sides removed 44 4.90587e-05
+OrderBook best ask changes when level disappears 44 4.34507e-05
+OrderBook best bid changes when level disappears 44 4.20275e-05
+OrderBook can have only ask side 44 4.05502e-05
+OrderBook can have only bid side 44 4.01818e-05
+OrderBook produces best bid and ask 44 4.0946e-05
+OrderBook starts empty 44 4.11354e-05
+OrderBook stores ask 44 4.34896e-05
+OrderBook stores bid 44 5.94299e-05
+BookStore aggregates orders independently per instrument 44 6.45578e-05
+BookStore creates order book 44 6.2875e-05
+BookStore find does not create missing book 44 6.29185e-05
+BookStore keeps instruments independent 44 6.8661e-05
+BookStore maintains independent bid and ask BBO 44 7.50672e-05
+BookStore returns existing order book 44 6.74801e-05
+BookStore starts empty 44 6.391e-05
+Duplicate ITCH Add Order does not duplicate book quantity 42 0.00055415
+ITCH Add Order creates book price level 42 0.000566582
+ITCH Add Order routes sell order to ask side 42 0.000568592
+ITCH Add Order with MPID updates order book 42 0.000597584
+ITCH Add Orders aggregate at same price 42 0.000586521
+ITCH Add Orders create correct BBO 42 0.000587348
+ITCH Add Orders maintain independent instrument books 42 0.00056646
+Complex order lifecycle keeps order store and book synchronized 42 0.00057506
+Deleting one order preserves other quantity at same price 42 0.000561455
+Full order execution removes price level 42 0.000570911
+Order cancel reduces book quantity 42 0.000557436
+Order delete removes remaining quantity from book 42 0.000545986
+Order execution reduces book quantity 42 0.000567496
+Order lifecycle updates BBO 42 0.000554327
+Order replace moves quantity between price levels 42 0.000575821
+Priced execution reduces resting price level 42 0.000569218
+Complete lifecycle leaves no book integrity errors 42 0.000579777
+Valid cancellation produces no book integrity errors 42 0.000572317
+Valid deletion produces no book integrity errors 42 0.00058404
+Valid full execution produces no book integrity errors 42 0.000578514
+Valid order execution produces no book integrity errors 42 0.000582375
+BBO detects ask appearance 44 5.6553e-05
+BBO detects ask disappearance 44 3.95644e-05
+BBO detects best ask price change 44 4.1178e-05
+BBO detects best ask quantity change 44 4.61572e-05
+BBO detects best bid price change 44 4.20521e-05
+BBO detects best bid quantity change 44 4.34972e-05
+BBO detects bid appearance 44 5.0251e-05
+BBO detects bid disappearance 44 4.54716e-05
+BBO ignores values for absent ask 44 4.15312e-05
+BBO ignores values for absent bid 44 3.96506e-05
+Empty BBO values are equal 44 4.2483e-05
+Identical two sided BBO values are equal 44 4.08864e-05
+Adding better bid emits BBO change 42 0.000584493
+Adding first bid emits BBO change 42 0.000569176
+Adding order behind best bid does not emit BBO change 42 0.000596226
+Adding quantity at current best bid emits BBO change 42 0.000559462
+BBO notifications remain independent between instruments 42 0.00059502
+Deleting best bid emits next best BBO 42 0.000556633
+ITCH quote publisher assigns increasing sequence numbers 44 6.84479e-05
+ITCH quote publisher does not publish ask only BBO 44 5.50663e-05
+ITCH quote publisher does not publish bid only BBO 44 6.2285e-05
+ITCH quote publisher publishes normalized quote 44 6.0624e-05
+ITCH quote publisher records unknown instrument diagnostics 44 5.44034e-05
+ITCH quote publisher rejects unknown instrument 44 5.12756e-05
+Full C execution publishes next BBO with correct instrument 42 0.000572524
+Full E execution publishes next BBO with correct instrument 42 0.000579883
+Full X cancellation publishes next BBO with correct instrument 42 0.000596016
+ITCH pipeline assigns increasing normalized quote sequences 42 0.000585323
+ITCH pipeline ignores order behind current BBO 42 0.000573175
+ITCH pipeline publishes another quote when BBO changes 42 0.000578719
+ITCH pipeline publishes correct normalized quote data 42 0.000567208
+ITCH pipeline publishes quote when book becomes two sided 42 0.000589386
+Market event consumer drains SPSC across thread boundary 44 0.000110131
+ITCH UDP codec handles maximum payload 44 5.2767e-05
+ITCH UDP codec preserves maximum sequence 44 4.3053e-05
+ITCH UDP codec rejects null input 44 5.51089e-05
+ITCH UDP codec rejects trailing bytes 44 4.44905e-05
+ITCH UDP codec rejects truncated header 44 3.97737e-05
+ITCH UDP codec rejects truncated payload 44 4.04356e-05
+ITCH UDP codec round trips packet 44 4.29716e-05
+ITCH UDP codec supports empty payload 44 3.94659e-05
+UDP ITCH market data source receives packet 44 0.000167259
+UDP ITCH market data source rejects malformed datagram 44 0.000287856
+UDP ITCH market data source returns false on timeout 44 0.000308324
+ITCH sequence recovery ignores non forward recovery request 44 6.05587e-05
+ITCH sequence recovery recovers multiple missing packets 44 6.33409e-05
+ITCH sequence recovery recovers single missing packet 44 4.98049e-05
+ITCH sequence recovery rejects incomplete recovery 44 4.89792e-05
+ITCH sequence recovery rejects out of order packets 44 4.88333e-05
+ITCH sequence recovery rejects wrong recovered sequence 44 4.66809e-05
+ITCH sequence recovery stops when source fails 44 4.61487e-05
+ITCH feed handler fails on malformed ITCH payload 42 0.000629505
+ITCH feed handler fails when recovered packet is malformed 42 0.000563569
+ITCH feed handler fails when sequence recovery fails 42 0.000567673
+ITCH feed handler ignores burst of stale packets 42 0.000564403
+ITCH feed handler ignores duplicate packet 42 0.000576256
+ITCH feed handler ignores late packet after recovery 42 0.000573826
+ITCH feed handler ignores old packet 42 0.000579141
+ITCH feed handler processes contiguous packets 42 0.000576352
+ITCH feed handler processes first packet 42 0.000579593
+ITCH feed handler recovers multiple missing packets 42 0.000572883
+ITCH feed handler recovers single missing packet 42 0.0005826
+ITCH feed handler supports arbitrary starting sequence 42 0.000558966
+UDP ITCH feed recovers transport gap through real sequence recovery 42 0.000803133
+UDP ITCH pipeline recovers gap and publishes normalized BBO quotes 42 0.000875762
+ITCH C execution publishes trade using explicit execution price 42 0.000594096
+ITCH E execution publishes trade using resting order data 42 0.000566982
+ITCH P message publishes trade without modifying order state 42 0.00056894
+ITCH full E execution publishes trade and removes order 42 0.000558339
+ItchMarketState and ItchTradePublisher publish E end to end 42 0.000590601
+ItchTradePublisher publishes normalized Trade into MarketEventQueue 42 0.000575792
+ItchTradePublisher rejects unknown instrument 42 0.000576221
+Over-executed ITCH C order does not publish trade 42 0.000562269
+Over-executed ITCH E order does not publish trade 42 0.000551495
+Unknown ITCH C order does not publish trade 42 0.000559779
+Unknown ITCH E order does not publish trade 42 0.000566964
+File ITCH recovery source builds record index 44 7.80388e-05
+File ITCH recovery source fails for missing file 44 4.60634e-05
+File ITCH recovery source invalidates index when source file size changes 44 6.11553e-05
+File ITCH recovery source loads persisted sparse index 44 5.02093e-05
+File ITCH recovery source persists sparse index 44 5.12917e-05
+File ITCH recovery source rebuilds corrupted persisted index 44 5.57292e-05
+File ITCH recovery source recovers exact packet range 44 5.19555e-05
+File ITCH recovery source recovers single packet 44 5.82405e-05
+File ITCH recovery source rejects invalid range 44 6.23144e-05
+File ITCH recovery source rejects range beyond indexed file 44 4.81705e-05
+File ITCH recovery source rejects sequence zero 44 5.11203e-05
+File ITCH recovery source rejects zero checkpoint interval 44 4.43826e-05
+OrderStore remains correct across repeated population churn 21 0.00173778
+OrderStore supports repeated insert remove churn 21 0.00122744
 ---

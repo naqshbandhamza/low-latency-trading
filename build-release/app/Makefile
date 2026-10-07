@@ -238,6 +238,20 @@ itch_recovery_benchmark/fast:
 	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_recovery_benchmark.dir/build.make app/CMakeFiles/itch_recovery_benchmark.dir/build
 .PHONY : itch_recovery_benchmark/fast
 
+# Convenience name for target.
+app/CMakeFiles/itch_udp_load_gen.dir/rule:
+	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 app/CMakeFiles/itch_udp_load_gen.dir/rule
+.PHONY : app/CMakeFiles/itch_udp_load_gen.dir/rule
+
+# Convenience name for target.
+itch_udp_load_gen: app/CMakeFiles/itch_udp_load_gen.dir/rule
+.PHONY : itch_udp_load_gen
+
+# fast build rule for target.
+itch_udp_load_gen/fast:
+	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_load_gen.dir/build.make app/CMakeFiles/itch_udp_load_gen.dir/build
+.PHONY : itch_udp_load_gen/fast
+
 itch_live.o: itch_live.cpp.o
 .PHONY : itch_live.o
 
@@ -333,6 +347,30 @@ itch_synthetic_sender.s: itch_synthetic_sender.cpp.s
 itch_synthetic_sender.cpp.s:
 	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_synthetic_sender.dir/build.make app/CMakeFiles/itch_synthetic_sender.dir/itch_synthetic_sender.cpp.s
 .PHONY : itch_synthetic_sender.cpp.s
+
+itch_udp_load_gen.o: itch_udp_load_gen.cpp.o
+.PHONY : itch_udp_load_gen.o
+
+# target to build an object file
+itch_udp_load_gen.cpp.o:
+	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_load_gen.dir/build.make app/CMakeFiles/itch_udp_load_gen.dir/itch_udp_load_gen.cpp.o
+.PHONY : itch_udp_load_gen.cpp.o
+
+itch_udp_load_gen.i: itch_udp_load_gen.cpp.i
+.PHONY : itch_udp_load_gen.i
+
+# target to preprocess a source file
+itch_udp_load_gen.cpp.i:
+	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_load_gen.dir/build.make app/CMakeFiles/itch_udp_load_gen.dir/itch_udp_load_gen.cpp.i
+.PHONY : itch_udp_load_gen.cpp.i
+
+itch_udp_load_gen.s: itch_udp_load_gen.cpp.s
+.PHONY : itch_udp_load_gen.s
+
+# target to generate assembly for a file
+itch_udp_load_gen.cpp.s:
+	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_load_gen.dir/build.make app/CMakeFiles/itch_udp_load_gen.dir/itch_udp_load_gen.cpp.s
+.PHONY : itch_udp_load_gen.cpp.s
 
 itch_udp_replay.o: itch_udp_replay.cpp.o
 .PHONY : itch_udp_replay.o
@@ -443,6 +481,7 @@ help:
 	@echo "... itch_recovery_benchmark"
 	@echo "... itch_replay"
 	@echo "... itch_synthetic_sender"
+	@echo "... itch_udp_load_gen"
 	@echo "... itch_udp_replay"
 	@echo "... itch_udp_replay_gap"
 	@echo "... market_data_simulator"
@@ -459,6 +498,9 @@ help:
 	@echo "... itch_synthetic_sender.o"
 	@echo "... itch_synthetic_sender.i"
 	@echo "... itch_synthetic_sender.s"
+	@echo "... itch_udp_load_gen.o"
+	@echo "... itch_udp_load_gen.i"
+	@echo "... itch_udp_load_gen.s"
 	@echo "... itch_udp_replay.o"
 	@echo "... itch_udp_replay.i"
 	@echo "... itch_udp_replay.s"

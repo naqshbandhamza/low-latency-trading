@@ -134,6 +134,7 @@ app/all: app/CMakeFiles/itch_live.dir/all
 app/all: app/CMakeFiles/itch_udp_replay.dir/all
 app/all: app/CMakeFiles/itch_udp_replay_gap.dir/all
 app/all: app/CMakeFiles/itch_recovery_benchmark.dir/all
+app/all: app/CMakeFiles/itch_udp_load_gen.dir/all
 .PHONY : app/all
 
 # Recursive "codegen" directory target.
@@ -145,6 +146,7 @@ app/codegen: app/CMakeFiles/itch_live.dir/codegen
 app/codegen: app/CMakeFiles/itch_udp_replay.dir/codegen
 app/codegen: app/CMakeFiles/itch_udp_replay_gap.dir/codegen
 app/codegen: app/CMakeFiles/itch_recovery_benchmark.dir/codegen
+app/codegen: app/CMakeFiles/itch_udp_load_gen.dir/codegen
 .PHONY : app/codegen
 
 # Recursive "preinstall" directory target.
@@ -160,6 +162,7 @@ app/clean: app/CMakeFiles/itch_live.dir/clean
 app/clean: app/CMakeFiles/itch_udp_replay.dir/clean
 app/clean: app/CMakeFiles/itch_udp_replay_gap.dir/clean
 app/clean: app/CMakeFiles/itch_recovery_benchmark.dir/clean
+app/clean: app/CMakeFiles/itch_udp_load_gen.dir/clean
 .PHONY : app/clean
 
 #=============================================================================
@@ -173,6 +176,7 @@ benchmarks/all: benchmarks/CMakeFiles/seq_cst_benchmark.dir/all
 benchmarks/all: benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/all
 benchmarks/all: benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/all
 benchmarks/all: benchmarks/CMakeFiles/itch_decode_benchmark.dir/all
+benchmarks/all: benchmarks/CMakeFiles/udp_throughput_bench.dir/all
 .PHONY : benchmarks/all
 
 # Recursive "codegen" directory target.
@@ -183,6 +187,7 @@ benchmarks/codegen: benchmarks/CMakeFiles/seq_cst_benchmark.dir/codegen
 benchmarks/codegen: benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/codegen
 benchmarks/codegen: benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/codegen
 benchmarks/codegen: benchmarks/CMakeFiles/itch_decode_benchmark.dir/codegen
+benchmarks/codegen: benchmarks/CMakeFiles/udp_throughput_bench.dir/codegen
 .PHONY : benchmarks/codegen
 
 # Recursive "preinstall" directory target.
@@ -197,6 +202,7 @@ benchmarks/clean: benchmarks/CMakeFiles/seq_cst_benchmark.dir/clean
 benchmarks/clean: benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/clean
 benchmarks/clean: benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/clean
 benchmarks/clean: benchmarks/CMakeFiles/itch_decode_benchmark.dir/clean
+benchmarks/clean: benchmarks/CMakeFiles/udp_throughput_bench.dir/clean
 .PHONY : benchmarks/clean
 
 #=============================================================================
@@ -1312,7 +1318,7 @@ CMakeFiles/ContinuousSubmit.dir/clean:
 common/CMakeFiles/common.dir/all:
 	$(MAKE) $(MAKESILENT) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/depend
 	$(MAKE) $(MAKESILENT) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=58,59,60,61,62,63,64,65,66,67,68 "Built target common"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=56,57,58,59,60,61,62,63,64,65,66 "Built target common"
 .PHONY : common/CMakeFiles/common.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1329,7 +1335,7 @@ common: common/CMakeFiles/common.dir/rule
 # codegen rule for target.
 common/CMakeFiles/common.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f common/CMakeFiles/common.dir/build.make common/CMakeFiles/common.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=58,59,60,61,62,63,64,65,66,67,68 "Finished codegen for target common"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=56,57,58,59,60,61,62,63,64,65,66 "Finished codegen for target common"
 .PHONY : common/CMakeFiles/common.dir/codegen
 
 # clean rule for target.
@@ -1344,7 +1350,7 @@ common/CMakeFiles/common.dir/clean:
 feed_handler/CMakeFiles/feed_handler.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f feed_handler/CMakeFiles/feed_handler.dir/build.make feed_handler/CMakeFiles/feed_handler.dir/depend
 	$(MAKE) $(MAKESILENT) -f feed_handler/CMakeFiles/feed_handler.dir/build.make feed_handler/CMakeFiles/feed_handler.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=69,70 "Built target feed_handler"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=67,68 "Built target feed_handler"
 .PHONY : feed_handler/CMakeFiles/feed_handler.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1361,7 +1367,7 @@ feed_handler: feed_handler/CMakeFiles/feed_handler.dir/rule
 # codegen rule for target.
 feed_handler/CMakeFiles/feed_handler.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f feed_handler/CMakeFiles/feed_handler.dir/build.make feed_handler/CMakeFiles/feed_handler.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=69,70 "Finished codegen for target feed_handler"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=67,68 "Finished codegen for target feed_handler"
 .PHONY : feed_handler/CMakeFiles/feed_handler.dir/codegen
 
 # clean rule for target.
@@ -1377,12 +1383,12 @@ app/CMakeFiles/trading_app.dir/all: common/CMakeFiles/common.dir/all
 app/CMakeFiles/trading_app.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/trading_app.dir/build.make app/CMakeFiles/trading_app.dir/depend
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/trading_app.dir/build.make app/CMakeFiles/trading_app.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=99,100 "Built target trading_app"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=98 "Built target trading_app"
 .PHONY : app/CMakeFiles/trading_app.dir/all
 
 # Build rule for subdir invocation for target.
 app/CMakeFiles/trading_app.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 app/CMakeFiles/trading_app.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : app/CMakeFiles/trading_app.dir/rule
@@ -1394,7 +1400,7 @@ trading_app: app/CMakeFiles/trading_app.dir/rule
 # codegen rule for target.
 app/CMakeFiles/trading_app.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/trading_app.dir/build.make app/CMakeFiles/trading_app.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=99,100 "Finished codegen for target trading_app"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=98 "Finished codegen for target trading_app"
 .PHONY : app/CMakeFiles/trading_app.dir/codegen
 
 # clean rule for target.
@@ -1410,7 +1416,7 @@ app/CMakeFiles/market_data_simulator.dir/all: common/CMakeFiles/common.dir/all
 app/CMakeFiles/market_data_simulator.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/market_data_simulator.dir/build.make app/CMakeFiles/market_data_simulator.dir/depend
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/market_data_simulator.dir/build.make app/CMakeFiles/market_data_simulator.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=85 "Built target market_data_simulator"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=84 "Built target market_data_simulator"
 .PHONY : app/CMakeFiles/market_data_simulator.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1427,7 +1433,7 @@ market_data_simulator: app/CMakeFiles/market_data_simulator.dir/rule
 # codegen rule for target.
 app/CMakeFiles/market_data_simulator.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/market_data_simulator.dir/build.make app/CMakeFiles/market_data_simulator.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=85 "Finished codegen for target market_data_simulator"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=84 "Finished codegen for target market_data_simulator"
 .PHONY : app/CMakeFiles/market_data_simulator.dir/codegen
 
 # clean rule for target.
@@ -1443,7 +1449,7 @@ app/CMakeFiles/itch_replay.dir/all: common/CMakeFiles/common.dir/all
 app/CMakeFiles/itch_replay.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_replay.dir/build.make app/CMakeFiles/itch_replay.dir/depend
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_replay.dir/build.make app/CMakeFiles/itch_replay.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=77 "Built target itch_replay"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=75 "Built target itch_replay"
 .PHONY : app/CMakeFiles/itch_replay.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1460,7 +1466,7 @@ itch_replay: app/CMakeFiles/itch_replay.dir/rule
 # codegen rule for target.
 app/CMakeFiles/itch_replay.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_replay.dir/build.make app/CMakeFiles/itch_replay.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=77 "Finished codegen for target itch_replay"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=75 "Finished codegen for target itch_replay"
 .PHONY : app/CMakeFiles/itch_replay.dir/codegen
 
 # clean rule for target.
@@ -1476,7 +1482,7 @@ app/CMakeFiles/itch_synthetic_sender.dir/all: common/CMakeFiles/common.dir/all
 app/CMakeFiles/itch_synthetic_sender.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_synthetic_sender.dir/build.make app/CMakeFiles/itch_synthetic_sender.dir/depend
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_synthetic_sender.dir/build.make app/CMakeFiles/itch_synthetic_sender.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=78,79 "Built target itch_synthetic_sender"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=76,77 "Built target itch_synthetic_sender"
 .PHONY : app/CMakeFiles/itch_synthetic_sender.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1493,7 +1499,7 @@ itch_synthetic_sender: app/CMakeFiles/itch_synthetic_sender.dir/rule
 # codegen rule for target.
 app/CMakeFiles/itch_synthetic_sender.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_synthetic_sender.dir/build.make app/CMakeFiles/itch_synthetic_sender.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=78,79 "Finished codegen for target itch_synthetic_sender"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=76,77 "Finished codegen for target itch_synthetic_sender"
 .PHONY : app/CMakeFiles/itch_synthetic_sender.dir/codegen
 
 # clean rule for target.
@@ -1509,7 +1515,7 @@ app/CMakeFiles/itch_live.dir/all: common/CMakeFiles/common.dir/all
 app/CMakeFiles/itch_live.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_live.dir/build.make app/CMakeFiles/itch_live.dir/depend
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_live.dir/build.make app/CMakeFiles/itch_live.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=73,74 "Built target itch_live"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=71,72 "Built target itch_live"
 .PHONY : app/CMakeFiles/itch_live.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1526,7 +1532,7 @@ itch_live: app/CMakeFiles/itch_live.dir/rule
 # codegen rule for target.
 app/CMakeFiles/itch_live.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_live.dir/build.make app/CMakeFiles/itch_live.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=73,74 "Finished codegen for target itch_live"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=71,72 "Finished codegen for target itch_live"
 .PHONY : app/CMakeFiles/itch_live.dir/codegen
 
 # clean rule for target.
@@ -1542,7 +1548,7 @@ app/CMakeFiles/itch_udp_replay.dir/all: common/CMakeFiles/common.dir/all
 app/CMakeFiles/itch_udp_replay.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_replay.dir/build.make app/CMakeFiles/itch_udp_replay.dir/depend
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_replay.dir/build.make app/CMakeFiles/itch_udp_replay.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=80 "Built target itch_udp_replay"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=79 "Built target itch_udp_replay"
 .PHONY : app/CMakeFiles/itch_udp_replay.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1559,7 +1565,7 @@ itch_udp_replay: app/CMakeFiles/itch_udp_replay.dir/rule
 # codegen rule for target.
 app/CMakeFiles/itch_udp_replay.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_replay.dir/build.make app/CMakeFiles/itch_udp_replay.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=80 "Finished codegen for target itch_udp_replay"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=79 "Finished codegen for target itch_udp_replay"
 .PHONY : app/CMakeFiles/itch_udp_replay.dir/codegen
 
 # clean rule for target.
@@ -1575,12 +1581,12 @@ app/CMakeFiles/itch_udp_replay_gap.dir/all: common/CMakeFiles/common.dir/all
 app/CMakeFiles/itch_udp_replay_gap.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_replay_gap.dir/build.make app/CMakeFiles/itch_udp_replay_gap.dir/depend
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_replay_gap.dir/build.make app/CMakeFiles/itch_udp_replay_gap.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=81 "Built target itch_udp_replay_gap"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=80,81 "Built target itch_udp_replay_gap"
 .PHONY : app/CMakeFiles/itch_udp_replay_gap.dir/all
 
 # Build rule for subdir invocation for target.
 app/CMakeFiles/itch_udp_replay_gap.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 app/CMakeFiles/itch_udp_replay_gap.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : app/CMakeFiles/itch_udp_replay_gap.dir/rule
@@ -1592,7 +1598,7 @@ itch_udp_replay_gap: app/CMakeFiles/itch_udp_replay_gap.dir/rule
 # codegen rule for target.
 app/CMakeFiles/itch_udp_replay_gap.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_replay_gap.dir/build.make app/CMakeFiles/itch_udp_replay_gap.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=81 "Finished codegen for target itch_udp_replay_gap"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=80,81 "Finished codegen for target itch_udp_replay_gap"
 .PHONY : app/CMakeFiles/itch_udp_replay_gap.dir/codegen
 
 # clean rule for target.
@@ -1608,7 +1614,7 @@ app/CMakeFiles/itch_recovery_benchmark.dir/all: common/CMakeFiles/common.dir/all
 app/CMakeFiles/itch_recovery_benchmark.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_recovery_benchmark.dir/build.make app/CMakeFiles/itch_recovery_benchmark.dir/depend
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_recovery_benchmark.dir/build.make app/CMakeFiles/itch_recovery_benchmark.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=76 "Built target itch_recovery_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=74 "Built target itch_recovery_benchmark"
 .PHONY : app/CMakeFiles/itch_recovery_benchmark.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1625,7 +1631,7 @@ itch_recovery_benchmark: app/CMakeFiles/itch_recovery_benchmark.dir/rule
 # codegen rule for target.
 app/CMakeFiles/itch_recovery_benchmark.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_recovery_benchmark.dir/build.make app/CMakeFiles/itch_recovery_benchmark.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=76 "Finished codegen for target itch_recovery_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=74 "Finished codegen for target itch_recovery_benchmark"
 .PHONY : app/CMakeFiles/itch_recovery_benchmark.dir/codegen
 
 # clean rule for target.
@@ -1634,13 +1640,46 @@ app/CMakeFiles/itch_recovery_benchmark.dir/clean:
 .PHONY : app/CMakeFiles/itch_recovery_benchmark.dir/clean
 
 #=============================================================================
+# Target rules for target app/CMakeFiles/itch_udp_load_gen.dir
+
+# All Build rule for target.
+app/CMakeFiles/itch_udp_load_gen.dir/all: common/CMakeFiles/common.dir/all
+app/CMakeFiles/itch_udp_load_gen.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
+	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_load_gen.dir/build.make app/CMakeFiles/itch_udp_load_gen.dir/depend
+	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_load_gen.dir/build.make app/CMakeFiles/itch_udp_load_gen.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=78 "Built target itch_udp_load_gen"
+.PHONY : app/CMakeFiles/itch_udp_load_gen.dir/all
+
+# Build rule for subdir invocation for target.
+app/CMakeFiles/itch_udp_load_gen.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 app/CMakeFiles/itch_udp_load_gen.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
+.PHONY : app/CMakeFiles/itch_udp_load_gen.dir/rule
+
+# Convenience name for target.
+itch_udp_load_gen: app/CMakeFiles/itch_udp_load_gen.dir/rule
+.PHONY : itch_udp_load_gen
+
+# codegen rule for target.
+app/CMakeFiles/itch_udp_load_gen.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_load_gen.dir/build.make app/CMakeFiles/itch_udp_load_gen.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=78 "Finished codegen for target itch_udp_load_gen"
+.PHONY : app/CMakeFiles/itch_udp_load_gen.dir/codegen
+
+# clean rule for target.
+app/CMakeFiles/itch_udp_load_gen.dir/clean:
+	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_load_gen.dir/build.make app/CMakeFiles/itch_udp_load_gen.dir/clean
+.PHONY : app/CMakeFiles/itch_udp_load_gen.dir/clean
+
+#=============================================================================
 # Target rules for target benchmarks/CMakeFiles/spsc_app.dir
 
 # All Build rule for target.
 benchmarks/CMakeFiles/spsc_app.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/spsc_app.dir/build.make benchmarks/CMakeFiles/spsc_app.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/spsc_app.dir/build.make benchmarks/CMakeFiles/spsc_app.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=91,92 "Built target spsc_app"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=90,91 "Built target spsc_app"
 .PHONY : benchmarks/CMakeFiles/spsc_app.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1657,7 +1696,7 @@ spsc_app: benchmarks/CMakeFiles/spsc_app.dir/rule
 # codegen rule for target.
 benchmarks/CMakeFiles/spsc_app.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/spsc_app.dir/build.make benchmarks/CMakeFiles/spsc_app.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=91,92 "Finished codegen for target spsc_app"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=90,91 "Finished codegen for target spsc_app"
 .PHONY : benchmarks/CMakeFiles/spsc_app.dir/codegen
 
 # clean rule for target.
@@ -1672,7 +1711,7 @@ benchmarks/CMakeFiles/spsc_app.dir/clean:
 benchmarks/CMakeFiles/spsc_appb.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/spsc_appb.dir/build.make benchmarks/CMakeFiles/spsc_appb.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/spsc_appb.dir/build.make benchmarks/CMakeFiles/spsc_appb.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=93 "Built target spsc_appb"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=92 "Built target spsc_appb"
 .PHONY : benchmarks/CMakeFiles/spsc_appb.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1689,7 +1728,7 @@ spsc_appb: benchmarks/CMakeFiles/spsc_appb.dir/rule
 # codegen rule for target.
 benchmarks/CMakeFiles/spsc_appb.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/spsc_appb.dir/build.make benchmarks/CMakeFiles/spsc_appb.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=93 "Finished codegen for target spsc_appb"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=92 "Finished codegen for target spsc_appb"
 .PHONY : benchmarks/CMakeFiles/spsc_appb.dir/codegen
 
 # clean rule for target.
@@ -1704,7 +1743,7 @@ benchmarks/CMakeFiles/spsc_appb.dir/clean:
 benchmarks/CMakeFiles/spsc_appc.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/spsc_appc.dir/build.make benchmarks/CMakeFiles/spsc_appc.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/spsc_appc.dir/build.make benchmarks/CMakeFiles/spsc_appc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=94 "Built target spsc_appc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=93 "Built target spsc_appc"
 .PHONY : benchmarks/CMakeFiles/spsc_appc.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1721,7 +1760,7 @@ spsc_appc: benchmarks/CMakeFiles/spsc_appc.dir/rule
 # codegen rule for target.
 benchmarks/CMakeFiles/spsc_appc.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/spsc_appc.dir/build.make benchmarks/CMakeFiles/spsc_appc.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=94 "Finished codegen for target spsc_appc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=93 "Finished codegen for target spsc_appc"
 .PHONY : benchmarks/CMakeFiles/spsc_appc.dir/codegen
 
 # clean rule for target.
@@ -1736,7 +1775,7 @@ benchmarks/CMakeFiles/spsc_appc.dir/clean:
 benchmarks/CMakeFiles/seq_cst_benchmark.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/seq_cst_benchmark.dir/build.make benchmarks/CMakeFiles/seq_cst_benchmark.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/seq_cst_benchmark.dir/build.make benchmarks/CMakeFiles/seq_cst_benchmark.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=90 "Built target seq_cst_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=89 "Built target seq_cst_benchmark"
 .PHONY : benchmarks/CMakeFiles/seq_cst_benchmark.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1753,7 +1792,7 @@ seq_cst_benchmark: benchmarks/CMakeFiles/seq_cst_benchmark.dir/rule
 # codegen rule for target.
 benchmarks/CMakeFiles/seq_cst_benchmark.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/seq_cst_benchmark.dir/build.make benchmarks/CMakeFiles/seq_cst_benchmark.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=90 "Finished codegen for target seq_cst_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=89 "Finished codegen for target seq_cst_benchmark"
 .PHONY : benchmarks/CMakeFiles/seq_cst_benchmark.dir/codegen
 
 # clean rule for target.
@@ -1769,7 +1808,7 @@ benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/all: common/CMakeFiles/common.
 benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/build.make benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/build.make benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=75 "Built target itch_pipeline_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=73 "Built target itch_pipeline_benchmark"
 .PHONY : benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1786,7 +1825,7 @@ itch_pipeline_benchmark: benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/rule
 # codegen rule for target.
 benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/build.make benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=75 "Finished codegen for target itch_pipeline_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=73 "Finished codegen for target itch_pipeline_benchmark"
 .PHONY : benchmarks/CMakeFiles/itch_pipeline_benchmark.dir/codegen
 
 # clean rule for target.
@@ -1802,7 +1841,7 @@ benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/all: common/CMakeFiles/co
 benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/build.make benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/build.make benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=71 "Built target itch_core_pipeline_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=69 "Built target itch_core_pipeline_benchmark"
 .PHONY : benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1819,7 +1858,7 @@ itch_core_pipeline_benchmark: benchmarks/CMakeFiles/itch_core_pipeline_benchmark
 # codegen rule for target.
 benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/build.make benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=71 "Finished codegen for target itch_core_pipeline_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=69 "Finished codegen for target itch_core_pipeline_benchmark"
 .PHONY : benchmarks/CMakeFiles/itch_core_pipeline_benchmark.dir/codegen
 
 # clean rule for target.
@@ -1835,7 +1874,7 @@ benchmarks/CMakeFiles/itch_decode_benchmark.dir/all: common/CMakeFiles/common.di
 benchmarks/CMakeFiles/itch_decode_benchmark.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_decode_benchmark.dir/build.make benchmarks/CMakeFiles/itch_decode_benchmark.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_decode_benchmark.dir/build.make benchmarks/CMakeFiles/itch_decode_benchmark.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=72 "Built target itch_decode_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=70 "Built target itch_decode_benchmark"
 .PHONY : benchmarks/CMakeFiles/itch_decode_benchmark.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1852,7 +1891,7 @@ itch_decode_benchmark: benchmarks/CMakeFiles/itch_decode_benchmark.dir/rule
 # codegen rule for target.
 benchmarks/CMakeFiles/itch_decode_benchmark.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_decode_benchmark.dir/build.make benchmarks/CMakeFiles/itch_decode_benchmark.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=72 "Finished codegen for target itch_decode_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=70 "Finished codegen for target itch_decode_benchmark"
 .PHONY : benchmarks/CMakeFiles/itch_decode_benchmark.dir/codegen
 
 # clean rule for target.
@@ -1861,13 +1900,46 @@ benchmarks/CMakeFiles/itch_decode_benchmark.dir/clean:
 .PHONY : benchmarks/CMakeFiles/itch_decode_benchmark.dir/clean
 
 #=============================================================================
+# Target rules for target benchmarks/CMakeFiles/udp_throughput_bench.dir
+
+# All Build rule for target.
+benchmarks/CMakeFiles/udp_throughput_bench.dir/all: common/CMakeFiles/common.dir/all
+benchmarks/CMakeFiles/udp_throughput_bench.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
+	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/udp_throughput_bench.dir/build.make benchmarks/CMakeFiles/udp_throughput_bench.dir/depend
+	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/udp_throughput_bench.dir/build.make benchmarks/CMakeFiles/udp_throughput_bench.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=99,100 "Built target udp_throughput_bench"
+.PHONY : benchmarks/CMakeFiles/udp_throughput_bench.dir/all
+
+# Build rule for subdir invocation for target.
+benchmarks/CMakeFiles/udp_throughput_bench.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmarks/CMakeFiles/udp_throughput_bench.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
+.PHONY : benchmarks/CMakeFiles/udp_throughput_bench.dir/rule
+
+# Convenience name for target.
+udp_throughput_bench: benchmarks/CMakeFiles/udp_throughput_bench.dir/rule
+.PHONY : udp_throughput_bench
+
+# codegen rule for target.
+benchmarks/CMakeFiles/udp_throughput_bench.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/udp_throughput_bench.dir/build.make benchmarks/CMakeFiles/udp_throughput_bench.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=99,100 "Finished codegen for target udp_throughput_bench"
+.PHONY : benchmarks/CMakeFiles/udp_throughput_bench.dir/codegen
+
+# clean rule for target.
+benchmarks/CMakeFiles/udp_throughput_bench.dir/clean:
+	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/udp_throughput_bench.dir/build.make benchmarks/CMakeFiles/udp_throughput_bench.dir/clean
+.PHONY : benchmarks/CMakeFiles/udp_throughput_bench.dir/clean
+
+#=============================================================================
 # Target rules for target tests/CMakeFiles/logger_tests.dir
 
 # All Build rule for target.
 tests/CMakeFiles/logger_tests.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/logger_tests.dir/build.make tests/CMakeFiles/logger_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/logger_tests.dir/build.make tests/CMakeFiles/logger_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=84 "Built target logger_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=83 "Built target logger_tests"
 .PHONY : tests/CMakeFiles/logger_tests.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1884,7 +1956,7 @@ logger_tests: tests/CMakeFiles/logger_tests.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/logger_tests.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/logger_tests.dir/build.make tests/CMakeFiles/logger_tests.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=84 "Finished codegen for target logger_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=83 "Finished codegen for target logger_tests"
 .PHONY : tests/CMakeFiles/logger_tests.dir/codegen
 
 # clean rule for target.
@@ -1899,12 +1971,12 @@ tests/CMakeFiles/logger_tests.dir/clean:
 tests/CMakeFiles/strong_type_tests.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/strong_type_tests.dir/build.make tests/CMakeFiles/strong_type_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/strong_type_tests.dir/build.make tests/CMakeFiles/strong_type_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=97 "Built target strong_type_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=95,96 "Built target strong_type_tests"
 .PHONY : tests/CMakeFiles/strong_type_tests.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/strong_type_tests.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 12
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 13
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/strong_type_tests.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/strong_type_tests.dir/rule
@@ -1916,7 +1988,7 @@ strong_type_tests: tests/CMakeFiles/strong_type_tests.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/strong_type_tests.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/strong_type_tests.dir/build.make tests/CMakeFiles/strong_type_tests.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=97 "Finished codegen for target strong_type_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=95,96 "Finished codegen for target strong_type_tests"
 .PHONY : tests/CMakeFiles/strong_type_tests.dir/codegen
 
 # clean rule for target.
@@ -1931,7 +2003,7 @@ tests/CMakeFiles/strong_type_tests.dir/clean:
 tests/CMakeFiles/price_type_tests.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/price_type_tests.dir/build.make tests/CMakeFiles/price_type_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/price_type_tests.dir/build.make tests/CMakeFiles/price_type_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=88 "Built target price_type_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=87 "Built target price_type_tests"
 .PHONY : tests/CMakeFiles/price_type_tests.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1948,7 +2020,7 @@ price_type_tests: tests/CMakeFiles/price_type_tests.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/price_type_tests.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/price_type_tests.dir/build.make tests/CMakeFiles/price_type_tests.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=88 "Finished codegen for target price_type_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=87 "Finished codegen for target price_type_tests"
 .PHONY : tests/CMakeFiles/price_type_tests.dir/codegen
 
 # clean rule for target.
@@ -1963,12 +2035,12 @@ tests/CMakeFiles/price_type_tests.dir/clean:
 tests/CMakeFiles/level_tests.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/level_tests.dir/build.make tests/CMakeFiles/level_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/level_tests.dir/build.make tests/CMakeFiles/level_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=82,83 "Built target level_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=82 "Built target level_tests"
 .PHONY : tests/CMakeFiles/level_tests.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/level_tests.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 12
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/level_tests.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/level_tests.dir/rule
@@ -1980,7 +2052,7 @@ level_tests: tests/CMakeFiles/level_tests.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/level_tests.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/level_tests.dir/build.make tests/CMakeFiles/level_tests.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=82,83 "Finished codegen for target level_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=82 "Finished codegen for target level_tests"
 .PHONY : tests/CMakeFiles/level_tests.dir/codegen
 
 # clean rule for target.
@@ -1995,7 +2067,7 @@ tests/CMakeFiles/level_tests.dir/clean:
 tests/CMakeFiles/quote_tests.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/quote_tests.dir/build.make tests/CMakeFiles/quote_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/quote_tests.dir/build.make tests/CMakeFiles/quote_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=89 "Built target quote_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=88 "Built target quote_tests"
 .PHONY : tests/CMakeFiles/quote_tests.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2012,7 +2084,7 @@ quote_tests: tests/CMakeFiles/quote_tests.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/quote_tests.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/quote_tests.dir/build.make tests/CMakeFiles/quote_tests.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=89 "Finished codegen for target quote_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=88 "Finished codegen for target quote_tests"
 .PHONY : tests/CMakeFiles/quote_tests.dir/codegen
 
 # clean rule for target.
@@ -2027,7 +2099,7 @@ tests/CMakeFiles/quote_tests.dir/clean:
 tests/CMakeFiles/trade_tests.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/trade_tests.dir/build.make tests/CMakeFiles/trade_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/trade_tests.dir/build.make tests/CMakeFiles/trade_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=98 "Built target trade_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=97 "Built target trade_tests"
 .PHONY : tests/CMakeFiles/trade_tests.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2044,7 +2116,7 @@ trade_tests: tests/CMakeFiles/trade_tests.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/trade_tests.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/trade_tests.dir/build.make tests/CMakeFiles/trade_tests.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=98 "Finished codegen for target trade_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=97 "Finished codegen for target trade_tests"
 .PHONY : tests/CMakeFiles/trade_tests.dir/codegen
 
 # clean rule for target.
@@ -2059,7 +2131,7 @@ tests/CMakeFiles/trade_tests.dir/clean:
 tests/CMakeFiles/market_event_tests.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/market_event_tests.dir/build.make tests/CMakeFiles/market_event_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/market_event_tests.dir/build.make tests/CMakeFiles/market_event_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=86,87 "Built target market_event_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=85,86 "Built target market_event_tests"
 .PHONY : tests/CMakeFiles/market_event_tests.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2076,7 +2148,7 @@ market_event_tests: tests/CMakeFiles/market_event_tests.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/market_event_tests.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/market_event_tests.dir/build.make tests/CMakeFiles/market_event_tests.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=86,87 "Finished codegen for target market_event_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=85,86 "Finished codegen for target market_event_tests"
 .PHONY : tests/CMakeFiles/market_event_tests.dir/codegen
 
 # clean rule for target.
@@ -2091,12 +2163,12 @@ tests/CMakeFiles/market_event_tests.dir/clean:
 tests/CMakeFiles/spsc_ringbuffer_tests.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/spsc_ringbuffer_tests.dir/build.make tests/CMakeFiles/spsc_ringbuffer_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/spsc_ringbuffer_tests.dir/build.make tests/CMakeFiles/spsc_ringbuffer_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=95,96 "Built target spsc_ringbuffer_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=94 "Built target spsc_ringbuffer_tests"
 .PHONY : tests/CMakeFiles/spsc_ringbuffer_tests.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/spsc_ringbuffer_tests.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 12
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/spsc_ringbuffer_tests.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/spsc_ringbuffer_tests.dir/rule
@@ -2108,7 +2180,7 @@ spsc_ringbuffer_tests: tests/CMakeFiles/spsc_ringbuffer_tests.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/spsc_ringbuffer_tests.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/spsc_ringbuffer_tests.dir/build.make tests/CMakeFiles/spsc_ringbuffer_tests.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=95,96 "Finished codegen for target spsc_ringbuffer_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=94 "Finished codegen for target spsc_ringbuffer_tests"
 .PHONY : tests/CMakeFiles/spsc_ringbuffer_tests.dir/codegen
 
 # clean rule for target.
@@ -2123,12 +2195,12 @@ tests/CMakeFiles/spsc_ringbuffer_tests.dir/clean:
 tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/build.make tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/build.make tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=47,48 "Built target SpscRingBufferConcurrencyTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=46 "Built target SpscRingBufferConcurrencyTest"
 .PHONY : tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 12
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/rule
@@ -2140,7 +2212,7 @@ SpscRingBufferConcurrencyTest: tests/CMakeFiles/SpscRingBufferConcurrencyTest.di
 # codegen rule for target.
 tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/build.make tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=47,48 "Finished codegen for target SpscRingBufferConcurrencyTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=46 "Finished codegen for target SpscRingBufferConcurrencyTest"
 .PHONY : tests/CMakeFiles/SpscRingBufferConcurrencyTest.dir/codegen
 
 # clean rule for target.
@@ -2187,7 +2259,7 @@ tests/CMakeFiles/AtomicTest.dir/clean:
 tests/CMakeFiles/MarketEventTest.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/MarketEventTest.dir/build.make tests/CMakeFiles/MarketEventTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/MarketEventTest.dir/build.make tests/CMakeFiles/MarketEventTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=34,35 "Built target MarketEventTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=33,34 "Built target MarketEventTest"
 .PHONY : tests/CMakeFiles/MarketEventTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2204,7 +2276,7 @@ MarketEventTest: tests/CMakeFiles/MarketEventTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/MarketEventTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/MarketEventTest.dir/build.make tests/CMakeFiles/MarketEventTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=34,35 "Finished codegen for target MarketEventTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=33,34 "Finished codegen for target MarketEventTest"
 .PHONY : tests/CMakeFiles/MarketEventTest.dir/codegen
 
 # clean rule for target.
@@ -2252,12 +2324,12 @@ tests/CMakeFiles/FeedHandlerMockTest.dir/clean:
 tests/CMakeFiles/UdpMarketDataSourceTest.dir/all: common/CMakeFiles/common.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpMarketDataSourceTest.dir/build.make tests/CMakeFiles/UdpMarketDataSourceTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpMarketDataSourceTest.dir/build.make tests/CMakeFiles/UdpMarketDataSourceTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=56,57 "Built target UdpMarketDataSourceTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=55 "Built target UdpMarketDataSourceTest"
 .PHONY : tests/CMakeFiles/UdpMarketDataSourceTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/UdpMarketDataSourceTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 12
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/UdpMarketDataSourceTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/UdpMarketDataSourceTest.dir/rule
@@ -2269,7 +2341,7 @@ UdpMarketDataSourceTest: tests/CMakeFiles/UdpMarketDataSourceTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/UdpMarketDataSourceTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpMarketDataSourceTest.dir/build.make tests/CMakeFiles/UdpMarketDataSourceTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=56,57 "Finished codegen for target UdpMarketDataSourceTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=55 "Finished codegen for target UdpMarketDataSourceTest"
 .PHONY : tests/CMakeFiles/UdpMarketDataSourceTest.dir/codegen
 
 # clean rule for target.
@@ -2285,12 +2357,12 @@ tests/CMakeFiles/UdpFeedHandlerTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/UdpFeedHandlerTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpFeedHandlerTest.dir/build.make tests/CMakeFiles/UdpFeedHandlerTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpFeedHandlerTest.dir/build.make tests/CMakeFiles/UdpFeedHandlerTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=54 "Built target UdpFeedHandlerTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=52,53 "Built target UdpFeedHandlerTest"
 .PHONY : tests/CMakeFiles/UdpFeedHandlerTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/UdpFeedHandlerTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/UdpFeedHandlerTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/UdpFeedHandlerTest.dir/rule
@@ -2302,7 +2374,7 @@ UdpFeedHandlerTest: tests/CMakeFiles/UdpFeedHandlerTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/UdpFeedHandlerTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpFeedHandlerTest.dir/build.make tests/CMakeFiles/UdpFeedHandlerTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=54 "Finished codegen for target UdpFeedHandlerTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=52,53 "Finished codegen for target UdpFeedHandlerTest"
 .PHONY : tests/CMakeFiles/UdpFeedHandlerTest.dir/codegen
 
 # clean rule for target.
@@ -2318,12 +2390,12 @@ tests/CMakeFiles/UdpCodecTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/UdpCodecTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpCodecTest.dir/build.make tests/CMakeFiles/UdpCodecTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpCodecTest.dir/build.make tests/CMakeFiles/UdpCodecTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=52,53 "Built target UdpCodecTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=51 "Built target UdpCodecTest"
 .PHONY : tests/CMakeFiles/UdpCodecTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/UdpCodecTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/UdpCodecTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/UdpCodecTest.dir/rule
@@ -2335,7 +2407,7 @@ UdpCodecTest: tests/CMakeFiles/UdpCodecTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/UdpCodecTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpCodecTest.dir/build.make tests/CMakeFiles/UdpCodecTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=52,53 "Finished codegen for target UdpCodecTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=51 "Finished codegen for target UdpCodecTest"
 .PHONY : tests/CMakeFiles/UdpCodecTest.dir/codegen
 
 # clean rule for target.
@@ -2384,7 +2456,7 @@ tests/CMakeFiles/SimpleStrategyTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/SimpleStrategyTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/SimpleStrategyTest.dir/build.make tests/CMakeFiles/SimpleStrategyTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/SimpleStrategyTest.dir/build.make tests/CMakeFiles/SimpleStrategyTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=46 "Built target SimpleStrategyTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=45 "Built target SimpleStrategyTest"
 .PHONY : tests/CMakeFiles/SimpleStrategyTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2401,7 +2473,7 @@ SimpleStrategyTest: tests/CMakeFiles/SimpleStrategyTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/SimpleStrategyTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/SimpleStrategyTest.dir/build.make tests/CMakeFiles/SimpleStrategyTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=46 "Finished codegen for target SimpleStrategyTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=45 "Finished codegen for target SimpleStrategyTest"
 .PHONY : tests/CMakeFiles/SimpleStrategyTest.dir/codegen
 
 # clean rule for target.
@@ -2417,7 +2489,7 @@ tests/CMakeFiles/StrategyEngineTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/StrategyEngineTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/StrategyEngineTest.dir/build.make tests/CMakeFiles/StrategyEngineTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/StrategyEngineTest.dir/build.make tests/CMakeFiles/StrategyEngineTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=50 "Built target StrategyEngineTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=49 "Built target StrategyEngineTest"
 .PHONY : tests/CMakeFiles/StrategyEngineTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2434,7 +2506,7 @@ StrategyEngineTest: tests/CMakeFiles/StrategyEngineTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/StrategyEngineTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/StrategyEngineTest.dir/build.make tests/CMakeFiles/StrategyEngineTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=50 "Finished codegen for target StrategyEngineTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=49 "Finished codegen for target StrategyEngineTest"
 .PHONY : tests/CMakeFiles/StrategyEngineTest.dir/codegen
 
 # clean rule for target.
@@ -2483,12 +2555,12 @@ tests/CMakeFiles/ItchDispatcherTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/ItchDispatcherTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchDispatcherTest.dir/build.make tests/CMakeFiles/ItchDispatcherTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchDispatcherTest.dir/build.make tests/CMakeFiles/ItchDispatcherTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=17,18 "Built target ItchDispatcherTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=17 "Built target ItchDispatcherTest"
 .PHONY : tests/CMakeFiles/ItchDispatcherTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ItchDispatcherTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ItchDispatcherTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ItchDispatcherTest.dir/rule
@@ -2500,7 +2572,7 @@ ItchDispatcherTest: tests/CMakeFiles/ItchDispatcherTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/ItchDispatcherTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchDispatcherTest.dir/build.make tests/CMakeFiles/ItchDispatcherTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=17,18 "Finished codegen for target ItchDispatcherTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=17 "Finished codegen for target ItchDispatcherTest"
 .PHONY : tests/CMakeFiles/ItchDispatcherTest.dir/codegen
 
 # clean rule for target.
@@ -2516,12 +2588,12 @@ tests/CMakeFiles/ItchStreamReaderTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/ItchStreamReaderTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchStreamReaderTest.dir/build.make tests/CMakeFiles/ItchStreamReaderTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchStreamReaderTest.dir/build.make tests/CMakeFiles/ItchStreamReaderTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=26,27 "Built target ItchStreamReaderTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=26 "Built target ItchStreamReaderTest"
 .PHONY : tests/CMakeFiles/ItchStreamReaderTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ItchStreamReaderTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ItchStreamReaderTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ItchStreamReaderTest.dir/rule
@@ -2533,7 +2605,7 @@ ItchStreamReaderTest: tests/CMakeFiles/ItchStreamReaderTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/ItchStreamReaderTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchStreamReaderTest.dir/build.make tests/CMakeFiles/ItchStreamReaderTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=26,27 "Finished codegen for target ItchStreamReaderTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=26 "Finished codegen for target ItchStreamReaderTest"
 .PHONY : tests/CMakeFiles/ItchStreamReaderTest.dir/codegen
 
 # clean rule for target.
@@ -2549,12 +2621,12 @@ tests/CMakeFiles/ItchReplayTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/ItchReplayTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchReplayTest.dir/build.make tests/CMakeFiles/ItchReplayTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchReplayTest.dir/build.make tests/CMakeFiles/ItchReplayTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=24 "Built target ItchReplayTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=23,24 "Built target ItchReplayTest"
 .PHONY : tests/CMakeFiles/ItchReplayTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ItchReplayTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ItchReplayTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ItchReplayTest.dir/rule
@@ -2566,7 +2638,7 @@ ItchReplayTest: tests/CMakeFiles/ItchReplayTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/ItchReplayTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchReplayTest.dir/build.make tests/CMakeFiles/ItchReplayTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=24 "Finished codegen for target ItchReplayTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=23,24 "Finished codegen for target ItchReplayTest"
 .PHONY : tests/CMakeFiles/ItchReplayTest.dir/codegen
 
 # clean rule for target.
@@ -2615,7 +2687,7 @@ tests/CMakeFiles/TradeMessageTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/TradeMessageTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/TradeMessageTest.dir/build.make tests/CMakeFiles/TradeMessageTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/TradeMessageTest.dir/build.make tests/CMakeFiles/TradeMessageTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=51 "Built target TradeMessageTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=50 "Built target TradeMessageTest"
 .PHONY : tests/CMakeFiles/TradeMessageTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2632,7 +2704,7 @@ TradeMessageTest: tests/CMakeFiles/TradeMessageTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/TradeMessageTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/TradeMessageTest.dir/build.make tests/CMakeFiles/TradeMessageTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=51 "Finished codegen for target TradeMessageTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=50 "Finished codegen for target TradeMessageTest"
 .PHONY : tests/CMakeFiles/TradeMessageTest.dir/codegen
 
 # clean rule for target.
@@ -2648,12 +2720,12 @@ tests/CMakeFiles/CrossTradeMessageTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/CrossTradeMessageTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CrossTradeMessageTest.dir/build.make tests/CMakeFiles/CrossTradeMessageTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CrossTradeMessageTest.dir/build.make tests/CMakeFiles/CrossTradeMessageTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=10 "Built target CrossTradeMessageTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=9,10 "Built target CrossTradeMessageTest"
 .PHONY : tests/CMakeFiles/CrossTradeMessageTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/CrossTradeMessageTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/CrossTradeMessageTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/CrossTradeMessageTest.dir/rule
@@ -2665,7 +2737,7 @@ CrossTradeMessageTest: tests/CMakeFiles/CrossTradeMessageTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/CrossTradeMessageTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CrossTradeMessageTest.dir/build.make tests/CMakeFiles/CrossTradeMessageTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=10 "Finished codegen for target CrossTradeMessageTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=9,10 "Finished codegen for target CrossTradeMessageTest"
 .PHONY : tests/CMakeFiles/CrossTradeMessageTest.dir/codegen
 
 # clean rule for target.
@@ -2681,12 +2753,12 @@ tests/CMakeFiles/BrokenTradeMessageTest.dir/all: common/CMakeFiles/common.dir/al
 tests/CMakeFiles/BrokenTradeMessageTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/BrokenTradeMessageTest.dir/build.make tests/CMakeFiles/BrokenTradeMessageTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/BrokenTradeMessageTest.dir/build.make tests/CMakeFiles/BrokenTradeMessageTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=8,9 "Built target BrokenTradeMessageTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=8 "Built target BrokenTradeMessageTest"
 .PHONY : tests/CMakeFiles/BrokenTradeMessageTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/BrokenTradeMessageTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/BrokenTradeMessageTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/BrokenTradeMessageTest.dir/rule
@@ -2698,7 +2770,7 @@ BrokenTradeMessageTest: tests/CMakeFiles/BrokenTradeMessageTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/BrokenTradeMessageTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/BrokenTradeMessageTest.dir/build.make tests/CMakeFiles/BrokenTradeMessageTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=8,9 "Finished codegen for target BrokenTradeMessageTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=8 "Finished codegen for target BrokenTradeMessageTest"
 .PHONY : tests/CMakeFiles/BrokenTradeMessageTest.dir/codegen
 
 # clean rule for target.
@@ -2714,12 +2786,12 @@ tests/CMakeFiles/StockTradingActionMessageTest.dir/all: common/CMakeFiles/common
 tests/CMakeFiles/StockTradingActionMessageTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/StockTradingActionMessageTest.dir/build.make tests/CMakeFiles/StockTradingActionMessageTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/StockTradingActionMessageTest.dir/build.make tests/CMakeFiles/StockTradingActionMessageTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=49 "Built target StockTradingActionMessageTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=47,48 "Built target StockTradingActionMessageTest"
 .PHONY : tests/CMakeFiles/StockTradingActionMessageTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/StockTradingActionMessageTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/StockTradingActionMessageTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/StockTradingActionMessageTest.dir/rule
@@ -2731,7 +2803,7 @@ StockTradingActionMessageTest: tests/CMakeFiles/StockTradingActionMessageTest.di
 # codegen rule for target.
 tests/CMakeFiles/StockTradingActionMessageTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/StockTradingActionMessageTest.dir/build.make tests/CMakeFiles/StockTradingActionMessageTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=49 "Finished codegen for target StockTradingActionMessageTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=47,48 "Finished codegen for target StockTradingActionMessageTest"
 .PHONY : tests/CMakeFiles/StockTradingActionMessageTest.dir/codegen
 
 # clean rule for target.
@@ -2747,7 +2819,7 @@ tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/all: common/CMakeFiles
 tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/build.make tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/build.make tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=36 "Built target MarketParticipantPositionMessageTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=35 "Built target MarketParticipantPositionMessageTest"
 .PHONY : tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2764,7 +2836,7 @@ MarketParticipantPositionMessageTest: tests/CMakeFiles/MarketParticipantPosition
 # codegen rule for target.
 tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/build.make tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=36 "Finished codegen for target MarketParticipantPositionMessageTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=35 "Finished codegen for target MarketParticipantPositionMessageTest"
 .PHONY : tests/CMakeFiles/MarketParticipantPositionMessageTest.dir/codegen
 
 # clean rule for target.
@@ -2780,7 +2852,7 @@ tests/CMakeFiles/RemainingItchMessagesTest.dir/all: common/CMakeFiles/common.dir
 tests/CMakeFiles/RemainingItchMessagesTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/RemainingItchMessagesTest.dir/build.make tests/CMakeFiles/RemainingItchMessagesTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/RemainingItchMessagesTest.dir/build.make tests/CMakeFiles/RemainingItchMessagesTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=45 "Built target RemainingItchMessagesTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=44 "Built target RemainingItchMessagesTest"
 .PHONY : tests/CMakeFiles/RemainingItchMessagesTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2797,7 +2869,7 @@ RemainingItchMessagesTest: tests/CMakeFiles/RemainingItchMessagesTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/RemainingItchMessagesTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/RemainingItchMessagesTest.dir/build.make tests/CMakeFiles/RemainingItchMessagesTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=45 "Finished codegen for target RemainingItchMessagesTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=44 "Finished codegen for target RemainingItchMessagesTest"
 .PHONY : tests/CMakeFiles/RemainingItchMessagesTest.dir/codegen
 
 # clean rule for target.
@@ -2813,12 +2885,12 @@ tests/CMakeFiles/InstrumentStoreTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/InstrumentStoreTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/InstrumentStoreTest.dir/build.make tests/CMakeFiles/InstrumentStoreTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/InstrumentStoreTest.dir/build.make tests/CMakeFiles/InstrumentStoreTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=15 "Built target InstrumentStoreTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=14,15 "Built target InstrumentStoreTest"
 .PHONY : tests/CMakeFiles/InstrumentStoreTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/InstrumentStoreTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/InstrumentStoreTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/InstrumentStoreTest.dir/rule
@@ -2830,7 +2902,7 @@ InstrumentStoreTest: tests/CMakeFiles/InstrumentStoreTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/InstrumentStoreTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/InstrumentStoreTest.dir/build.make tests/CMakeFiles/InstrumentStoreTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=15 "Finished codegen for target InstrumentStoreTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=14,15 "Finished codegen for target InstrumentStoreTest"
 .PHONY : tests/CMakeFiles/InstrumentStoreTest.dir/codegen
 
 # clean rule for target.
@@ -2846,12 +2918,12 @@ tests/CMakeFiles/ItchNormalizerTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/ItchNormalizerTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchNormalizerTest.dir/build.make tests/CMakeFiles/ItchNormalizerTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchNormalizerTest.dir/build.make tests/CMakeFiles/ItchNormalizerTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=20 "Built target ItchNormalizerTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=19,20 "Built target ItchNormalizerTest"
 .PHONY : tests/CMakeFiles/ItchNormalizerTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ItchNormalizerTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ItchNormalizerTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ItchNormalizerTest.dir/rule
@@ -2863,7 +2935,7 @@ ItchNormalizerTest: tests/CMakeFiles/ItchNormalizerTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/ItchNormalizerTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchNormalizerTest.dir/build.make tests/CMakeFiles/ItchNormalizerTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=20 "Finished codegen for target ItchNormalizerTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=19,20 "Finished codegen for target ItchNormalizerTest"
 .PHONY : tests/CMakeFiles/ItchNormalizerTest.dir/codegen
 
 # clean rule for target.
@@ -2879,7 +2951,7 @@ tests/CMakeFiles/OrderStoreTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/OrderStoreTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderStoreTest.dir/build.make tests/CMakeFiles/OrderStoreTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderStoreTest.dir/build.make tests/CMakeFiles/OrderStoreTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=42 "Built target OrderStoreTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=41 "Built target OrderStoreTest"
 .PHONY : tests/CMakeFiles/OrderStoreTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2896,7 +2968,7 @@ OrderStoreTest: tests/CMakeFiles/OrderStoreTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/OrderStoreTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderStoreTest.dir/build.make tests/CMakeFiles/OrderStoreTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=42 "Finished codegen for target OrderStoreTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=41 "Finished codegen for target OrderStoreTest"
 .PHONY : tests/CMakeFiles/OrderStoreTest.dir/codegen
 
 # clean rule for target.
@@ -2912,7 +2984,7 @@ tests/CMakeFiles/PriceLevelTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/PriceLevelTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/PriceLevelTest.dir/build.make tests/CMakeFiles/PriceLevelTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/PriceLevelTest.dir/build.make tests/CMakeFiles/PriceLevelTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=43,44 "Built target PriceLevelTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=42,43 "Built target PriceLevelTest"
 .PHONY : tests/CMakeFiles/PriceLevelTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2929,7 +3001,7 @@ PriceLevelTest: tests/CMakeFiles/PriceLevelTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/PriceLevelTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/PriceLevelTest.dir/build.make tests/CMakeFiles/PriceLevelTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=43,44 "Finished codegen for target PriceLevelTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=42,43 "Finished codegen for target PriceLevelTest"
 .PHONY : tests/CMakeFiles/PriceLevelTest.dir/codegen
 
 # clean rule for target.
@@ -2978,7 +3050,7 @@ tests/CMakeFiles/OrderBookTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/OrderBookTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookTest.dir/build.make tests/CMakeFiles/OrderBookTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookTest.dir/build.make tests/CMakeFiles/OrderBookTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=41 "Built target OrderBookTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=40 "Built target OrderBookTest"
 .PHONY : tests/CMakeFiles/OrderBookTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -2995,7 +3067,7 @@ OrderBookTest: tests/CMakeFiles/OrderBookTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/OrderBookTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookTest.dir/build.make tests/CMakeFiles/OrderBookTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=41 "Finished codegen for target OrderBookTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=40 "Finished codegen for target OrderBookTest"
 .PHONY : tests/CMakeFiles/OrderBookTest.dir/codegen
 
 # clean rule for target.
@@ -3044,7 +3116,7 @@ tests/CMakeFiles/OrderBookAddIntegrationTest.dir/all: common/CMakeFiles/common.d
 tests/CMakeFiles/OrderBookAddIntegrationTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookAddIntegrationTest.dir/build.make tests/CMakeFiles/OrderBookAddIntegrationTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookAddIntegrationTest.dir/build.make tests/CMakeFiles/OrderBookAddIntegrationTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=37 "Built target OrderBookAddIntegrationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=36 "Built target OrderBookAddIntegrationTest"
 .PHONY : tests/CMakeFiles/OrderBookAddIntegrationTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -3061,7 +3133,7 @@ OrderBookAddIntegrationTest: tests/CMakeFiles/OrderBookAddIntegrationTest.dir/ru
 # codegen rule for target.
 tests/CMakeFiles/OrderBookAddIntegrationTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookAddIntegrationTest.dir/build.make tests/CMakeFiles/OrderBookAddIntegrationTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=37 "Finished codegen for target OrderBookAddIntegrationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=36 "Finished codegen for target OrderBookAddIntegrationTest"
 .PHONY : tests/CMakeFiles/OrderBookAddIntegrationTest.dir/codegen
 
 # clean rule for target.
@@ -3077,7 +3149,7 @@ tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/all: common/CMakeFiles/co
 tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/build.make tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/build.make tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=39,40 "Built target OrderBookLifecycleIntegrationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=38,39 "Built target OrderBookLifecycleIntegrationTest"
 .PHONY : tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -3094,7 +3166,7 @@ OrderBookLifecycleIntegrationTest: tests/CMakeFiles/OrderBookLifecycleIntegratio
 # codegen rule for target.
 tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/build.make tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=39,40 "Finished codegen for target OrderBookLifecycleIntegrationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=38,39 "Finished codegen for target OrderBookLifecycleIntegrationTest"
 .PHONY : tests/CMakeFiles/OrderBookLifecycleIntegrationTest.dir/codegen
 
 # clean rule for target.
@@ -3110,7 +3182,7 @@ tests/CMakeFiles/OrderBookIntegrityTest.dir/all: common/CMakeFiles/common.dir/al
 tests/CMakeFiles/OrderBookIntegrityTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookIntegrityTest.dir/build.make tests/CMakeFiles/OrderBookIntegrityTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookIntegrityTest.dir/build.make tests/CMakeFiles/OrderBookIntegrityTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=38 "Built target OrderBookIntegrityTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=37 "Built target OrderBookIntegrityTest"
 .PHONY : tests/CMakeFiles/OrderBookIntegrityTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -3127,7 +3199,7 @@ OrderBookIntegrityTest: tests/CMakeFiles/OrderBookIntegrityTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/OrderBookIntegrityTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/OrderBookIntegrityTest.dir/build.make tests/CMakeFiles/OrderBookIntegrityTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=38 "Finished codegen for target OrderBookIntegrityTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=37 "Finished codegen for target OrderBookIntegrityTest"
 .PHONY : tests/CMakeFiles/OrderBookIntegrityTest.dir/codegen
 
 # clean rule for target.
@@ -3209,7 +3281,7 @@ tests/CMakeFiles/ItchQuotePublisherTest.dir/all: common/CMakeFiles/common.dir/al
 tests/CMakeFiles/ItchQuotePublisherTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchQuotePublisherTest.dir/build.make tests/CMakeFiles/ItchQuotePublisherTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchQuotePublisherTest.dir/build.make tests/CMakeFiles/ItchQuotePublisherTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=23 "Built target ItchQuotePublisherTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=22 "Built target ItchQuotePublisherTest"
 .PHONY : tests/CMakeFiles/ItchQuotePublisherTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -3226,7 +3298,7 @@ ItchQuotePublisherTest: tests/CMakeFiles/ItchQuotePublisherTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/ItchQuotePublisherTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchQuotePublisherTest.dir/build.make tests/CMakeFiles/ItchQuotePublisherTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=23 "Finished codegen for target ItchQuotePublisherTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=22 "Finished codegen for target ItchQuotePublisherTest"
 .PHONY : tests/CMakeFiles/ItchQuotePublisherTest.dir/codegen
 
 # clean rule for target.
@@ -3242,12 +3314,12 @@ tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/all: common/CMakeFiles/com
 tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/build.make tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/build.make tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=21,22 "Built target ItchQuotePipelineIntegrationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=21 "Built target ItchQuotePipelineIntegrationTest"
 .PHONY : tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/rule
@@ -3259,7 +3331,7 @@ ItchQuotePipelineIntegrationTest: tests/CMakeFiles/ItchQuotePipelineIntegrationT
 # codegen rule for target.
 tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/build.make tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=21,22 "Finished codegen for target ItchQuotePipelineIntegrationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=21 "Finished codegen for target ItchQuotePipelineIntegrationTest"
 .PHONY : tests/CMakeFiles/ItchQuotePipelineIntegrationTest.dir/codegen
 
 # clean rule for target.
@@ -3275,7 +3347,7 @@ tests/CMakeFiles/MarketEventConsumerTest.dir/all: common/CMakeFiles/common.dir/a
 tests/CMakeFiles/MarketEventConsumerTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/MarketEventConsumerTest.dir/build.make tests/CMakeFiles/MarketEventConsumerTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/MarketEventConsumerTest.dir/build.make tests/CMakeFiles/MarketEventConsumerTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=33 "Built target MarketEventConsumerTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=32 "Built target MarketEventConsumerTest"
 .PHONY : tests/CMakeFiles/MarketEventConsumerTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -3292,7 +3364,7 @@ MarketEventConsumerTest: tests/CMakeFiles/MarketEventConsumerTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/MarketEventConsumerTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/MarketEventConsumerTest.dir/build.make tests/CMakeFiles/MarketEventConsumerTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=33 "Finished codegen for target MarketEventConsumerTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=32 "Finished codegen for target MarketEventConsumerTest"
 .PHONY : tests/CMakeFiles/MarketEventConsumerTest.dir/codegen
 
 # clean rule for target.
@@ -3308,12 +3380,12 @@ tests/CMakeFiles/ItchUdpCodecTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/ItchUdpCodecTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchUdpCodecTest.dir/build.make tests/CMakeFiles/ItchUdpCodecTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchUdpCodecTest.dir/build.make tests/CMakeFiles/ItchUdpCodecTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=29 "Built target ItchUdpCodecTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=28,29 "Built target ItchUdpCodecTest"
 .PHONY : tests/CMakeFiles/ItchUdpCodecTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ItchUdpCodecTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ItchUdpCodecTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ItchUdpCodecTest.dir/rule
@@ -3325,7 +3397,7 @@ ItchUdpCodecTest: tests/CMakeFiles/ItchUdpCodecTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/ItchUdpCodecTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchUdpCodecTest.dir/build.make tests/CMakeFiles/ItchUdpCodecTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=29 "Finished codegen for target ItchUdpCodecTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=28,29 "Finished codegen for target ItchUdpCodecTest"
 .PHONY : tests/CMakeFiles/ItchUdpCodecTest.dir/codegen
 
 # clean rule for target.
@@ -3341,7 +3413,7 @@ tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/all: common/CMakeFiles/common.d
 tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/build.make tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/build.make tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=55 "Built target UdpItchMarketDataSourceTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=54 "Built target UdpItchMarketDataSourceTest"
 .PHONY : tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -3358,7 +3430,7 @@ UdpItchMarketDataSourceTest: tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/ru
 # codegen rule for target.
 tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/build.make tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=55 "Finished codegen for target UdpItchMarketDataSourceTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=54 "Finished codegen for target UdpItchMarketDataSourceTest"
 .PHONY : tests/CMakeFiles/UdpItchMarketDataSourceTest.dir/codegen
 
 # clean rule for target.
@@ -3407,7 +3479,7 @@ tests/CMakeFiles/ItchFeedHandlerTest.dir/all: common/CMakeFiles/common.dir/all
 tests/CMakeFiles/ItchFeedHandlerTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchFeedHandlerTest.dir/build.make tests/CMakeFiles/ItchFeedHandlerTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchFeedHandlerTest.dir/build.make tests/CMakeFiles/ItchFeedHandlerTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=19 "Built target ItchFeedHandlerTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=18 "Built target ItchFeedHandlerTest"
 .PHONY : tests/CMakeFiles/ItchFeedHandlerTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -3424,7 +3496,7 @@ ItchFeedHandlerTest: tests/CMakeFiles/ItchFeedHandlerTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/ItchFeedHandlerTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchFeedHandlerTest.dir/build.make tests/CMakeFiles/ItchFeedHandlerTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=19 "Finished codegen for target ItchFeedHandlerTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=18 "Finished codegen for target ItchFeedHandlerTest"
 .PHONY : tests/CMakeFiles/ItchFeedHandlerTest.dir/codegen
 
 # clean rule for target.
@@ -3440,12 +3512,12 @@ tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/all: common/CMakeFiles/common.di
 tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/build.make tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/build.make tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=30,31 "Built target ItchUdpFeedIntegrationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=30 "Built target ItchUdpFeedIntegrationTest"
 .PHONY : tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/rule
@@ -3457,7 +3529,7 @@ ItchUdpFeedIntegrationTest: tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/build.make tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=30,31 "Finished codegen for target ItchUdpFeedIntegrationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=30 "Finished codegen for target ItchUdpFeedIntegrationTest"
 .PHONY : tests/CMakeFiles/ItchUdpFeedIntegrationTest.dir/codegen
 
 # clean rule for target.
@@ -3473,7 +3545,7 @@ tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/all: common/CMakeFiles/
 tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/build.make tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/build.make tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=32 "Built target ItchUdpQuotePipelineIntegrationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=31 "Built target ItchUdpQuotePipelineIntegrationTest"
 .PHONY : tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -3490,7 +3562,7 @@ ItchUdpQuotePipelineIntegrationTest: tests/CMakeFiles/ItchUdpQuotePipelineIntegr
 # codegen rule for target.
 tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/build.make tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=32 "Finished codegen for target ItchUdpQuotePipelineIntegrationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=31 "Finished codegen for target ItchUdpQuotePipelineIntegrationTest"
 .PHONY : tests/CMakeFiles/ItchUdpQuotePipelineIntegrationTest.dir/codegen
 
 # clean rule for target.
@@ -3506,7 +3578,7 @@ tests/CMakeFiles/ItchTradePublicationTest.dir/all: common/CMakeFiles/common.dir/
 tests/CMakeFiles/ItchTradePublicationTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchTradePublicationTest.dir/build.make tests/CMakeFiles/ItchTradePublicationTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchTradePublicationTest.dir/build.make tests/CMakeFiles/ItchTradePublicationTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=28 "Built target ItchTradePublicationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=27 "Built target ItchTradePublicationTest"
 .PHONY : tests/CMakeFiles/ItchTradePublicationTest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -3523,7 +3595,7 @@ ItchTradePublicationTest: tests/CMakeFiles/ItchTradePublicationTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/ItchTradePublicationTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ItchTradePublicationTest.dir/build.make tests/CMakeFiles/ItchTradePublicationTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=28 "Finished codegen for target ItchTradePublicationTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=27 "Finished codegen for target ItchTradePublicationTest"
 .PHONY : tests/CMakeFiles/ItchTradePublicationTest.dir/codegen
 
 # clean rule for target.
@@ -3539,12 +3611,12 @@ tests/CMakeFiles/FileItchRecoverySourceTest.dir/all: common/CMakeFiles/common.di
 tests/CMakeFiles/FileItchRecoverySourceTest.dir/all: feed_handler/CMakeFiles/feed_handler.dir/all
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/FileItchRecoverySourceTest.dir/build.make tests/CMakeFiles/FileItchRecoverySourceTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/FileItchRecoverySourceTest.dir/build.make tests/CMakeFiles/FileItchRecoverySourceTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=13,14 "Built target FileItchRecoverySourceTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=13 "Built target FileItchRecoverySourceTest"
 .PHONY : tests/CMakeFiles/FileItchRecoverySourceTest.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/FileItchRecoverySourceTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/FileItchRecoverySourceTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles 0
 .PHONY : tests/CMakeFiles/FileItchRecoverySourceTest.dir/rule
@@ -3556,7 +3628,7 @@ FileItchRecoverySourceTest: tests/CMakeFiles/FileItchRecoverySourceTest.dir/rule
 # codegen rule for target.
 tests/CMakeFiles/FileItchRecoverySourceTest.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/FileItchRecoverySourceTest.dir/build.make tests/CMakeFiles/FileItchRecoverySourceTest.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=13,14 "Finished codegen for target FileItchRecoverySourceTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/hamzalatif/Desktop/low-latency-trading/build-release/CMakeFiles --progress-num=13 "Finished codegen for target FileItchRecoverySourceTest"
 .PHONY : tests/CMakeFiles/FileItchRecoverySourceTest.dir/codegen
 
 # clean rule for target.

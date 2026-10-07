@@ -99,3 +99,19 @@ target_link_libraries(
         common
         feed_handler
 )
+
+
+
+
+add_executable(
+    itch_udp_load_gen
+    itch_udp_load_gen.cpp
+)
+
+
+target_link_libraries(
+    itch_udp_load_gen
+    PRIVATE
+        common
+        feed_handler
+)

@@ -83,3 +83,22 @@ target_link_libraries(
         common
         feed_handler
 )
+
+
+
+
+
+
+add_executable(
+    udp_throughput_bench
+    UdpThroughputBench.cpp
+)
+
+
+target_link_libraries(
+    udp_throughput_bench
+    PRIVATE
+        common
+        feed_handler
+)
+

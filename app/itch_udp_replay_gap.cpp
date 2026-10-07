@@ -388,7 +388,7 @@ int main(
     // Conservative correctness replay speed.
     //
     constexpr auto packetDelay =
-        std::chrono::microseconds{50};
+        std::chrono::nanoseconds{0};
 
     std::cout
         << "========================================\n"
@@ -603,8 +603,8 @@ int main(
                     << '\n';
             }
 
-            std::this_thread::sleep_for(
-                packetDelay);
+            // std::this_thread::sleep_for(
+            //     packetDelay);
 
             break;
         }

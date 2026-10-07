@@ -224,6 +224,20 @@ itch_decode_benchmark/fast:
 	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_decode_benchmark.dir/build.make benchmarks/CMakeFiles/itch_decode_benchmark.dir/build
 .PHONY : itch_decode_benchmark/fast
 
+# Convenience name for target.
+benchmarks/CMakeFiles/udp_throughput_bench.dir/rule:
+	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmarks/CMakeFiles/udp_throughput_bench.dir/rule
+.PHONY : benchmarks/CMakeFiles/udp_throughput_bench.dir/rule
+
+# Convenience name for target.
+udp_throughput_bench: benchmarks/CMakeFiles/udp_throughput_bench.dir/rule
+.PHONY : udp_throughput_bench
+
+# fast build rule for target.
+udp_throughput_bench/fast:
+	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/udp_throughput_bench.dir/build.make benchmarks/CMakeFiles/udp_throughput_bench.dir/build
+.PHONY : udp_throughput_bench/fast
+
 ItchCorePipelineBenchmark.o: ItchCorePipelineBenchmark.cpp.o
 .PHONY : ItchCorePipelineBenchmark.o
 
@@ -392,6 +406,30 @@ SpscRingBufferBenchmark.cpp.s:
 	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/spsc_app.dir/build.make benchmarks/CMakeFiles/spsc_app.dir/SpscRingBufferBenchmark.cpp.s
 .PHONY : SpscRingBufferBenchmark.cpp.s
 
+UdpThroughputBench.o: UdpThroughputBench.cpp.o
+.PHONY : UdpThroughputBench.o
+
+# target to build an object file
+UdpThroughputBench.cpp.o:
+	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/udp_throughput_bench.dir/build.make benchmarks/CMakeFiles/udp_throughput_bench.dir/UdpThroughputBench.cpp.o
+.PHONY : UdpThroughputBench.cpp.o
+
+UdpThroughputBench.i: UdpThroughputBench.cpp.i
+.PHONY : UdpThroughputBench.i
+
+# target to preprocess a source file
+UdpThroughputBench.cpp.i:
+	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/udp_throughput_bench.dir/build.make benchmarks/CMakeFiles/udp_throughput_bench.dir/UdpThroughputBench.cpp.i
+.PHONY : UdpThroughputBench.cpp.i
+
+UdpThroughputBench.s: UdpThroughputBench.cpp.s
+.PHONY : UdpThroughputBench.s
+
+# target to generate assembly for a file
+UdpThroughputBench.cpp.s:
+	cd /Users/hamzalatif/Desktop/low-latency-trading/build-release && $(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/udp_throughput_bench.dir/build.make benchmarks/CMakeFiles/udp_throughput_bench.dir/UdpThroughputBench.cpp.s
+.PHONY : UdpThroughputBench.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -408,6 +446,7 @@ help:
 	@echo "... spsc_app"
 	@echo "... spsc_appb"
 	@echo "... spsc_appc"
+	@echo "... udp_throughput_bench"
 	@echo "... ItchCorePipelineBenchmark.o"
 	@echo "... ItchCorePipelineBenchmark.i"
 	@echo "... ItchCorePipelineBenchmark.s"
@@ -429,6 +468,9 @@ help:
 	@echo "... SpscRingBufferBenchmark.o"
 	@echo "... SpscRingBufferBenchmark.i"
 	@echo "... SpscRingBufferBenchmark.s"
+	@echo "... UdpThroughputBench.o"
+	@echo "... UdpThroughputBench.i"
+	@echo "... UdpThroughputBench.s"
 .PHONY : help
 
 

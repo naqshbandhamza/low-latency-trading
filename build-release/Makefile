@@ -621,6 +621,19 @@ itch_recovery_benchmark/fast:
 .PHONY : itch_recovery_benchmark/fast
 
 #=============================================================================
+# Target rules for targets named itch_udp_load_gen
+
+# Build rule for target.
+itch_udp_load_gen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 itch_udp_load_gen
+.PHONY : itch_udp_load_gen
+
+# fast build rule for target.
+itch_udp_load_gen/fast:
+	$(MAKE) $(MAKESILENT) -f app/CMakeFiles/itch_udp_load_gen.dir/build.make app/CMakeFiles/itch_udp_load_gen.dir/build
+.PHONY : itch_udp_load_gen/fast
+
+#=============================================================================
 # Target rules for targets named spsc_app
 
 # Build rule for target.
@@ -710,6 +723,19 @@ itch_decode_benchmark: cmake_check_build_system
 itch_decode_benchmark/fast:
 	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/itch_decode_benchmark.dir/build.make benchmarks/CMakeFiles/itch_decode_benchmark.dir/build
 .PHONY : itch_decode_benchmark/fast
+
+#=============================================================================
+# Target rules for targets named udp_throughput_bench
+
+# Build rule for target.
+udp_throughput_bench: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 udp_throughput_bench
+.PHONY : udp_throughput_bench
+
+# fast build rule for target.
+udp_throughput_bench/fast:
+	$(MAKE) $(MAKESILENT) -f benchmarks/CMakeFiles/udp_throughput_bench.dir/build.make benchmarks/CMakeFiles/udp_throughput_bench.dir/build
+.PHONY : udp_throughput_bench/fast
 
 #=============================================================================
 # Target rules for targets named logger_tests
@@ -1477,6 +1503,7 @@ help:
 	@echo "... itch_recovery_benchmark"
 	@echo "... itch_replay"
 	@echo "... itch_synthetic_sender"
+	@echo "... itch_udp_load_gen"
 	@echo "... itch_udp_replay"
 	@echo "... itch_udp_replay_gap"
 	@echo "... level_tests"
@@ -1493,6 +1520,7 @@ help:
 	@echo "... strong_type_tests"
 	@echo "... trade_tests"
 	@echo "... trading_app"
+	@echo "... udp_throughput_bench"
 .PHONY : help
 
 
