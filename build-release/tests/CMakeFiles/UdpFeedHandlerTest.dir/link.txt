@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/UdpFeedHandlerTest.dir/feed_handler/UdpFeedHandlerTest.cpp.o -o UdpFeedHandlerTest  ../common/libcommon.a ../feed_handler/libfeed_handler.a /opt/homebrew/lib/libCatch2Main.a ../common/libcommon.a /opt/homebrew/lib/libCatch2.a

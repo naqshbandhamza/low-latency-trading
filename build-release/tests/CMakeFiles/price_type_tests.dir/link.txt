@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/price_type_tests.dir/types/PriceTest.cpp.o -o price_type_tests  ../common/libcommon.a /opt/homebrew/lib/libCatch2Main.a /opt/homebrew/lib/libCatch2.a

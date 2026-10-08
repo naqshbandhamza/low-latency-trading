@@ -1,5 +1,0 @@
-if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/ItchTradePublicationTest-b12d07c_tests.cmake")
-  include("/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/ItchTradePublicationTest-b12d07c_tests.cmake")
-else()
-  add_test(ItchTradePublicationTest_NOT_BUILT-b12d07c ItchTradePublicationTest_NOT_BUILT-b12d07c)
-endif()

@@ -1,5 +1,0 @@
-if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/FileItchRecoverySourceTest-b12d07c_tests.cmake")
-  include("/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/FileItchRecoverySourceTest-b12d07c_tests.cmake")
-else()
-  add_test(FileItchRecoverySourceTest_NOT_BUILT-b12d07c FileItchRecoverySourceTest_NOT_BUILT-b12d07c)
-endif()

@@ -1,23 +1,23 @@
-add_executable(trading_app
-    main.cpp
-)
+# add_executable(trading_app
+#     main.cpp
+# )
 
-add_executable(market_data_simulator
-    market_data_simulator.cpp
-)
+# add_executable(market_data_simulator
+#     market_data_simulator.cpp
+# )
 
 
-target_link_libraries(trading_app
-    PRIVATE
-        common
-        feed_handler
-)
+# target_link_libraries(trading_app
+#     PRIVATE
+#         common
+#         feed_handler
+# )
 
-target_link_libraries(market_data_simulator
-    PRIVATE
-        common
-        feed_handler
-)
+# target_link_libraries(market_data_simulator
+#     PRIVATE
+#         common
+#         feed_handler
+# )
 
 
 add_executable(itch_replay
@@ -33,17 +33,17 @@ target_link_libraries(itch_replay
 
 
 
-add_executable(
-    itch_synthetic_sender
-    itch_synthetic_sender.cpp
-)
+# add_executable(
+#     itch_synthetic_sender
+#     itch_synthetic_sender.cpp
+# )
 
-target_link_libraries(
-    itch_synthetic_sender
-    PRIVATE
-    common
-    feed_handler
-)
+# target_link_libraries(
+#     itch_synthetic_sender
+#     PRIVATE
+#     common
+#     feed_handler
+# )
 
 
 add_executable(itch_live
@@ -59,17 +59,17 @@ target_link_libraries(itch_live
 
 
 
-add_executable(
-    itch_udp_replay
-    itch_udp_replay.cpp
-)
+# add_executable(
+#     itch_udp_replay
+#     itch_udp_replay.cpp
+# )
 
-target_link_libraries(
-    itch_udp_replay
-    PRIVATE
-    common
-    feed_handler
-)
+# target_link_libraries(
+#     itch_udp_replay
+#     PRIVATE
+#     common
+#     feed_handler
+# )
 
 
 
@@ -103,18 +103,18 @@ target_link_libraries(
 
 
 
-add_executable(
-    itch_udp_load_gen
-    itch_udp_load_gen.cpp
-)
+# add_executable(
+#     itch_udp_load_gen
+#     itch_udp_load_gen.cpp
+# )
 
 
-target_link_libraries(
-    itch_udp_load_gen
-    PRIVATE
-        common
-        feed_handler
-)
+# target_link_libraries(
+#     itch_udp_load_gen
+#     PRIVATE
+#         common
+#         feed_handler
+# )
 
 
 

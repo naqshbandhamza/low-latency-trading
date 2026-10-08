@@ -1,1 +1,0 @@
-/usr/bin/c++ -O2 -g -DNDEBUG -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/spsc_ringbuffer_tests.dir/ring_buffer/SpscRingBufferTest.cpp.o -o spsc_ringbuffer_tests  ../common/libcommon.a /opt/homebrew/lib/libCatch2Main.a /opt/homebrew/lib/libCatch2.a

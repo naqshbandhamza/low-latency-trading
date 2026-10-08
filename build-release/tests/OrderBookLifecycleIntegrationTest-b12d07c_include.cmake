@@ -1,5 +1,0 @@
-if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/OrderBookLifecycleIntegrationTest-b12d07c_tests.cmake")
-  include("/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/OrderBookLifecycleIntegrationTest-b12d07c_tests.cmake")
-else()
-  add_test(OrderBookLifecycleIntegrationTest_NOT_BUILT-b12d07c OrderBookLifecycleIntegrationTest_NOT_BUILT-b12d07c)
-endif()

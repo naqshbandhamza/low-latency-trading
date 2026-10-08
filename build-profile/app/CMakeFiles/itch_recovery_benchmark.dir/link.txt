@@ -1,1 +1,0 @@
-/usr/bin/c++ -O2 -g -DNDEBUG -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/itch_recovery_benchmark.dir/itch_recovery_benchmark.cpp.o -o itch_recovery_benchmark  ../common/libcommon.a ../feed_handler/libfeed_handler.a ../common/libcommon.a

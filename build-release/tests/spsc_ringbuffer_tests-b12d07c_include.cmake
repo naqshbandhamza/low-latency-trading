@@ -1,5 +1,0 @@
-if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/spsc_ringbuffer_tests-b12d07c_tests.cmake")
-  include("/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/spsc_ringbuffer_tests-b12d07c_tests.cmake")
-else()
-  add_test(spsc_ringbuffer_tests_NOT_BUILT-b12d07c spsc_ringbuffer_tests_NOT_BUILT-b12d07c)
-endif()

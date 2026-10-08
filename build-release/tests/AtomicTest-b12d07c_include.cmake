@@ -1,5 +1,0 @@
-if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/AtomicTest-b12d07c_tests.cmake")
-  include("/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/AtomicTest-b12d07c_tests.cmake")
-else()
-  add_test(AtomicTest_NOT_BUILT-b12d07c AtomicTest_NOT_BUILT-b12d07c)
-endif()

@@ -1,5 +1,0 @@
-if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/UdpItchMarketDataSourceTest-b12d07c_tests.cmake")
-  include("/Users/hamzalatif/Desktop/low-latency-trading/build-profile/tests/UdpItchMarketDataSourceTest-b12d07c_tests.cmake")
-else()
-  add_test(UdpItchMarketDataSourceTest_NOT_BUILT-b12d07c UdpItchMarketDataSourceTest_NOT_BUILT-b12d07c)
-endif()

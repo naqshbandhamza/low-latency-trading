@@ -1,1 +1,0 @@
-/usr/bin/c++ -O2 -g -DNDEBUG -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/itch_live.dir/itch_live.cpp.o -o itch_live  ../common/libcommon.a ../feed_handler/libfeed_handler.a ../common/libcommon.a

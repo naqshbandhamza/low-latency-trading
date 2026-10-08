@@ -1,5 +1,0 @@
-if(EXISTS "/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/MarketEventConsumerTest-b12d07c_tests.cmake")
-  include("/Users/hamzalatif/Desktop/low-latency-trading/build-release/tests/MarketEventConsumerTest-b12d07c_tests.cmake")
-else()
-  add_test(MarketEventConsumerTest_NOT_BUILT-b12d07c MarketEventConsumerTest_NOT_BUILT-b12d07c)
-endif()
