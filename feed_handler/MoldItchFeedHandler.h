@@ -6,148 +6,155 @@
 
 #include "FeedHandlerState.h"
 #include "types/SequenceCheckResult.h"
+#include "market_data/moldudp64/MoldDatagramQueue.h"
 
 namespace llt::moldudp64
 {
 
-class IMoldMarketDataSource;
-class IMoldItchSequenceRecovery;
+    class IMoldMarketDataSource;
+    class IMoldItchSequenceRecovery;
 
-struct ReceivedMoldDatagram;
-struct MessageView;
-struct SequencedItchMessage;
+    class MoldUdpReceiver;
+
+    struct ReceivedMoldDatagram;
+    struct MessageView;
+    struct SequencedItchMessage;
 
 } // namespace llt::moldudp64
-
 
 namespace llt::itch
 {
 
-class ItchMarketState;
+    class ItchMarketState;
 
-
-class MoldItchFeedHandler
-{
-public:
-    MoldItchFeedHandler(
-        llt::moldudp64::IMoldMarketDataSource& source,
-        llt::moldudp64::IMoldItchSequenceRecovery& recovery,
-        ItchMarketState& marketState
-    ) noexcept;
-
-    //
-    // Deterministic mode.
-    //
-    // datagramCount counts successfully processed
-    // LIVE MoldUDP64 datagrams.
-    //
-    // Recovered messages do not count toward
-    // datagramCount.
-    //
-    void start(
-        std::size_t datagramCount);
-
-    //
-    // Continuous live mode.
-    //
-    void run();
-
-    void stop() noexcept;
-
-    [[nodiscard]]
-    llt::FeedHandlerState state() const noexcept;
-
-    [[nodiscard]]
-    std::uint64_t processedDatagrams() const noexcept
+    class MoldItchFeedHandler
     {
-        return processedDatagrams_;
-    }
+    public:
+        MoldItchFeedHandler(
+            llt::moldudp64::IMoldMarketDataSource &source,
+            llt::moldudp64::IMoldItchSequenceRecovery &recovery,
+            ItchMarketState &marketState) noexcept;
 
-    [[nodiscard]]
-    std::uint64_t processedMessages() const noexcept
-    {
-        return processedMessages_;
-    }
+        //
+        // Deterministic mode.
+        //
+        // datagramCount counts successfully processed
+        // LIVE MoldUDP64 datagrams.
+        //
+        // Recovered messages do not count toward
+        // datagramCount.
+        //
+        void start(
+            std::size_t datagramCount);
 
-    [[nodiscard]]
-    std::uint64_t recoveredMessages() const noexcept
-    {
-        return recoveredMessages_;
-    }
+        //
+        // Continuous live mode.
+        //
+        void run();
 
-    [[nodiscard]]
-    std::uint64_t ignoredMessages() const noexcept
-    {
-        return ignoredMessages_;
-    }
+        // Live mode using a dedicated UDP receiver.
+        // The receiver is stopped and joined by the caller.
+        // Pending datagrams are drained after the receiver stops.
+        void runQueued(
+            llt::moldudp64::MoldDatagramQueue &queue,
+            const llt::moldudp64::MoldUdpReceiver &receiver);
 
-    [[nodiscard]]
-    std::uint64_t gapsDetected() const noexcept
-    {
-        return gapsDetected_;
-    }
+        void stop() noexcept;
 
-    [[nodiscard]]
-    std::uint64_t malformedDatagrams() const noexcept
-    {
-        return malformedDatagrams_;
-    }
+        [[nodiscard]]
+        llt::FeedHandlerState state() const noexcept;
 
-    [[nodiscard]]
-    std::uint64_t expectedSequence() const noexcept
-    {
-        return expectedSequence_;
-    }
+        [[nodiscard]]
+        std::uint64_t processedDatagrams() const noexcept
+        {
+            return processedDatagrams_;
+        }
 
-private:
-    [[nodiscard]]
-    llt::SequenceCheckResult checkSequence(
-        std::uint64_t sequence);
+        [[nodiscard]]
+        std::uint64_t processedMessages() const noexcept
+        {
+            return processedMessages_;
+        }
 
-    [[nodiscard]]
-    bool processDatagram(
-        const llt::moldudp64::ReceivedMoldDatagram& datagram);
+        [[nodiscard]]
+        std::uint64_t recoveredMessages() const noexcept
+        {
+            return recoveredMessages_;
+        }
 
-    [[nodiscard]]
-    bool processMessage(
-        const llt::moldudp64::MessageView& message);
+        [[nodiscard]]
+        std::uint64_t ignoredMessages() const noexcept
+        {
+            return ignoredMessages_;
+        }
 
-    [[nodiscard]]
-    bool processRecoveredMessage(
-        const llt::moldudp64::SequencedItchMessage& message);
+        [[nodiscard]]
+        std::uint64_t gapsDetected() const noexcept
+        {
+            return gapsDetected_;
+        }
 
-    void startLifecycle() noexcept;
+        [[nodiscard]]
+        std::uint64_t malformedDatagrams() const noexcept
+        {
+            return malformedDatagrams_;
+        }
 
-    void finishLifecycle() noexcept;
+        [[nodiscard]]
+        std::uint64_t expectedSequence() const noexcept
+        {
+            return expectedSequence_;
+        }
 
-private:
-    llt::moldudp64::IMoldMarketDataSource& source_;
+    private:
+        [[nodiscard]]
+        llt::SequenceCheckResult checkSequence(
+            std::uint64_t sequence);
 
-    llt::moldudp64::IMoldItchSequenceRecovery& recovery_;
+        [[nodiscard]]
+        bool processDatagram(
+            const llt::moldudp64::ReceivedMoldDatagram &datagram);
 
-    ItchMarketState& marketState_;
+        [[nodiscard]]
+        bool processMessage(
+            const llt::moldudp64::MessageView &message);
 
-    std::uint64_t expectedSequence_{0};
+        [[nodiscard]]
+        bool processRecoveredMessage(
+            const llt::moldudp64::SequencedItchMessage &message);
 
-    bool hasSequence_{false};
+        void startLifecycle() noexcept;
 
-    std::uint64_t processedDatagrams_{0};
+        void finishLifecycle() noexcept;
 
-    std::uint64_t processedMessages_{0};
+    private:
+        llt::moldudp64::IMoldMarketDataSource &source_;
 
-    std::uint64_t recoveredMessages_{0};
+        llt::moldudp64::IMoldItchSequenceRecovery &recovery_;
 
-    std::uint64_t ignoredMessages_{0};
+        ItchMarketState &marketState_;
 
-    std::uint64_t gapsDetected_{0};
+        std::uint64_t expectedSequence_{0};
 
-    std::uint64_t malformedDatagrams_{0};
+        bool hasSequence_{false};
 
-    std::atomic<bool> running_{
-        false};
+        std::uint64_t processedDatagrams_{0};
 
-    std::atomic<llt::FeedHandlerState> state_{
-        llt::FeedHandlerState::Stopped};
-};
+        std::uint64_t processedMessages_{0};
+
+        std::uint64_t recoveredMessages_{0};
+
+        std::uint64_t ignoredMessages_{0};
+
+        std::uint64_t gapsDetected_{0};
+
+        std::uint64_t malformedDatagrams_{0};
+
+        std::atomic<bool> running_{
+            false};
+
+        std::atomic<llt::FeedHandlerState> state_{
+            llt::FeedHandlerState::Stopped};
+    };
 
 } // namespace llt::itch

@@ -22,6 +22,9 @@
 #include "market_data/moldudp64/MoldItchSequenceRecovery.h"
 #include "market_data/moldudp64/UdpMoldMarketDataSource.h"
 
+#include "market_data/moldudp64/MoldDatagramQueue.h"
+#include "market_data/moldudp64/MoldUdpReceiver.h"
+
 namespace
 {
 
@@ -435,6 +438,18 @@ int main(
             recovery,
             marketState};
 
+    // Dedicated UDP receive pipeline.
+    llt::moldudp64::MoldDatagramQueue moldDatagramQueue;
+
+    llt::moldudp64::MoldUdpReceiver udpReceiver{
+        source,
+        moldDatagramQueue};
+
+    std::cerr
+        << "[startup] MoldDatagramQueue capacity: "
+        << llt::moldudp64::MoldDatagramQueueCapacity
+        << '\n';
+
     std::cerr
         << "[startup] Mold ITCH feed handler ready."
         << std::endl;
@@ -460,6 +475,8 @@ int main(
     // =====================================================
     //
 
+    std::atomic<bool> consumerRunning{true};
+
     std::cerr
         << "[startup] Starting MarketEvent consumer thread..."
         << std::endl;
@@ -471,9 +488,10 @@ int main(
                 << "[consumer] Consumer thread started."
                 << std::endl;
 
-            while (
-                running.load(
-                    std::memory_order_relaxed))
+            // while (
+            //     running.load(
+            //         std::memory_order_relaxed))
+            while (consumerRunning.load(std::memory_order_acquire))
             {
                 auto event =
                     marketEventQueue.pop();
@@ -581,8 +599,11 @@ int main(
         << "Recovery checkpoints      : "
         << recoverySource.checkpointCount()
         << '\n'
+        << "MoldDatagramQueue capacity: "
+        << llt::moldudp64::MoldDatagramQueueCapacity
+        << '\n'
         << "MarketEventQueue capacity : "
-        << 4096
+        << 65536
         << '\n'
         << "----------------------------------------\n"
         << "Waiting for MoldUDP64 ITCH packets...\n"
@@ -595,6 +616,12 @@ int main(
     // Feed thread
     // =====================================================
     //
+
+    std::cerr
+        << "[startup] Starting dedicated UDP receiver..."
+        << std::endl;
+
+    udpReceiver.start();
 
     std::cerr
         << "[startup] Starting Mold ITCH feed thread..."
@@ -611,7 +638,10 @@ int main(
                 << "[feed] Entering feedHandler.run()."
                 << std::endl;
 
-            feedHandler.run();
+            // feedHandler.run();
+            feedHandler.runQueued(
+                moldDatagramQueue,
+                udpReceiver);
 
             std::cerr
                 << "[feed] feedHandler.run() returned."
@@ -678,56 +708,131 @@ int main(
     // =====================================================
     //
 
+    // std::cerr
+    //     << "[shutdown] Shutdown requested."
+    //     << std::endl;
+
+    // std::cerr
+    //     << "[shutdown] Stopping feed handler..."
+    //     << std::endl;
+
+    // feedHandler.stop();
+
+    // std::cerr
+    //     << "[shutdown] Feed handler stop requested."
+    //     << std::endl;
+
+    // if (feedThread.joinable())
+    // {
+    //     std::cerr
+    //         << "[shutdown] Waiting for feed thread..."
+    //         << std::endl;
+
+    //     feedThread.join();
+
+    //     // Now safely read diagnostics.
+    //     std::cout
+    //         << "Actual SO_RCVBUF: "
+    //         << source.actualReceiveBufferBytes() << '\n'
+    //         << "Receive errors: "
+    //         << source.receiveErrorCount() << '\n'
+    //         << "Truncated datagrams: "
+    //         << source.truncatedDatagramCount() << '\n'
+    //         << "Last receive errno: "
+    //         << source.lastReceiveError() << '\n';
+
+    //     std::cerr
+    //         << "[shutdown] Feed thread joined."
+    //         << std::endl;
+    // }
+
+    // if (consumerThread.joinable())
+    // {
+    //     std::cerr
+    //         << "[shutdown] Waiting for consumer thread..."
+    //         << std::endl;
+
+    //     consumerThread.join();
+
+    //     std::cerr
+    //         << "[shutdown] Consumer thread joined."
+    //         << std::endl;
+    // }
+
+    //
+    // =====================================================
+    // Shutdown
+    // =====================================================
+    //
+
     std::cerr
         << "[shutdown] Shutdown requested."
         << std::endl;
 
+    // 1. Stop the UDP producer first.
     std::cerr
-        << "[shutdown] Stopping feed handler..."
+        << "[shutdown] Stopping UDP receiver..."
         << std::endl;
 
-    feedHandler.stop();
+    udpReceiver.stop();
+    udpReceiver.join();
 
     std::cerr
-        << "[shutdown] Feed handler stop requested."
+        << "[shutdown] UDP receiver joined."
         << std::endl;
 
+    // 2. Let the feed processor drain MoldDatagramQueue.
+    // runQueued() exits once the producer has stopped
+    // and all queued datagrams have been consumed.
     if (feedThread.joinable())
     {
         std::cerr
-            << "[shutdown] Waiting for feed thread..."
+            << "[shutdown] Draining MoldDatagramQueue..."
             << std::endl;
 
         feedThread.join();
-
-        // Now safely read diagnostics.
-        std::cout
-            << "Actual SO_RCVBUF: "
-            << source.actualReceiveBufferBytes() << '\n'
-            << "Receive errors: "
-            << source.receiveErrorCount() << '\n'
-            << "Truncated datagrams: "
-            << source.truncatedDatagramCount() << '\n'
-            << "Last receive errno: "
-            << source.lastReceiveError() << '\n';
 
         std::cerr
             << "[shutdown] Feed thread joined."
             << std::endl;
     }
 
+    // 3. The feed processor can no longer publish events.
+    // Now stop and drain the downstream consumer.
+    consumerRunning.store(
+        false,
+        std::memory_order_release);
+
     if (consumerThread.joinable())
     {
-        std::cerr
-            << "[shutdown] Waiting for consumer thread..."
-            << std::endl;
-
         consumerThread.join();
-
-        std::cerr
-            << "[shutdown] Consumer thread joined."
-            << std::endl;
     }
+
+    // All threads have stopped. Reading diagnostics is safe.
+    std::cout
+        << "\n"
+        << "========================================\n"
+        << "       UDP RECEIVER DIAGNOSTICS\n"
+        << "========================================\n"
+        << "Actual SO_RCVBUF         : "
+        << source.actualReceiveBufferBytes() << '\n'
+        << "Receive errors           : "
+        << source.receiveErrorCount() << '\n'
+        << "Truncated datagrams      : "
+        << source.truncatedDatagramCount() << '\n'
+        << "Last receive errno       : "
+        << source.lastReceiveError() << '\n'
+        << "Received UDP datagrams   : "
+        << udpReceiver.receivedDatagrams() << '\n'
+        << "Queued UDP datagrams     : "
+        << udpReceiver.queuedDatagrams() << '\n'
+        << "Queue-full drops         : "
+        << udpReceiver.queueFullDrops() << '\n'
+        << "Maximum queue occupancy  : "
+        << udpReceiver.maxQueueOccupancy() << '\n'
+        << "Remaining UDP datagrams  : "
+        << moldDatagramQueue.size() << '\n'
+        << "========================================\n";
 
     //
     // =====================================================

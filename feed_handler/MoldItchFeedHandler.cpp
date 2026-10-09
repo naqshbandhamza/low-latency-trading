@@ -11,6 +11,10 @@
 #include "market_data/moldudp64/MoldUdp64Codec.h"
 #include "market_data/moldudp64/SequencedItchMessage.h"
 
+#include <thread>
+
+#include "market_data/moldudp64/MoldUdpReceiver.h"
+
 
 namespace llt::itch
 {
@@ -454,6 +458,63 @@ void MoldItchFeedHandler::run()
         }
 
         ++processedDatagrams_;
+    }
+
+    finishLifecycle();
+}
+
+
+void MoldItchFeedHandler::runQueued(
+    llt::moldudp64::MoldDatagramQueue& queue,
+    const llt::moldudp64::MoldUdpReceiver& receiver)
+{
+    startLifecycle();
+
+    while (true)
+    {
+        auto datagram = queue.pop();
+
+        if (datagram.has_value())
+        {
+            if (!processDatagram(*datagram))
+            {
+                ++malformedDatagrams_;
+
+                state_.store(
+                    llt::FeedHandlerState::Failed,
+                    std::memory_order_release);
+
+                break;
+            }
+
+            ++processedDatagrams_;
+            continue;
+        }
+
+        // Stop only after the producer has stopped
+        // AND every published datagram has been consumed.
+        if (!receiver.running())
+        {
+            // Recheck after observing producer shutdown.
+            if (queue.empty())
+            {
+                break;
+            }
+
+            continue;
+        }
+
+        // An external stop request may terminate processing
+        // before the producer has stopped. Coordinated
+        // shutdown should stop/join the receiver first.
+        if (!running_.load(std::memory_order_acquire))
+        {
+            break;
+        }
+
+        // Temporary strategy while the queue is empty.
+        // We can benchmark spinning versus yielding later.
+        std::this_thread::yield();
     }
 
     finishLifecycle();

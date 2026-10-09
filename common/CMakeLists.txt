@@ -19,6 +19,7 @@ add_library(common STATIC
     market_data/moldudp64/UdpMoldMarketDataSource.cpp
     market_data/moldudp64/FileMoldItchRecoverySource.cpp
     market_data/moldudp64/MoldItchSequenceRecovery.cpp
+    market_data/moldudp64/MoldUdpReceiver.cpp
 )
 
 target_include_directories(common
