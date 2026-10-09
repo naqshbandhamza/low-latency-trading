@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <stdexcept>
-
+#include <string>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -14,202 +14,272 @@
 namespace llt::moldudp64
 {
 
-UdpMoldMarketDataSource::
-UdpMoldMarketDataSource(
-    std::uint16_t port,
-    std::uint32_t receiveTimeoutMs)
-{
-    socketFd_ =
-        ::socket(
-            AF_INET,
-            SOCK_DGRAM,
-            0);
-
-    if (socketFd_ < 0)
+    UdpMoldMarketDataSource::
+        UdpMoldMarketDataSource(
+            std::uint16_t port,
+            std::uint32_t receiveTimeoutMs)
     {
-        throw std::runtime_error(
-            "Failed to create MoldUDP64 UDP socket");
-    }
+        socketFd_ =
+            ::socket(
+                AF_INET,
+                SOCK_DGRAM,
+                0);
 
-
-    //
-    // Increase kernel receive buffering.
-    //
-    // This was important in our previous UDP experiment:
-    // the larger receive buffer eliminated recovery/gaps
-    // at the sender rate we were testing.
-    //
-    constexpr int receiveBufferBytes =
-        8 * 1024 * 1024;
-
-    if (
-        ::setsockopt(
-            socketFd_,
-            SOL_SOCKET,
-            SO_RCVBUF,
-            &receiveBufferBytes,
-            sizeof(receiveBufferBytes))
-        < 0)
-    {
-        ::close(
-            socketFd_);
-
-        socketFd_ = -1;
-
-        throw std::runtime_error(
-            "Failed to configure MoldUDP64 UDP receive buffer");
-    }
-
-
-    //
-    // Bind to loopback for our current local replay/
-    // benchmark environment.
-    //
-    sockaddr_in address{};
-
-    address.sin_family =
-        AF_INET;
-
-    address.sin_addr.s_addr =
-        htonl(
-            INADDR_LOOPBACK);
-
-    address.sin_port =
-        htons(
-            port);
-
-
-    if (
-        ::bind(
-            socketFd_,
-            reinterpret_cast<
-                const sockaddr*>(
-                    &address),
-            sizeof(address))
-        < 0)
-    {
-        ::close(
-            socketFd_);
-
-        socketFd_ = -1;
-
-        throw std::runtime_error(
-            "Failed to bind MoldUDP64 UDP socket");
-    }
-
-
-    //
-    // Receive timeout.
-    //
-    timeval timeout{};
-
-    timeout.tv_sec =
-        static_cast<time_t>(
-            receiveTimeoutMs /
-            1000);
-
-    timeout.tv_usec =
-        static_cast<suseconds_t>(
-            (
-                receiveTimeoutMs %
-                1000
-            ) *
-            1000);
-
-
-    if (
-        ::setsockopt(
-            socketFd_,
-            SOL_SOCKET,
-            SO_RCVTIMEO,
-            &timeout,
-            sizeof(timeout))
-        < 0)
-    {
-        ::close(
-            socketFd_);
-
-        socketFd_ = -1;
-
-        throw std::runtime_error(
-            "Failed to configure MoldUDP64 UDP receive timeout");
-    }
-}
-
-
-UdpMoldMarketDataSource::
-~UdpMoldMarketDataSource()
-{
-    if (socketFd_ >= 0)
-    {
-        ::close(
-            socketFd_);
-    }
-}
-
-
-bool
-UdpMoldMarketDataSource::receive(
-    ReceivedMoldDatagram& datagram
-) noexcept
-{
-    ssize_t receivedBytes{0};
-
-
-    while (true)
-    {
-        receivedBytes =
-            ::recvfrom(
-                socketFd_,
-                datagram.bytes.data(),
-                datagram.bytes.size(),
-                0,
-                nullptr,
-                nullptr);
-
-
-        if (receivedBytes >= 0)
+        if (socketFd_ < 0)
         {
-            break;
+            throw std::runtime_error(
+                "Failed to create MoldUDP64 UDP socket");
         }
 
-
-        if (errno == EINTR)
-        {
-            continue;
-        }
-
+        //
+        // Increase kernel receive buffering.
+        //
+        // This was important in our previous UDP experiment:
+        // the larger receive buffer eliminated recovery/gaps
+        // at the sender rate we were testing.
+        //
+        constexpr int receiveBufferBytes =
+            8 * 1024 * 1024;
 
         if (
-            errno == EAGAIN ||
-            errno == EWOULDBLOCK)
+            ::setsockopt(
+                socketFd_,
+                SOL_SOCKET,
+                SO_RCVBUF,
+                &receiveBufferBytes,
+                sizeof(receiveBufferBytes)) < 0)
         {
-            datagram.size = 0;
+            ::close(
+                socketFd_);
 
-            return false;
+            socketFd_ = -1;
+
+            throw std::runtime_error(
+                "Failed to configure MoldUDP64 UDP receive buffer");
         }
 
+        socklen_t optionLength =
+            sizeof(actualReceiveBufferBytes_);
 
-        datagram.size = 0;
+        if (
+            ::getsockopt(
+                socketFd_,
+                SOL_SOCKET,
+                SO_RCVBUF,
+                &actualReceiveBufferBytes_,
+                &optionLength) < 0)
+        {
+            const int savedError = errno;
 
-        return false;
+            ::close(socketFd_);
+            socketFd_ = -1;
+
+            throw std::runtime_error(
+                "Failed to read actual MoldUDP64 receive buffer: " +
+                std::to_string(savedError));
+        }
+
+        //
+        // Bind to loopback for our current local replay/
+        // benchmark environment.
+        //
+        sockaddr_in address{};
+
+        address.sin_family =
+            AF_INET;
+
+        address.sin_addr.s_addr =
+            htonl(
+                INADDR_LOOPBACK);
+
+        address.sin_port =
+            htons(
+                port);
+
+        if (
+            ::bind(
+                socketFd_,
+                reinterpret_cast<
+                    const sockaddr *>(
+                    &address),
+                sizeof(address)) < 0)
+        {
+            ::close(
+                socketFd_);
+
+            socketFd_ = -1;
+
+            throw std::runtime_error(
+                "Failed to bind MoldUDP64 UDP socket");
+        }
+
+        //
+        // Receive timeout.
+        //
+        timeval timeout{};
+
+        timeout.tv_sec =
+            static_cast<time_t>(
+                receiveTimeoutMs /
+                1000);
+
+        timeout.tv_usec =
+            static_cast<suseconds_t>(
+                (
+                    receiveTimeoutMs %
+                    1000) *
+                1000);
+
+        if (
+            ::setsockopt(
+                socketFd_,
+                SOL_SOCKET,
+                SO_RCVTIMEO,
+                &timeout,
+                sizeof(timeout)) < 0)
+        {
+            ::close(
+                socketFd_);
+
+            socketFd_ = -1;
+
+            throw std::runtime_error(
+                "Failed to configure MoldUDP64 UDP receive timeout");
+        }
     }
 
+    UdpMoldMarketDataSource::
+        ~UdpMoldMarketDataSource()
+    {
+        if (socketFd_ >= 0)
+        {
+            ::close(
+                socketFd_);
+        }
+    }
 
-    if (receivedBytes == 0)
+    // bool
+    // UdpMoldMarketDataSource::receive(
+    //     ReceivedMoldDatagram &datagram) noexcept
+    // {
+    //     ssize_t receivedBytes{0};
+
+    //     while (true)
+    //     {
+    //         receivedBytes =
+    //             ::recvfrom(
+    //                 socketFd_,
+    //                 datagram.bytes.data(),
+    //                 datagram.bytes.size(),
+    //                 0,
+    //                 nullptr,
+    //                 nullptr);
+
+    //         if (receivedBytes >= 0)
+    //         {
+    //             break;
+    //         }
+
+    //         if (errno == EINTR)
+    //         {
+    //             continue;
+    //         }
+
+    //         if (
+    //             errno == EAGAIN ||
+    //             errno == EWOULDBLOCK)
+    //         {
+    //             datagram.size = 0;
+
+    //             return false;
+    //         }
+
+    //         datagram.size = 0;
+
+    //         return false;
+    //     }
+
+    //     if (receivedBytes == 0)
+    //     {
+    //         datagram.size = 0;
+
+    //         return false;
+    //     }
+
+    //     datagram.size =
+    //         static_cast<std::size_t>(
+    //             receivedBytes);
+
+    //     return true;
+    // }
+
+    bool
+    UdpMoldMarketDataSource::receive(
+        ReceivedMoldDatagram &datagram) noexcept
     {
         datagram.size = 0;
 
-        return false;
+        while (true)
+        {
+            iovec buffer{};
+
+            buffer.iov_base =
+                datagram.bytes.data();
+
+            buffer.iov_len =
+                datagram.bytes.size();
+
+            msghdr message{};
+
+            message.msg_iov = &buffer;
+            message.msg_iovlen = 1;
+
+            const ssize_t receivedBytes =
+                ::recvmsg(
+                    socketFd_,
+                    &message,
+                    0);
+
+            if (receivedBytes < 0)
+            {
+                const int error = errno;
+
+                if (error == EINTR)
+                {
+                    continue;
+                }
+
+                if (
+                    error == EAGAIN ||
+                    error == EWOULDBLOCK)
+                {
+                    return false;
+                }
+
+                lastReceiveError_ = error;
+                ++receiveErrorCount_;
+
+                return false;
+            }
+
+            if (message.msg_flags & MSG_TRUNC)
+            {
+                ++truncatedDatagramCount_;
+
+                return false;
+            }
+
+            if (receivedBytes == 0)
+            {
+                return false;
+            }
+
+            datagram.size =
+                static_cast<std::size_t>(
+                    receivedBytes);
+
+            return true;
+        }
     }
-
-
-    datagram.size =
-        static_cast<std::size_t>(
-            receivedBytes);
-
-
-    return true;
-}
 
 } // namespace llt::moldudp64

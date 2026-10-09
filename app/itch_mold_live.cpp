@@ -700,6 +700,17 @@ int main(
 
         feedThread.join();
 
+        // Now safely read diagnostics.
+        std::cout
+            << "Actual SO_RCVBUF: "
+            << source.actualReceiveBufferBytes() << '\n'
+            << "Receive errors: "
+            << source.receiveErrorCount() << '\n'
+            << "Truncated datagrams: "
+            << source.truncatedDatagramCount() << '\n'
+            << "Last receive errno: "
+            << source.lastReceiveError() << '\n';
+
         std::cerr
             << "[shutdown] Feed thread joined."
             << std::endl;

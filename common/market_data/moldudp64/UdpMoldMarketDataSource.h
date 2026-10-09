@@ -29,8 +29,41 @@ public:
         ReceivedMoldDatagram& datagram
     ) noexcept override;
 
+    [[nodiscard]]
+    int lastReceiveError() const noexcept
+    {
+        return lastReceiveError_;
+    }
+
+    [[nodiscard]]
+    int actualReceiveBufferBytes() const noexcept
+    {
+        return actualReceiveBufferBytes_;
+    }
+
+    [[nodiscard]]
+    std::uint64_t receiveErrorCount() const noexcept
+    {
+        return receiveErrorCount_;
+    }
+
+    [[nodiscard]]
+    std::uint64_t truncatedDatagramCount() const noexcept
+    {
+        return truncatedDatagramCount_;
+    }
+
 private:
     int socketFd_{-1};
+
+
+    int lastReceiveError_{0};
+
+    int actualReceiveBufferBytes_{0};
+
+    std::uint64_t receiveErrorCount_{0};
+
+    std::uint64_t truncatedDatagramCount_{0};
 };
 
 } // namespace llt::moldudp64
