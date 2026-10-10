@@ -11,51 +11,93 @@
 namespace llt::moldudp64
 {
 
-class MoldUdpReceiver final
-{
-public:
-    MoldUdpReceiver(
-        IMoldMarketDataSource& source,
-        MoldDatagramQueue& queue) noexcept;
+    // temp
+    struct ReceiverTimingStats
+    {
+        std::uint64_t maxReceiveCallNs = 0;
+        std::uint64_t maxQueuePushNs = 0;
+        std::uint64_t maxLoopGapNs = 0;
 
-    ~MoldUdpReceiver();
+        std::uint64_t loopGapsOver100us = 0;
+        std::uint64_t loopGapsOver500us = 0;
+        std::uint64_t loopGapsOver1ms = 0;
 
-    MoldUdpReceiver(const MoldUdpReceiver&) = delete;
-    MoldUdpReceiver& operator=(const MoldUdpReceiver&) = delete;
+        // Time between a successful receive and the next receive call.
+        std::uint64_t maxPostReceiveWorkNs = 0;
+        std::uint64_t postWorkOver10us = 0;
+        std::uint64_t postWorkOver100us = 0;
+        std::uint64_t postWorkOver1ms = 0;
 
-    void start();
-    void stop() noexcept;
-    void join() noexcept;
+        // SPSC push latency distribution.
+        std::uint64_t pushesOver10us = 0;
+        std::uint64_t pushesOver100us = 0;
+        std::uint64_t pushesOver1ms = 0;
 
-    [[nodiscard]]
-    bool running() const noexcept;
+        // Successful receive-call latency distribution.
+        std::uint64_t successfulReceivesOver1ms = 0;
 
-    [[nodiscard]]
-    std::uint64_t receivedDatagrams() const noexcept;
+        // Receive failures, including timeouts.
+        std::uint64_t unsuccessfulReceiveCalls = 0;
+    };
+    //
 
-    [[nodiscard]]
-    std::uint64_t queuedDatagrams() const noexcept;
+    class MoldUdpReceiver final
+    {
+    public:
+        MoldUdpReceiver(
+            IMoldMarketDataSource &source,
+            MoldDatagramQueue &queue) noexcept;
 
-    [[nodiscard]]
-    std::uint64_t queueFullDrops() const noexcept;
+        ~MoldUdpReceiver();
 
-    [[nodiscard]]
-    std::uint64_t maxQueueOccupancy() const noexcept;
+        MoldUdpReceiver(const MoldUdpReceiver &) = delete;
+        MoldUdpReceiver &operator=(const MoldUdpReceiver &) = delete;
 
-private:
-    void receiveLoop() noexcept;
+        void start();
+        void stop() noexcept;
+        void join() noexcept;
 
-    IMoldMarketDataSource& source_;
-    MoldDatagramQueue& queue_;
+        [[nodiscard]]
+        bool running() const noexcept;
 
-    std::thread worker_;
+        [[nodiscard]]
+        std::uint64_t receivedDatagrams() const noexcept;
 
-    std::atomic<bool> running_{false};
+        [[nodiscard]]
+        std::uint64_t queuedDatagrams() const noexcept;
 
-    std::atomic<std::uint64_t> receivedDatagrams_{0};
-    std::atomic<std::uint64_t> queuedDatagrams_{0};
-    std::atomic<std::uint64_t> queueFullDrops_{0};
-    std::atomic<std::uint64_t> maxQueueOccupancy_{0};
-};
+        [[nodiscard]]
+        std::uint64_t queueFullDrops() const noexcept;
+
+        [[nodiscard]]
+        std::uint64_t maxQueueOccupancy() const noexcept;
+
+        // temp
+        [[nodiscard]]
+        ReceiverTimingStats timingStats() const noexcept
+        {
+            return timingStats_;
+        }
+        //
+
+    private:
+        void receiveLoop() noexcept;
+
+        IMoldMarketDataSource &source_;
+        MoldDatagramQueue &queue_;
+
+        std::thread worker_;
+
+        std::atomic<bool> running_{false};
+
+        std::atomic<std::uint64_t> receivedDatagrams_{0};
+        std::atomic<std::uint64_t> queuedDatagrams_{0};
+        std::atomic<std::uint64_t> queueFullDrops_{0};
+        std::atomic<std::uint64_t> maxQueueOccupancy_{0};
+
+        // temp
+        ReceiverTimingStats timingStats_{};
+        //
+    };
 
 } // namespace llt::moldudp64

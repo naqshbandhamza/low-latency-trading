@@ -777,6 +777,37 @@ int main(
     udpReceiver.stop();
     udpReceiver.join();
 
+    // temp
+    const auto timing = udpReceiver.timingStats();
+
+    std::cout << "\n";
+    std::cout << "Post-receive work:\n";
+    std::cout << "  Max duration (us) : "
+              << timing.maxPostReceiveWorkNs / 1000.0 << '\n';
+    std::cout << "  Over 10 us        : "
+              << timing.postWorkOver10us << '\n';
+    std::cout << "  Over 100 us       : "
+              << timing.postWorkOver100us << '\n';
+    std::cout << "  Over 1 ms         : "
+              << timing.postWorkOver1ms << '\n';
+
+    std::cout << "\n";
+    std::cout << "SPSC queue push:\n";
+    std::cout << "  Over 10 us        : "
+              << timing.pushesOver10us << '\n';
+    std::cout << "  Over 100 us       : "
+              << timing.pushesOver100us << '\n';
+    std::cout << "  Over 1 ms         : "
+              << timing.pushesOver1ms << '\n';
+
+    std::cout << "\n";
+    std::cout << "Receive calls:\n";
+    std::cout << "  Successful > 1 ms : "
+              << timing.successfulReceivesOver1ms << '\n';
+    std::cout << "  Unsuccessful calls: "
+              << timing.unsuccessfulReceiveCalls << '\n';
+    //
+
     std::cerr
         << "[shutdown] UDP receiver joined."
         << std::endl;
