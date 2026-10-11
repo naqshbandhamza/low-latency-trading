@@ -358,7 +358,7 @@ market-data processing path.
 Once the core market-state path became significantly faster, the full-pipeline
 benchmark exposed a new problem.
 
-An earlier run produced:
+run produced:
 
 ```text
 Elapsed               : 109.391 sec
@@ -657,41 +657,9 @@ an important source of queue saturation.
 The measurements do not, by themselves, prove a particular operating-system
 scheduling mechanism.
 
----
+# 
 
-# Full-Pipeline Improvement
 
-The earlier 4,096-slot cached-index configuration had the following median:
-
-```text
-Elapsed               : 105.787 sec
-Throughput            : 3.482 M messages/sec
-Dropped events        : 122,059
-```
-
-The final 65,536-slot lossless configuration produced:
-
-```text
-Median elapsed        : 101.312 sec
-Median throughput     : 3.636 M messages/sec
-Dropped events        : 0
-```
-
-This corresponds to approximately:
-
-```text
-Elapsed time          : ~4.2% lower
-Decode throughput     : ~4.4% higher
-Measured event drops  : 122,059 → 0
-```
-
-The more important result is not the relatively small throughput increase.
-
-The significant result is that the full pipeline can replay the complete
-368+ million-message dataset while delivering all 184+ million generated
-Quote/Trade events to the consumer without measured event loss.
-
----
 
 # Benchmark Summary
 
@@ -699,54 +667,12 @@ Quote/Trade events to the consumer without measured event loss.
 | Benchmark Boundary              | Input Messages | Representative Throughput | Normalized Event Loss |
 | ------------------------------- | -------------: | ------------------------: | --------------------: |
 | ITCH decode                     |    368,366,634 |        **12.439 M msg/s** |                   N/A |
-| Core decode + market state      |    368,366,634 |         **4.058 M msg/s** |                   N/A |
+| Core decode + market state      |    368,366,634 |        **4.160 M msg/s** |                   N/A |
 | Full pipeline + SPSC + consumer |    368,366,634 |  **3.636 M msg/s median** |                 **0** |
 
 These numbers intentionally measure different boundaries.
 
-## Decode Benchmark
 
-```text
-BinaryFILE
-    ↓
-ITCH decoding
-```
-
-Useful for understanding parser and binary-decoder performance.
-
-## Core Benchmark
-
-```text
-BinaryFILE
-    ↓
-decode
-    ↓
-order state
-    ↓
-order books
-```
-
-Useful for measuring the stateful market-data engine.
-
-## Full Pipeline
-
-```text
-BinaryFILE
-    ↓
-decode
-    ↓
-market state
-    ↓
-normalization
-    ↓
-SPSC
-    ↓
-consumer
-```
-
-Useful for measuring the complete current processing path.
-
----
 
 # Performance Evolution
 
@@ -826,41 +752,7 @@ the fastest individual run.
 
 ---
 
-# Interpreting the Numbers
 
-The reported throughput for the core and full benchmarks is calculated from:
-
-```text
-decoded ITCH input messages
----------------------------
-total benchmark elapsed time
-```
-
-The full-pipeline throughput is therefore not the number of normalized
-Quote/Trade events consumed per second.
-
-The input workload contains:
-
-```text
-368,366,634 ITCH messages
-```
-
-while the final measured pipeline generates:
-
-```text
-184,336,741 normalized Quote/Trade events
-```
-
-because not every ITCH message represents an event that should be published to
-downstream consumers.
-
-The benchmarks characterize the performance of the market-data infrastructure
-itself.
-
-They do not measure trading-strategy profitability, order execution latency, or
-exchange round-trip latency.
-
----
 
 # Current Performance Snapshot
 
@@ -932,6 +824,8 @@ architecture.
 Future performance work can therefore be evaluated against both throughput and
 correctness rather than increasing throughput at the cost of silently dropping
 downstream market events.
+
+
 
 # Live MoldUDP64 Ingestion: Packet Loss, Recovery, and Receive-Path Analysis
 
