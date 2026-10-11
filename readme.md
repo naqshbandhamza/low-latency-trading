@@ -182,8 +182,8 @@ Decoded messages      : 368,366,634
 Unsupported messages  : 0
 Malformed messages    : 0
 
-Elapsed               : 90.774 sec
-Throughput            : 4.058 M messages/sec
+Elapsed               : 88.53 sec
+Throughput            : 4.160 M messages/sec
 
 Instruments           : 8,713
 Peak active orders    : 1,742,866
@@ -296,19 +296,11 @@ for the measured dataset.
 The table is allocated once on the heap and performs no per-order node
 allocation during normal operation.
 
-Representative benchmark results after this change:
-
-```text
-Run 1 : 92.067 sec | 4.001 M messages/sec
-Run 2 : 92.613 sec | 3.977 M messages/sec
-Run 3 : 91.352 sec | 4.032 M messages/sec
-```
-
 A subsequent full validation run produced:
 
 ```text
-Elapsed               : 90.774 sec
-Throughput            : 4.058 M messages/sec
+Elapsed               : 88.53 sec
+Throughput            : 4.160 M messages/sec
 ```
 
 Profiling after the change also removed the previous `std::__hash_table`
