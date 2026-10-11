@@ -1,7 +1,7 @@
 NASDAQ REAL-TIME MARKET-DATA INFRASTRUCTURE ARCHITECTURE
 ========================================================
 
-![1791098256762](images/readme/1791098256762.png)
+![1791710253938](images/readme/1791710253938.png)
 
 ### Lock-Free SPSC Throughput
 
@@ -940,8 +940,6 @@ architecture.
 Future performance work can therefore be evaluated against both throughput and
 correctness rather than increasing throughput at the cost of silently dropping
 downstream market events.
-
-
 
 # Live MoldUDP64 Ingestion: Packet Loss, Recovery, and Receive-Path Analysis
 
