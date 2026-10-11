@@ -353,35 +353,6 @@ market-data processing path.
 
 ---
 
-# Initial Full-Pipeline Backpressure
-
-Once the core market-state path became significantly faster, the full-pipeline
-benchmark exposed a new problem.
-
-run produced:
-
-```text
-Elapsed               : 109.391 sec
-Throughput            : 3.367 M messages/sec
-
-Published quotes      : 173,962,286
-Dropped quotes        : 792,390
-
-Published trades      : 9,542,650
-Dropped trades        : 39,415
-
-Consumed events       : 183,504,936
-Queue remaining       : 0
-```
-
-The producer was capable of temporarily outrunning the consumer and filling the
-SPSC queue.
-
-The benchmark intentionally treats this as an error rather than silently
-accepting event loss.
-
----
-
 # SPSC Queue Optimization
 
 The SPSC queue was optimized while preserving its fundamental design:
