@@ -193,7 +193,7 @@ Books                 : 8,695
 
 ### Core Pipeline Throughput
 
-**~4.06 million ITCH messages/sec**
+**~4.16 million ITCH messages/sec**
 
 Unlike the decode-only benchmark, this includes stateful order processing and
 order-book maintenance.
@@ -476,83 +476,15 @@ Once the SPSC synchronization path had been improved, queue capacity was tested
 to determine whether the remaining event loss represented sustained consumer
 underperformance or temporary burst/scheduling backpressure.
 
-## 4,096-Slot Queue
-
-With a 4,096-slot queue and cached opposing indices, three representative runs
-produced:
-
-```text
-Run 1 total drops : 223,292
-Run 2 total drops : 122,059
-Run 3 total drops : 113,656
-```
-
-Median:
-
-```text
-Elapsed               : 105.787 sec
-Throughput            : 3.482 M messages/sec
-Dropped events        : 122,059
-```
-
-The queue reserves one slot to distinguish full from empty, giving:
-
-```text
-Configured capacity   : 4,096
-Usable capacity       : 4,095
-```
-
-## 16,384-Slot Queue
-
-Increasing the queue to 16,384 slots produced:
 
 
-| Run        |       Elapsed |    Throughput | Quote Drops | Trade Drops | Total Drops |
-| ---------- | ------------: | ------------: | ----------: | ----------: | ----------: |
-| 1          |     102.410 s |     3.597 M/s |      34,375 |       3,707 |      38,082 |
-| 2          |      99.582 s |     3.699 M/s |       5,183 |         284 |       5,467 |
-| 3          |     106.938 s |     3.445 M/s |       1,705 |         136 |       1,841 |
-| **Median** | **102.410 s** | **3.597 M/s** |          — |          — |   **5,467** |
+|  |  |  |  |  |  |
+| - | -: | -: | -: | -: | -: |
+|  |  |  |  |  |  |
+|  |  |  |  |  |  |
+|  |  |  |  |  |  |
+|  |  |  |  |  |  |
 
-Compared with the earlier 4,096-slot median:
-
-```text
-Median dropped events
-
-122,059
-    ↓
-  5,467
-```
-
-This represents approximately a:
-
-**95.5% reduction in median dropped events.**
-
-The queue continued to drain completely after replay.
-
-The large variation in drops between otherwise identical runs suggested that
-short-lived producer/consumer burst and operating-system scheduling imbalance
-were significant contributors to queue saturation.
-
-## 65,536-Slot Queue
-
-The final experiment increased the queue to:
-
-```text
-Configured capacity   : 65,536 slots
-Usable capacity       : 65,535 events
-MarketEvent size      : 80 bytes
-MarketEvent alignment : 8 bytes
-Raw event storage     : 5,242,880 bytes (~5.0 MiB)
-Consumer threads      : 1
-```
-
-The approximately 5 MiB event-storage region is allocated once when the queue is
-constructed.
-
-No heap allocation occurs during individual `push()` or `pop()` operations.
-
----
 
 # Lossless Full-Pipeline Benchmark
 
