@@ -595,7 +595,7 @@ Reusable stream buffer
              │
              ▼
 Open-addressed OrderStore
-        ~4.06 M msg/s
+        ~4.16 M msg/s
              │
              ▼
 Full threaded pipeline
@@ -676,7 +676,7 @@ Nasdaq TotalView-ITCH 5.0 BinaryFILE
        │      │      │
  Instruments Orders Books
               │
-              │ ~4.06 M msg/s core pipeline
+              │ ~4.16 M msg/s core pipeline
               ▼
      Quote / Trade Normalization
               │
