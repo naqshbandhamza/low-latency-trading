@@ -448,14 +448,12 @@ to determine whether the remaining event loss represented sustained consumer
 underperformance or temporary burst/scheduling backpressure.
 
 
-
 |  |  |  |  |  |  |
 | - | -: | -: | -: | -: | -: |
 |  |  |  |  |  |  |
 |  |  |  |  |  |  |
 |  |  |  |  |  |  |
 |  |  |  |  |  |  |
-
 
 # Lossless Full-Pipeline Benchmark
 
@@ -562,8 +560,6 @@ scheduling mechanism.
 
 # 
 
-
-
 # Benchmark Summary
 
 
@@ -574,8 +570,6 @@ scheduling mechanism.
 | Full pipeline + SPSC + consumer |    368,366,634 |  **3.636 M msg/s median** |                 **0** |
 
 These numbers intentionally measure different boundaries.
-
-
 
 # Performance Evolution
 
@@ -655,8 +649,6 @@ the fastest individual run.
 
 ---
 
-
-
 # Current Performance Snapshot
 
 ```text
@@ -727,8 +719,6 @@ architecture.
 Future performance work can therefore be evaluated against both throughput and
 correctness rather than increasing throughput at the cost of silently dropping
 downstream market events.
-
-
 
 # Live MoldUDP64 Ingestion: Packet Loss, Recovery, and Receive-Path Analysis
 
@@ -818,27 +808,6 @@ The 104 missing datagrams matched the **+104** system-wide kernel UDP full-socke
 
 **Interpretation:** The observed missing UDP datagrams are strongly associated with overflow in the conventional kernel UDP socket receive path, rather than overflow in the application's SPSC datagram queue. Recovery restored the missing ITCH sequence in these measured runs; this does **not** mean the network path itself was lossless.
 
-## Receiver Timing Instrumentation
-
-Additional instrumentation measured wall-clock time spent around `receive()` and the post-receive queue-publication path.
-
-
-| Timing metric                             | Latest instrumented run |
-| ----------------------------------------- | ----------------------: |
-| Maximum post-receive work                 |   8,672.46 microseconds |
-| Post-receive operations >10 microseconds  |                   1,632 |
-| Post-receive operations >100 microseconds |                     137 |
-| Post-receive operations >1 millisecond    |                       7 |
-| SPSC pushes >10 microseconds              |                   1,296 |
-| SPSC pushes >100 microseconds             |                     126 |
-| SPSC pushes >1 millisecond                |                       6 |
-| Successful receive calls >1 millisecond   |                     163 |
-| Unsuccessful receive calls                |                     601 |
-
-These are **wall-clock measurements**, not CPU-execution measurements. A millisecond-scale `push()` interval can include operating-system descheduling or other interference; it does not establish that the SPSC algorithm itself required a millisecond of CPU time. Likewise, a long `recvmsg()` interval can reflect normal blocking while waiting for packets, including the configured receive timeout.
-
-The instrumentation also introduces work into the hot path and may affect the behavior under measurement. A compile-time instrumentation-off baseline is therefore necessary.
-
 ## Current Findings
 
 1. **The application-side queues are not the observed packet-loss point** in the reported live experiments: their queue-full drop counters remained zero and their queued work drained.
@@ -847,42 +816,3 @@ The instrumentation also introduces work into the hot path and may affect the be
 4. **Receiver scheduling is a plausible contributor**, but the existing wall-clock timing measurements do not isolate descheduling from CPU execution or other sources of delay.
 5. **Sequence recovery is functioning in the measured cases**: live and recovered ITCH message counts reconciled to the expected 50 million messages.
 6. **Kernel bypass is not yet proven necessary.** AF_XDP/DPDK remain candidate approaches to evaluate if a tuned conventional socket receiver cannot satisfy explicit loss and tail-latency requirements on the target Linux hardware.
-
-## Optimization and Validation Roadmap
-
-### Phase 1 — Establish a clean macOS baseline
-
-- Compile out per-datagram timing instrumentation, rather than merely disabling logging at runtime.
-- Run repeated 1.5M, 1.8M, and 2.0M messages/sec trials using identical sender settings.
-- Record received/expected datagrams, kernel UDP drop-counter deltas, sequence gaps, recovered ITCH messages, queue occupancy, and receiver CPU utilization.
-- Evaluate sensitivity to receiver-loop overhead, socket-buffer settings, and background CPU contention.
-- Use macOS Instruments **System Trace** to investigate receiver-thread scheduling; distinguish on-CPU execution from off-CPU pauses.
-
-### Phase 2 — Harden receive and shutdown behavior
-
-- Verify that receiver completion is signaled only after its producer thread has fully exited; avoid treating an early `running = false` signal as proof that no datagram remains in flight.
-- Validate queue drain, buffer lifetime, error handling, truncated datagrams, and recovery behavior under intentional loss.
-- Maintain separate counters for kernel-side losses, userspace queue drops, and recovered ITCH messages.
-
-### Phase 3 — Establish a Linux conventional-UDP baseline
-
-- Port the existing receiver to Linux while preserving the decoder, sequence recovery, market state, and event consumer.
-- Benchmark the socket-based receiver on the intended Linux host and NIC, using controlled external traffic where possible.
-- Investigate CPU affinity, receive batching (`recvmmsg`), buffer sizing, and scheduling behavior before attributing the limitation to conventional sockets generally.
-- Define acceptance criteria for sustained load, packet loss, recovery frequency, and tail latency.
-
-### Phase 4 — Evaluate kernel bypass as a controlled experiment
-
-- Implement an AF_XDP receive backend on Linux, with appropriate XDP packet redirection, UMEM frame management, RX/FILL rings, and Ethernet/IP/UDP parsing.
-- Preserve the downstream MoldUDP64/ITCH processing pipeline for a comparable A/B test.
-- Validate whether the NIC and driver support native/zero-copy AF_XDP; do not assume a VM demonstrates physical-NIC zero-copy performance.
-- Compare conventional UDP and AF_XDP under the **same physical traffic workload**, including packet loss, CPU consumption, and latency distributions.
-- Explore DPDK only if the target hardware, requirements, and comparative results justify the additional operational complexity.
-
-## Engineering Hypothesis
-
-> At the target offered message rate, conventional UDP reception may fail the required packet-loss or tail-latency service level because the receive thread cannot consistently drain the kernel socket buffer during bursts or scheduling interruptions. If this persists after measured socket-path optimization on target Linux hardware, a properly configured AF_XDP/DPDK backend may reduce receive-path overhead and meet the requirement.
-
-This is a **hypothesis to test**, not an established conclusion. Kernel bypass removes the conventional UDP socket-buffer mechanism from the receive path, but it does not guarantee zero packet loss: NIC RX rings, userspace buffer recycling, CPU scheduling, and downstream processing can still become bottlenecks.
-
-**Next milestone:** establish whether an optimized conventional UDP receiver can deliver repeatable, zero-kernel-drop results at 2M ITCH messages/sec before claiming that kernel bypass is required.
