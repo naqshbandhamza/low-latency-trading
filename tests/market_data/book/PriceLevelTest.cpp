@@ -1,3 +1,4 @@
+
 #include <catch2/catch_test_macros.hpp>
 
 #include "market_data/book/PriceLevel.h"
@@ -9,9 +10,7 @@ TEST_CASE(
     "PriceLevel starts empty"
 )
 {
-    PriceLevel level{
-        .price = 1000000
-    };
+    PriceLevel level{1000000};
 
     REQUIRE(level.price == 1000000);
     REQUIRE(level.quantity == 0);
@@ -24,9 +23,7 @@ TEST_CASE(
     "PriceLevel adds order quantity"
 )
 {
-    PriceLevel level{
-        .price = 1000000
-    };
+    PriceLevel level{1000000};
 
     level.add(500);
 
@@ -40,9 +37,7 @@ TEST_CASE(
     "PriceLevel aggregates multiple orders"
 )
 {
-    PriceLevel level{
-        .price = 1000000
-    };
+    PriceLevel level{1000000};
 
     level.add(500);
     level.add(300);
@@ -57,9 +52,7 @@ TEST_CASE(
     "PriceLevel reduces quantity without removing order"
 )
 {
-    PriceLevel level{
-        .price = 1000000
-    };
+    PriceLevel level{1000000};
 
     level.add(500);
 
@@ -74,9 +67,7 @@ TEST_CASE(
     "PriceLevel rejects reduction larger than quantity"
 )
 {
-    PriceLevel level{
-        .price = 1000000
-    };
+    PriceLevel level{1000000};
 
     level.add(500);
 
@@ -93,9 +84,7 @@ TEST_CASE(
     "PriceLevel removes remaining order quantity"
 )
 {
-    PriceLevel level{
-        .price = 1000000
-    };
+    PriceLevel level{1000000};
 
     level.add(500);
     level.add(300);
@@ -114,9 +103,7 @@ TEST_CASE(
     "PriceLevel becomes empty after last order removed"
 )
 {
-    PriceLevel level{
-        .price = 1000000
-    };
+    PriceLevel level{1000000};
 
     level.add(500);
 
@@ -134,9 +121,7 @@ TEST_CASE(
     "PriceLevel rejects removing order when empty"
 )
 {
-    PriceLevel level{
-        .price = 1000000
-    };
+    PriceLevel level{1000000};
 
     REQUIRE_FALSE(
         level.removeOrder(100)
@@ -151,9 +136,7 @@ TEST_CASE(
     "PriceLevel handles partial execution then order removal"
 )
 {
-    PriceLevel level{
-        .price = 1000000
-    };
+    PriceLevel level{1000000};
 
     level.add(1000);
 

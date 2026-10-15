@@ -52,11 +52,16 @@ namespace llt::market_data
             Price price,
             Quantity quantity)
         {
+            // auto [iterator, inserted] =
+            //     levels_.try_emplace(
+            //         price,
+            //         PriceLevel{
+            //             .price = price});
+
             auto [iterator, inserted] =
                 levels_.try_emplace(
                     price,
-                    PriceLevel{
-                        .price = price});
+                    price);
 
             iterator->second.add(
                 quantity);

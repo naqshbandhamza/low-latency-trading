@@ -13,6 +13,13 @@ struct PriceLevel
     Quantity quantity{0};
     std::size_t orderCount{0};
 
+    //test
+    explicit PriceLevel(Price p) noexcept
+        : price(p)
+    {
+    }
+    //
+
     void add(
         Quantity addedQuantity
     ) noexcept
