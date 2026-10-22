@@ -828,6 +828,41 @@ int main(
             << std::endl;
     }
 
+    #ifdef LLT_ENABLE_LATENCY_TRACE
+
+    const auto report = feedHandler.latencyReport();
+
+    const auto printLatency =
+        [](const char* name, const auto& s)
+    {
+        std::cout
+            << name
+            << " count=" << s.count
+            << " sampled=" << s.sampled
+            << " discarded=" << s.discarded
+            << " p50=" << s.p50Ns << " ns"
+            << " p99=" << s.p99Ns << " ns"
+            << " p99.9=" << s.p999Ns << " ns"
+            << " max=" << s.maxNs << " ns"
+            << '\n';
+    };
+
+    std::cout << "\n=== ITCH LATENCY REPORT ===\n";
+
+    printLatency(
+        "Datagram queue wait",
+        report.datagramQueue);
+
+    printLatency(
+        "Live message processing",
+        report.liveMessageProcessing);
+
+    printLatency(
+        "Recovered message processing",
+        report.recoveredMessageProcessing);
+
+    #endif
+
     // 3. The feed processor can no longer publish events.
     // Now stop and drain the downstream consumer.
     consumerRunning.store(

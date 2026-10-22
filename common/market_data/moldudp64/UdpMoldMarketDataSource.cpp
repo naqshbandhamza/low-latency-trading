@@ -11,6 +11,10 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+#ifdef LLT_ENABLE_LATENCY_TRACE
+#include "market_data/utility/LatencyClock.h"
+#endif
+
 namespace llt::moldudp64
 {
 
@@ -219,6 +223,10 @@ namespace llt::moldudp64
     {
         datagram.size = 0;
 
+        #ifdef LLT_ENABLE_LATENCY_TRACE
+        datagram.receivedAtNs = 0;
+        #endif
+
         while (true)
         {
             iovec buffer{};
@@ -239,6 +247,11 @@ namespace llt::moldudp64
                     socketFd_,
                     &message,
                     0);
+
+            #ifdef LLT_ENABLE_LATENCY_TRACE
+            const auto receiveCompletedNs =
+                llt::latency::nowNs();
+            #endif
 
             if (receivedBytes < 0)
             {
@@ -277,6 +290,10 @@ namespace llt::moldudp64
             datagram.size =
                 static_cast<std::size_t>(
                     receivedBytes);
+
+            #ifdef LLT_ENABLE_LATENCY_TRACE
+            datagram.receivedAtNs = receiveCompletedNs;
+            #endif
 
             return true;
         }

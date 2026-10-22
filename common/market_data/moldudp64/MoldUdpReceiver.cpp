@@ -7,6 +7,10 @@
 #include <algorithm>
 #include <cstdint>
 
+#ifdef LLT_ENABLE_LATENCY_TRACE
+#include "market_data/utility/LatencyClock.h"
+#endif
+
 namespace llt::moldudp64
 {
 
@@ -219,6 +223,10 @@ namespace llt::moldudp64
 
             // Measure queue push duration.
             const auto pushStart = Clock::now();
+
+            #ifdef LLT_ENABLE_LATENCY_TRACE
+                datagram.queuedAtNs = llt::latency::nowNs();
+            #endif
 
             const bool pushed = queue_.push(datagram);
 

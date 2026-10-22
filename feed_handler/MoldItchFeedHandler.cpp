@@ -88,6 +88,11 @@ bool MoldItchFeedHandler::processMessage(
         return false;
     }
 
+    #ifdef LLT_ENABLE_LATENCY_TRACE
+        const auto processingStartedNs =
+        llt::latency::nowNs(); // T3
+    #endif
+
     const auto decoded =
         ItchDispatcher::dispatch(
             message.data,
@@ -100,6 +105,15 @@ bool MoldItchFeedHandler::processMessage(
 
     marketState_.onMessage(
         *decoded);
+
+    
+    #ifdef LLT_ENABLE_LATENCY_TRACE
+        const auto processingCompletedNs =
+            llt::latency::nowNs(); // T6
+
+        messageProcessingLatency_.record(
+            processingCompletedNs - processingStartedNs);
+    #endif
 
     ++processedMessages_;
 
@@ -125,6 +139,12 @@ bool MoldItchFeedHandler::processRecoveredMessage(
             static_cast<std::size_t>(
                 message.payloadSize));
 
+    #ifdef LLT_ENABLE_LATENCY_TRACE
+        const auto processingStartedNs =
+        llt::latency::nowNs(); // T3
+    #endif
+
+
     if (!decoded.has_value())
     {
         return false;
@@ -132,6 +152,14 @@ bool MoldItchFeedHandler::processRecoveredMessage(
 
     marketState_.onMessage(
         *decoded);
+
+    #ifdef LLT_ENABLE_LATENCY_TRACE
+        const auto processingCompletedNs =
+            llt::latency::nowNs(); // T6
+
+        recoveredMessageProcessingLatency_.record(
+            processingCompletedNs - processingStartedNs);
+    #endif
 
     ++recoveredMessages_;
 
@@ -476,6 +504,18 @@ void MoldItchFeedHandler::runQueued(
 
         if (datagram.has_value())
         {
+            #ifdef LLT_ENABLE_LATENCY_TRACE
+                const auto dequeuedAtNs =
+                    llt::latency::nowNs();
+
+                if (datagram->queuedAtNs != 0 &&
+                    dequeuedAtNs >= datagram->queuedAtNs)
+                {
+                    datagramQueueLatency_.record(
+                        dequeuedAtNs - datagram->queuedAtNs);
+                }
+            #endif
+
             if (!processDatagram(*datagram))
             {
                 ++malformedDatagrams_;
