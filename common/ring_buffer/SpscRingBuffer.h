@@ -198,9 +198,6 @@
 
 // } // namespace llt
 
-
-
-
 #pragma once
 
 #include <atomic>
@@ -219,8 +216,7 @@ namespace llt
     {
         static_assert(
             Capacity > 0,
-            "Capacity must be greater than zero"
-        );
+            "Capacity must be greater than zero");
 
         // Raw storage for one T with the correct size and
         // alignment.
@@ -232,277 +228,179 @@ namespace llt
         using Storage =
             std::aligned_storage_t<
                 sizeof(T),
-                alignof(T)
-            >;
+                alignof(T)>;
 
     public:
-
         SpscRingBuffer()
             : storage_(
                   std::make_unique<Storage[]>(
-                      Capacity
-                  )
-              )
+                      Capacity))
         {
         }
 
+        SpscRingBuffer(
+            const SpscRingBuffer &) = delete;
+
+        SpscRingBuffer &
+        operator=(
+            const SpscRingBuffer &) = delete;
 
         SpscRingBuffer(
-            const SpscRingBuffer&
-        ) = delete;
+            SpscRingBuffer &&) = delete;
 
-        SpscRingBuffer&
+        SpscRingBuffer &
         operator=(
-            const SpscRingBuffer&
-        ) = delete;
-
-        SpscRingBuffer(
-            SpscRingBuffer&&
-        ) = delete;
-
-        SpscRingBuffer&
-        operator=(
-            SpscRingBuffer&&
-        ) = delete;
-
+            SpscRingBuffer &&) = delete;
 
         [[nodiscard]]
-        bool push(
-            const T& value
-        )
+        bool push(const T &value)
         {
             const std::size_t write =
-                writeIndex_.load(
-                    std::memory_order_relaxed
-                );
+                producer_.writeIndex.load(
+                    std::memory_order_relaxed);
 
-            const std::size_t next =
-                increment(write);
+            const std::size_t next = increment(write);
 
-            // Use the producer-local cached copy of the
-            // consumer's read position first.
-            //
-            // Only touch the consumer-owned atomic when the
-            // queue appears full according to our cached view.
-            if (
-                next
-                == cachedReadIndex_
-            )
+            if (next == producer_.cachedReadIndex)
             {
-                cachedReadIndex_ =
-                    readIndex_.load(
-                        std::memory_order_acquire
-                    );
+                producer_.cachedReadIndex =
+                    consumer_.readIndex.load(
+                        std::memory_order_acquire);
 
-                if (
-                    next
-                    == cachedReadIndex_
-                )
-                {
+                if (next == producer_.cachedReadIndex)
                     return false;
-                }
             }
 
-            T* slot =
-                ptr(write);
+            T *slot = ptr(write);
 
-            ::new (
-                static_cast<void*>(slot)
-            ) T(value);
+            ::new (static_cast<void *>(slot)) T(value);
 
-            // Publish the fully constructed object to the
-            // consumer.
-            writeIndex_.store(
+            producer_.writeIndex.store(
                 next,
-                std::memory_order_release
-            );
+                std::memory_order_release);
 
             return true;
         }
 
-
         [[nodiscard]]
         bool push(
-            T&& value
-        )
+            T &&value)
         {
             const std::size_t write =
-                writeIndex_.load(
-                    std::memory_order_relaxed
-                );
+                producer_.writeIndex.load(
+                    std::memory_order_relaxed);
 
-            const std::size_t next =
-                increment(write);
+            const std::size_t next = increment(write);
 
-            // Use the producer-local cached read position.
-            //
-            // Refresh from the consumer only when the queue
-            // appears full.
-            if (
-                next
-                == cachedReadIndex_
-            )
+            if (next == producer_.cachedReadIndex)
             {
-                cachedReadIndex_ =
-                    readIndex_.load(
-                        std::memory_order_acquire
-                    );
+                producer_.cachedReadIndex =
+                    consumer_.readIndex.load(
+                        std::memory_order_acquire);
 
-                if (
-                    next
-                    == cachedReadIndex_
-                )
-                {
+                if (next == producer_.cachedReadIndex)
                     return false;
-                }
             }
 
-            T* slot =
-                ptr(write);
+            T *slot = ptr(write);
 
-            ::new (
-                static_cast<void*>(slot)
-            ) T(
-                std::move(value)
-            );
+            ::new (static_cast<void *>(slot)) T(std::move(value));
 
-            // Make the constructed object visible to the
-            // consumer.
-            writeIndex_.store(
+            producer_.writeIndex.store(
                 next,
-                std::memory_order_release
-            );
+                std::memory_order_release);
 
             return true;
         }
-
 
         [[nodiscard]]
         std::optional<T> pop()
         {
             const std::size_t read =
-                readIndex_.load(
-                    std::memory_order_relaxed
-                );
+                consumer_.readIndex.load(
+                    std::memory_order_relaxed);
 
-            // Use the consumer-local cached copy of the
-            // producer's write position first.
-            //
-            // Only touch the producer-owned atomic when the
-            // queue appears empty according to our cached view.
-            if (
-                read
-                == cachedWriteIndex_
-            )
+            if (read == consumer_.cachedWriteIndex)
             {
-                cachedWriteIndex_ =
-                    writeIndex_.load(
-                        std::memory_order_acquire
-                    );
+                consumer_.cachedWriteIndex =
+                    producer_.writeIndex.load(
+                        std::memory_order_acquire);
 
-                if (
-                    read
-                    == cachedWriteIndex_
-                )
-                {
+                if (read == consumer_.cachedWriteIndex)
                     return std::nullopt;
-                }
             }
 
-            T* slot =
-                ptr(read);
+            T *slot = ptr(read);
 
             std::optional<T> value{
-                std::move(*slot)
-            };
+                std::move(*slot)};
 
-            // Destroy the object occupying this raw slot.
             slot->~T();
 
-            // Release the slot back to the producer.
-            readIndex_.store(
+            consumer_.readIndex.store(
                 increment(read),
-                std::memory_order_release
-            );
+                std::memory_order_release);
 
             return value;
         }
-
 
         [[nodiscard]]
         bool empty() const noexcept
         {
             const std::size_t read =
-                readIndex_.load(
-                    std::memory_order_relaxed
-                );
+                consumer_.readIndex.load(
+                    std::memory_order_relaxed);
 
             const std::size_t write =
-                writeIndex_.load(
-                    std::memory_order_acquire
-                );
+                producer_.writeIndex.load(
+                    std::memory_order_acquire);
 
             return read == write;
         }
-
 
         [[nodiscard]]
         bool full() const noexcept
         {
             const std::size_t write =
-                writeIndex_.load(
-                    std::memory_order_relaxed
-                );
+                producer_.writeIndex.load(
+                    std::memory_order_relaxed);
 
             const std::size_t next =
                 increment(write);
 
             const std::size_t read =
-                readIndex_.load(
-                    std::memory_order_acquire
-                );
+                consumer_.readIndex.load(
+                    std::memory_order_acquire);
 
             return next == read;
         }
-
 
         [[nodiscard]]
         std::size_t size() const noexcept
         {
             const std::size_t write =
-                writeIndex_.load(
-                    std::memory_order_acquire
-                );
+                producer_.writeIndex.load(
+                    std::memory_order_acquire);
 
             const std::size_t read =
-                readIndex_.load(
-                    std::memory_order_acquire
-                );
+                consumer_.readIndex.load(
+                    std::memory_order_acquire);
 
-            if (
-                write >= read
-            )
+            if (write >= read)
             {
                 return write - read;
             }
 
-            return Capacity
-                - read
-                + write;
+            return Capacity - read + write;
         }
 
-
-        T* ptr(
-            std::size_t index
-        ) noexcept
+        T *ptr(
+            std::size_t index) noexcept
         {
             return std::launder(
-                reinterpret_cast<T*>(
-                    &storage_[index]
-                )
-            );
+                reinterpret_cast<T *>(
+                    &storage_[index]));
         }
-
 
         ~SpscRingBuffer()
         {
@@ -512,27 +410,21 @@ namespace llt
             // Destroy any objects that are still alive in the
             // preallocated slots.
             while (
-                !empty()
-            )
+                !empty())
             {
                 (void)pop();
             }
         }
 
-
     private:
-
         [[nodiscard]]
-        static constexpr
-        std::size_t increment(
-            std::size_t index
-        ) noexcept
+        static constexpr std::size_t increment(
+            std::size_t index) noexcept
         {
             return (
-                index + 1
-            ) % Capacity;
+                       index + 1) %
+                   Capacity;
         }
-
 
         // -----------------------------------------------------
         // Preallocated event storage
@@ -550,61 +442,27 @@ namespace llt
         std::unique_ptr<Storage[]>
             storage_;
 
+        struct alignas(64) ProducerState
+        {
+            std::atomic<std::size_t> writeIndex{0};
+            std::size_t cachedReadIndex{0};
+        };
 
-        // -----------------------------------------------------
-        // Producer-owned position
-        // -----------------------------------------------------
-        //
-        // Written by producer.
-        // Observed by consumer.
-        //
-        // Keep it on its own cache line so that producer and
-        // consumer do not continuously invalidate a shared
-        // cache line merely by advancing their own positions.
-        //
-        alignas(64)
-        std::atomic<std::size_t>
-            writeIndex_{0};
+        struct alignas(64) ConsumerState
+        {
+            std::atomic<std::size_t> readIndex{0};
+            std::size_t cachedWriteIndex{0};
+        };
 
+        // Compile-time alignment checks
+        static_assert(alignof(ProducerState) >= 64);
+        static_assert(alignof(ConsumerState) >= 64);
 
-        // -----------------------------------------------------
-        // Consumer-owned position
-        // -----------------------------------------------------
-        //
-        // Written by consumer.
-        // Observed by producer.
-        //
-        alignas(64)
-        std::atomic<std::size_t>
-            readIndex_{0};
+        static_assert(sizeof(ProducerState) % 64 == 0);
+        static_assert(sizeof(ConsumerState) % 64 == 0);
 
-
-        // -----------------------------------------------------
-        // Producer-local cached consumer position
-        // -----------------------------------------------------
-        //
-        // Only the producer accesses this value.
-        //
-        // It may safely be stale. When it makes the queue
-        // appear full, the producer refreshes readIndex_ using
-        // an acquire load.
-        //
-        std::size_t
-            cachedReadIndex_{0};
-
-
-        // -----------------------------------------------------
-        // Consumer-local cached producer position
-        // -----------------------------------------------------
-        //
-        // Only the consumer accesses this value.
-        //
-        // It may safely be stale. When it makes the queue
-        // appear empty, the consumer refreshes writeIndex_
-        // using an acquire load.
-        //
-        std::size_t
-            cachedWriteIndex_{0};
+        ProducerState producer_;
+        ConsumerState consumer_;
     };
 
 } // namespace llt
