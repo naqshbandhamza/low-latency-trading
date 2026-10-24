@@ -1,4 +1,4 @@
-// #pragma once
+#pragma once
 
 // #include <array>
 // #include <atomic>
@@ -311,6 +311,44 @@ namespace llt
                 std::memory_order_release);
 
             return true;
+        }
+
+        // Producer only. Construct directly in the next unpublished slot.
+        // Callback returns true to publish, false to discard.
+        // Never call concurrently with another producer operation.
+        enum class ProduceResult { Published, Rejected, Full };
+
+        template <typename Fill>
+        [[nodiscard]]
+        ProduceResult try_produce(Fill&& fill)
+        {
+            const std::size_t write =
+                producer_.writeIndex.load(std::memory_order_relaxed);
+            const std::size_t next = increment(write);
+
+            if (next == producer_.cachedReadIndex)
+            {
+                producer_.cachedReadIndex =
+                    consumer_.readIndex.load(std::memory_order_acquire);
+                if (next == producer_.cachedReadIndex)
+                    return ProduceResult::Full;
+            }
+
+            T* slot = ptr(write);
+            ::new (static_cast<void*>(slot)) T{};
+
+            // A failed receive must never publish partially written data.
+            // This method is intended for noexcept receive callbacks.
+            static_assert(noexcept(std::declval<Fill&>()(std::declval<T&>())),
+                          "try_produce callback must be noexcept");
+            if (!std::forward<Fill>(fill)(*slot))
+            {
+                slot->~T();
+                return ProduceResult::Rejected;
+            }
+
+            producer_.writeIndex.store(next, std::memory_order_release);
+            return ProduceResult::Published;
         }
 
         [[nodiscard]]

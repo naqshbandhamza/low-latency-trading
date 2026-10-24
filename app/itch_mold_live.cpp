@@ -806,6 +806,15 @@ int main(
               << timing.successfulReceivesOver1ms << '\n';
     std::cout << "  Unsuccessful calls: "
               << timing.unsuccessfulReceiveCalls << '\n';
+    std::cout
+    << "Max outside receive (ns) : "
+    << timing.maxOutsideReceiveNs << '\n'
+
+    << "Outside receive >100us   : "
+    << timing.outsideReceiveOver100us << '\n'
+
+    << "Outside receive >1ms     : "
+    << timing.outsideReceiveOver1ms << '\n';
     //
 
     std::cerr

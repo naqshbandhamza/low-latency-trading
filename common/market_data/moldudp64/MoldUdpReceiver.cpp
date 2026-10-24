@@ -51,6 +51,7 @@ namespace llt::moldudp64
         queuedDatagrams_.store(0, std::memory_order_relaxed);
         queueFullDrops_.store(0, std::memory_order_relaxed);
         maxQueueOccupancy_.store(0, std::memory_order_relaxed);
+        timingStats_ = ReceiverTimingStats{};
 
         try
         {
@@ -103,219 +104,106 @@ namespace llt::moldudp64
         return maxQueueOccupancy_.load(std::memory_order_relaxed);
     }
 
-    // void MoldUdpReceiver::receiveLoop() noexcept
-    // {
-    //     ReceivedMoldDatagram datagram{};
-
-    //     while (running_.load(std::memory_order_acquire))
-    //     {
-    //         if (!source_.receive(datagram))
-    //         {
-    //             continue;
-    //         }
-
-    //         receivedDatagrams_.fetch_add(
-    //             1, std::memory_order_relaxed);
-
-    //         if (!queue_.push(datagram))
-    //         {
-    //             queueFullDrops_.fetch_add(
-    //                 1, std::memory_order_relaxed);
-
-    //             continue;
-    //         }
-
-    //         queuedDatagrams_.fetch_add(
-    //             1, std::memory_order_relaxed);
-
-    //         const auto occupancy =
-    //             static_cast<std::uint64_t>(queue_.size());
-
-    //         auto previousMax =
-    //             maxQueueOccupancy_.load(std::memory_order_relaxed);
-
-    //         while (occupancy > previousMax &&
-    //                !maxQueueOccupancy_.compare_exchange_weak(
-    //                    previousMax,
-    //                    occupancy,
-    //                    std::memory_order_relaxed,
-    //                    std::memory_order_relaxed))
-    //         {
-    //         }
-    //     }
-
-    //     running_.store(false, std::memory_order_release);
-    // }
-
-    // temp
     void MoldUdpReceiver::receiveLoop() noexcept
     {
+        // Used only when the ring is full. Still drain the socket so
+        // queue-full drops are counted and the receive path keeps moving.
+        ReceivedMoldDatagram discard{};
+        using Result = MoldDatagramQueue::ProduceResult;
+
+#ifdef LLT_ENABLE_RECEIVER_DIAGNOSTICS
         using Clock = std::chrono::steady_clock;
-        using Nanoseconds = std::chrono::nanoseconds;
-
-        ReceivedMoldDatagram datagram{};
-
-        auto previousIteration = Clock::now();
+        using Ns = std::chrono::nanoseconds;
+        auto previousLoopStart = Clock::now();
+        auto previousReceiveEnd = Clock::time_point{};
+        bool havePreviousReceive = false;
+        const auto elapsed = [](Clock::time_point a, Clock::time_point b)
+            -> std::uint64_t {
+            return static_cast<std::uint64_t>(
+                std::chrono::duration_cast<Ns>(b - a).count());
+        };
+#endif
 
         while (running_.load(std::memory_order_acquire))
         {
+#ifdef LLT_ENABLE_RECEIVER_DIAGNOSTICS
             const auto loopStart = Clock::now();
-
-            const auto loopGapNs =
-                std::chrono::duration_cast<Nanoseconds>(
-                    loopStart - previousIteration)
-                    .count();
-
-            if (loopGapNs > 0)
-            {
-                const auto gap =
-                    static_cast<std::uint64_t>(loopGapNs);
-
-                timingStats_.maxLoopGapNs =
-                    std::max(timingStats_.maxLoopGapNs, gap);
-
-                if (gap > 100'000)
-                    ++timingStats_.loopGapsOver100us;
-
-                if (gap > 500'000)
-                    ++timingStats_.loopGapsOver500us;
-
-                if (gap > 1'000'000)
-                    ++timingStats_.loopGapsOver1ms;
-            }
-
-            // Start timing the receive operation.
+            const auto loopGap = elapsed(previousLoopStart, loopStart);
+            previousLoopStart = loopStart;
+            timingStats_.maxLoopGapNs =
+                std::max(timingStats_.maxLoopGapNs, loopGap);
+            if (loopGap > 100'000) ++timingStats_.loopGapsOver100us;
+            if (loopGap > 500'000) ++timingStats_.loopGapsOver500us;
+            if (loopGap > 1'000'000) ++timingStats_.loopGapsOver1ms;
             const auto receiveStart = Clock::now();
-
-            const bool received = source_.receive(datagram);
-
-            const auto receiveEnd = Clock::now();
-
-            const auto receiveNs =
-                std::chrono::duration_cast<Nanoseconds>(
-                    receiveEnd - receiveStart)
-                    .count();
-
-            if (receiveNs > 0)
+            if (havePreviousReceive)
             {
-                const auto duration =
-                    static_cast<std::uint64_t>(receiveNs);
+                const auto outside = elapsed(previousReceiveEnd, receiveStart);
+                timingStats_.maxOutsideReceiveNs =
+                    std::max(timingStats_.maxOutsideReceiveNs, outside);
+                if (outside > 100'000) ++timingStats_.outsideReceiveOver100us;
+                if (outside > 1'000'000) ++timingStats_.outsideReceiveOver1ms;
+            }
+#endif
+            // Direct receive into an unpublished SPSC slot. On failure,
+            // try_produce destroys the slot without advancing writeIndex.
+            // The callback must not throw.
+            const Result result = queue_.try_produce(
+                [this](ReceivedMoldDatagram& slot) noexcept -> bool {
+                    if (!source_.receive(slot))
+                        return false;
+#ifdef LLT_ENABLE_LATENCY_TRACE
+                    slot.queuedAtNs = llt::latency::nowNs();
+#endif
+                    return true;
+                });
 
-                timingStats_.maxReceiveCallNs =
-                    std::max(
-                        timingStats_.maxReceiveCallNs,
-                        duration);
-
-                if (received && duration > 1'000'000)
-                    ++timingStats_.successfulReceivesOver1ms;
+            bool received = (result == Result::Published);
+            bool queued = received;
+            if (result == Result::Full)
+            {
+                // No free slot: preserve old behavior by receiving into
+                // a scratch datagram and counting a drop on success.
+                received = source_.receive(discard);
             }
 
-            previousIteration = loopStart;
-
+#ifdef LLT_ENABLE_RECEIVER_DIAGNOSTICS
+            const auto receiveEnd = Clock::now();
+            previousReceiveEnd = receiveEnd;
+            havePreviousReceive = true;
+            const auto callDuration = elapsed(receiveStart, receiveEnd);
+            // Includes slot acquisition/publication, not just recvmsg().
+            timingStats_.maxReceiveCallNs =
+                std::max(timingStats_.maxReceiveCallNs, callDuration);
+            if (received && callDuration > 1'000'000)
+                ++timingStats_.successfulReceivesOver1ms;
+#endif
             if (!received)
             {
+#ifdef LLT_ENABLE_RECEIVER_DIAGNOSTICS
                 ++timingStats_.unsuccessfulReceiveCalls;
+#endif
                 continue;
             }
 
-            receivedDatagrams_.fetch_add(
-                1, std::memory_order_relaxed);
-
-            // Measure queue push duration.
-            const auto pushStart = Clock::now();
-
-            #ifdef LLT_ENABLE_LATENCY_TRACE
-                datagram.queuedAtNs = llt::latency::nowNs();
-            #endif
-
-            const bool pushed = queue_.push(datagram);
-
-            const auto pushEnd = Clock::now();
-
-            const auto pushNs =
-                std::chrono::duration_cast<Nanoseconds>(
-                    pushEnd - pushStart)
-                    .count();
-
-            if (pushNs > 0)
-            {
-                const auto duration =
-                    static_cast<std::uint64_t>(pushNs);
-
-                timingStats_.maxQueuePushNs =
-                    std::max(
-                        timingStats_.maxQueuePushNs,
-                        duration);
-
-                if (duration > 10'000)
-                    ++timingStats_.pushesOver10us;
-
-                if (duration > 100'000)
-                    ++timingStats_.pushesOver100us;
-
-                if (duration > 1'000'000)
-                    ++timingStats_.pushesOver1ms;
-            }
-
-            if (!pushed)
-            {
-                queueFullDrops_.fetch_add(
-                    1, std::memory_order_relaxed);
-            }
+            receivedDatagrams_.fetch_add(1, std::memory_order_relaxed);
+            if (queued)
+                queuedDatagrams_.fetch_add(1, std::memory_order_relaxed);
             else
-            {
-                queuedDatagrams_.fetch_add(
-                    1, std::memory_order_relaxed);
+                queueFullDrops_.fetch_add(1, std::memory_order_relaxed);
 
-                const auto occupancy =
-                    static_cast<std::uint64_t>(queue_.size());
-
-                auto previousMax =
-                    maxQueueOccupancy_.load(
-                        std::memory_order_relaxed);
-
-                while (occupancy > previousMax &&
-                       !maxQueueOccupancy_.compare_exchange_weak(
-                           previousMax,
-                           occupancy,
-                           std::memory_order_relaxed,
-                           std::memory_order_relaxed))
-                {
-                }
-            }
-
-            // Measure all work after receive() returned,
-            // including timing instrumentation itself.
-            const auto postWorkEnd = Clock::now();
-
-            const auto postWorkNs =
-                std::chrono::duration_cast<Nanoseconds>(
-                    postWorkEnd - receiveEnd)
-                    .count();
-
-            if (postWorkNs > 0)
-            {
-                const auto duration =
-                    static_cast<std::uint64_t>(postWorkNs);
-
-                timingStats_.maxPostReceiveWorkNs =
-                    std::max(
-                        timingStats_.maxPostReceiveWorkNs,
-                        duration);
-
-                if (duration > 10'000)
-                    ++timingStats_.postWorkOver10us;
-
-                if (duration > 100'000)
-                    ++timingStats_.postWorkOver100us;
-
-                if (duration > 1'000'000)
-                    ++timingStats_.postWorkOver1ms;
-            }
+#ifdef LLT_ENABLE_RECEIVER_DIAGNOSTICS
+            const auto postWork = elapsed(receiveEnd, Clock::now());
+            timingStats_.maxPostReceiveWorkNs =
+                std::max(timingStats_.maxPostReceiveWorkNs, postWork);
+            if (postWork > 10'000) ++timingStats_.postWorkOver10us;
+            if (postWork > 100'000) ++timingStats_.postWorkOver100us;
+            if (postWork > 1'000'000) ++timingStats_.postWorkOver1ms;
+            // Old 'push' measurements do not apply: receiving and
+            // publishing are now fused into a single operation.
+#endif
         }
-
         running_.store(false, std::memory_order_release);
     }
-    //
 
 } // namespace llt::moldudp64
