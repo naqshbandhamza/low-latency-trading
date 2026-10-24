@@ -828,12 +828,12 @@ int main(
             << std::endl;
     }
 
-    #ifdef LLT_ENABLE_LATENCY_TRACE
+#ifdef LLT_ENABLE_LATENCY_TRACE
 
     const auto report = feedHandler.latencyReport();
 
     const auto printLatency =
-        [](const char* name, const auto& s)
+        [](const char *name, const auto &s)
     {
         std::cout
             << name
@@ -853,6 +853,16 @@ int main(
         "Datagram queue wait",
         report.datagramQueue);
 
+    // NEW: Complete datagram processing duration
+    printLatency(
+        "Full datagram processing",
+        report.datagramProcessing);
+
+    // NEW: Time between successful consumer pops
+    printLatency(
+        "Consumer pop interval",
+        report.consumerPopInterval);
+
     printLatency(
         "Live message processing",
         report.liveMessageProcessing);
@@ -861,7 +871,7 @@ int main(
         "Recovered message processing",
         report.recoveredMessageProcessing);
 
-    #endif
+#endif
 
     // 3. The feed processor can no longer publish events.
     // Now stop and drain the downstream consumer.

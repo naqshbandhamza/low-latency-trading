@@ -492,11 +492,84 @@ void MoldItchFeedHandler::run()
 }
 
 
+// void MoldItchFeedHandler::runQueued(
+//     llt::moldudp64::MoldDatagramQueue& queue,
+//     const llt::moldudp64::MoldUdpReceiver& receiver)
+// {
+//     startLifecycle();
+
+//     while (true)
+//     {
+//         auto datagram = queue.pop();
+
+//         if (datagram.has_value())
+//         {
+//             #ifdef LLT_ENABLE_LATENCY_TRACE
+//                 const auto dequeuedAtNs =
+//                     llt::latency::nowNs();
+
+//                 if (datagram->queuedAtNs != 0 &&
+//                     dequeuedAtNs >= datagram->queuedAtNs)
+//                 {
+//                     datagramQueueLatency_.record(
+//                         dequeuedAtNs - datagram->queuedAtNs);
+//                 }
+//             #endif
+
+//             if (!processDatagram(*datagram))
+//             {
+//                 ++malformedDatagrams_;
+
+//                 state_.store(
+//                     llt::FeedHandlerState::Failed,
+//                     std::memory_order_release);
+
+//                 break;
+//             }
+
+//             ++processedDatagrams_;
+//             continue;
+//         }
+
+//         // Stop only after the producer has stopped
+//         // AND every published datagram has been consumed.
+//         if (!receiver.running())
+//         {
+//             // Recheck after observing producer shutdown.
+//             if (queue.empty())
+//             {
+//                 break;
+//             }
+
+//             continue;
+//         }
+
+//         // An external stop request may terminate processing
+//         // before the producer has stopped. Coordinated
+//         // shutdown should stop/join the receiver first.
+//         if (!running_.load(std::memory_order_acquire))
+//         {
+//             break;
+//         }
+
+//         // Temporary strategy while the queue is empty.
+//         // We can benchmark spinning versus yielding later.
+//         std::this_thread::yield();
+//     }
+
+//     finishLifecycle();
+// }
+
+
 void MoldItchFeedHandler::runQueued(
     llt::moldudp64::MoldDatagramQueue& queue,
     const llt::moldudp64::MoldUdpReceiver& receiver)
 {
     startLifecycle();
+
+#ifdef LLT_ENABLE_LATENCY_TRACE
+    std::uint64_t previousPopNs = 0;
+#endif
 
     while (true)
     {
@@ -504,19 +577,48 @@ void MoldItchFeedHandler::runQueued(
 
         if (datagram.has_value())
         {
-            #ifdef LLT_ENABLE_LATENCY_TRACE
-                const auto dequeuedAtNs =
-                    llt::latency::nowNs();
+#ifdef LLT_ENABLE_LATENCY_TRACE
+            const auto dequeuedAtNs =
+                llt::latency::nowNs();
 
-                if (datagram->queuedAtNs != 0 &&
-                    dequeuedAtNs >= datagram->queuedAtNs)
-                {
-                    datagramQueueLatency_.record(
-                        dequeuedAtNs - datagram->queuedAtNs);
-                }
-            #endif
+            // T1 -> T2: Datagram queue residence time.
+            if (datagram->queuedAtNs != 0 &&
+                dequeuedAtNs >= datagram->queuedAtNs)
+            {
+                datagramQueueLatency_.record(
+                    dequeuedAtNs - datagram->queuedAtNs);
+            }
 
-            if (!processDatagram(*datagram))
+            // Interval between successful consumer pops.
+            if (previousPopNs != 0 &&
+                dequeuedAtNs >= previousPopNs)
+            {
+                consumerPopIntervalLatency_.record(
+                    dequeuedAtNs - previousPopNs);
+            }
+
+            previousPopNs = dequeuedAtNs;
+
+            // Start full datagram-processing measurement.
+            const auto processingStartNs =
+                llt::latency::nowNs();
+#endif
+
+            const bool processed =
+                processDatagram(*datagram);
+
+#ifdef LLT_ENABLE_LATENCY_TRACE
+            const auto processingEndNs =
+                llt::latency::nowNs();
+
+            if (processingEndNs >= processingStartNs)
+            {
+                datagramProcessingLatency_.record(
+                    processingEndNs - processingStartNs);
+            }
+#endif
+
+            if (!processed)
             {
                 ++malformedDatagrams_;
 
@@ -535,7 +637,6 @@ void MoldItchFeedHandler::runQueued(
         // AND every published datagram has been consumed.
         if (!receiver.running())
         {
-            // Recheck after observing producer shutdown.
             if (queue.empty())
             {
                 break;
@@ -544,16 +645,11 @@ void MoldItchFeedHandler::runQueued(
             continue;
         }
 
-        // An external stop request may terminate processing
-        // before the producer has stopped. Coordinated
-        // shutdown should stop/join the receiver first.
         if (!running_.load(std::memory_order_acquire))
         {
             break;
         }
 
-        // Temporary strategy while the queue is empty.
-        // We can benchmark spinning versus yielding later.
         std::this_thread::yield();
     }
 

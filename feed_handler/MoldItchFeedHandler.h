@@ -35,8 +35,7 @@ namespace llt::itch
     class MoldItchFeedHandler
     {
     public:
-
-    #ifdef LLT_ENABLE_LATENCY_TRACE
+#ifdef LLT_ENABLE_LATENCY_TRACE
 
         struct ProcessingLatencyReport
         {
@@ -48,6 +47,12 @@ namespace llt::itch
 
             latency::LatencyRecorder<>::Summary
                 recoveredMessageProcessing;
+
+            llt::latency::LatencyRecorder<>::Summary
+                datagramProcessing{};
+
+            llt::latency::LatencyRecorder<>::Summary
+                consumerPopInterval{};
         };
 
         [[nodiscard]]
@@ -56,11 +61,13 @@ namespace llt::itch
             return {
                 datagramQueueLatency_.summarize(),
                 messageProcessingLatency_.summarize(),
-                recoveredMessageProcessingLatency_.summarize()
+                recoveredMessageProcessingLatency_.summarize(),
+                datagramProcessingLatency_.summarize(),
+                consumerPopIntervalLatency_.summarize(),
             };
         }
 
-    #endif
+#endif
 
         MoldItchFeedHandler(
             llt::moldudp64::IMoldMarketDataSource &source,
@@ -139,8 +146,7 @@ namespace llt::itch
         }
 
     private:
-
-    #ifdef LLT_ENABLE_LATENCY_TRACE
+#ifdef LLT_ENABLE_LATENCY_TRACE
 
         latency::LatencyRecorder<>
             datagramQueueLatency_;
@@ -151,7 +157,13 @@ namespace llt::itch
         latency::LatencyRecorder<>
             recoveredMessageProcessingLatency_;
 
-    #endif
+        llt::latency::LatencyRecorder<>
+            datagramProcessingLatency_;
+
+        llt::latency::LatencyRecorder<>
+            consumerPopIntervalLatency_;
+
+#endif
 
         [[nodiscard]]
         llt::SequenceCheckResult checkSequence(
@@ -173,7 +185,6 @@ namespace llt::itch
 
         void finishLifecycle() noexcept;
 
-    private:
         llt::moldudp64::IMoldMarketDataSource &source_;
 
         llt::moldudp64::IMoldItchSequenceRecovery &recovery_;
