@@ -88,6 +88,11 @@ bool MoldItchFeedHandler::processMessage(
         return false;
     }
 
+    #ifdef LLT_ENABLE_LATENCY_TRACE
+        const auto processingStartedNs =
+        llt::latency::nowNs(); // T3
+    #endif
+
     const auto decoded =
         ItchDispatcher::dispatch(
             message.data,
@@ -100,6 +105,15 @@ bool MoldItchFeedHandler::processMessage(
 
     marketState_.onMessage(
         *decoded);
+
+    
+    #ifdef LLT_ENABLE_LATENCY_TRACE
+        const auto processingCompletedNs =
+            llt::latency::nowNs(); // T6
+
+        messageProcessingLatency_.record(
+            processingCompletedNs - processingStartedNs);
+    #endif
 
     ++processedMessages_;
 
@@ -125,6 +139,12 @@ bool MoldItchFeedHandler::processRecoveredMessage(
             static_cast<std::size_t>(
                 message.payloadSize));
 
+    #ifdef LLT_ENABLE_LATENCY_TRACE
+        const auto processingStartedNs =
+        llt::latency::nowNs(); // T3
+    #endif
+
+
     if (!decoded.has_value())
     {
         return false;
@@ -132,6 +152,14 @@ bool MoldItchFeedHandler::processRecoveredMessage(
 
     marketState_.onMessage(
         *decoded);
+
+    #ifdef LLT_ENABLE_LATENCY_TRACE
+        const auto processingCompletedNs =
+            llt::latency::nowNs(); // T6
+
+        recoveredMessageProcessingLatency_.record(
+            processingCompletedNs - processingStartedNs);
+    #endif
 
     ++recoveredMessages_;
 
@@ -464,19 +492,166 @@ void MoldItchFeedHandler::run()
 }
 
 
+// void MoldItchFeedHandler::runQueued(
+//     llt::moldudp64::MoldDatagramQueue& queue,
+//     const llt::moldudp64::MoldUdpReceiver& receiver)
+// {
+//     startLifecycle();
+
+// #ifdef LLT_ENABLE_LATENCY_TRACE
+//     std::uint64_t previousPopNs = 0;
+// #endif
+
+//     while (true)
+//     {
+//         auto datagram = queue.pop();
+
+//         if (datagram.has_value())
+//         {
+// #ifdef LLT_ENABLE_LATENCY_TRACE
+//             const auto dequeuedAtNs =
+//                 llt::latency::nowNs();
+
+//             // T1 -> T2: Datagram queue residence time.
+//             if (datagram->queuedAtNs != 0 &&
+//                 dequeuedAtNs >= datagram->queuedAtNs)
+//             {
+//                 datagramQueueLatency_.record(
+//                     dequeuedAtNs - datagram->queuedAtNs);
+//             }
+
+//             // Interval between successful consumer pops.
+//             if (previousPopNs != 0 &&
+//                 dequeuedAtNs >= previousPopNs)
+//             {
+//                 consumerPopIntervalLatency_.record(
+//                     dequeuedAtNs - previousPopNs);
+//             }
+
+//             previousPopNs = dequeuedAtNs;
+
+//             // Start full datagram-processing measurement.
+//             const auto processingStartNs =
+//                 llt::latency::nowNs();
+// #endif
+
+//             const bool processed =
+//                 processDatagram(*datagram);
+
+// #ifdef LLT_ENABLE_LATENCY_TRACE
+//             const auto processingEndNs =
+//                 llt::latency::nowNs();
+
+//             if (processingEndNs >= processingStartNs)
+//             {
+//                 datagramProcessingLatency_.record(
+//                     processingEndNs - processingStartNs);
+//             }
+// #endif
+
+//             if (!processed)
+//             {
+//                 ++malformedDatagrams_;
+
+//                 state_.store(
+//                     llt::FeedHandlerState::Failed,
+//                     std::memory_order_release);
+
+//                 break;
+//             }
+
+//             ++processedDatagrams_;
+//             continue;
+//         }
+
+//         // Stop only after the producer has stopped
+//         // AND every published datagram has been consumed.
+//         if (!receiver.running())
+//         {
+//             if (queue.empty())
+//             {
+//                 break;
+//             }
+
+//             continue;
+//         }
+
+//         if (!running_.load(std::memory_order_acquire))
+//         {
+//             break;
+//         }
+
+//         std::this_thread::yield();
+//     }
+
+//     finishLifecycle();
+// }
+
+
 void MoldItchFeedHandler::runQueued(
     llt::moldudp64::MoldDatagramQueue& queue,
     const llt::moldudp64::MoldUdpReceiver& receiver)
 {
     startLifecycle();
 
+#ifdef LLT_ENABLE_LATENCY_TRACE
+    std::uint64_t previousPopNs = 0;
+#endif
+
     while (true)
     {
-        auto datagram = queue.pop();
+        bool processed = true;
 
-        if (datagram.has_value())
+        const bool consumed = queue.try_consume(
+            [&](const llt::moldudp64::ReceivedMoldDatagram& datagram)
+            {
+#ifdef LLT_ENABLE_LATENCY_TRACE
+                const auto dequeuedAtNs =
+                    llt::latency::nowNs();
+
+                // T1 -> T2: Datagram queue residence time.
+                if (datagram.queuedAtNs != 0 &&
+                    dequeuedAtNs >= datagram.queuedAtNs)
+                {
+                    datagramQueueLatency_.record(
+                        dequeuedAtNs - datagram.queuedAtNs);
+                }
+
+                // Interval between successful consumer pops.
+                if (previousPopNs != 0 &&
+                    dequeuedAtNs >= previousPopNs)
+                {
+                    consumerPopIntervalLatency_.record(
+                        dequeuedAtNs - previousPopNs);
+                }
+
+                previousPopNs = dequeuedAtNs;
+
+                // Start full datagram processing measurement.
+                const auto processingStartNs =
+                    llt::latency::nowNs();
+#endif
+
+                // Process directly from the SPSC slot.
+                // No 1,400-byte datagram move/copy.
+                processed = processDatagram(datagram);
+
+#ifdef LLT_ENABLE_LATENCY_TRACE
+                const auto processingEndNs =
+                    llt::latency::nowNs();
+
+                if (processingEndNs >= processingStartNs)
+                {
+                    datagramProcessingLatency_.record(
+                        processingEndNs - processingStartNs);
+                }
+#endif
+            });
+
+        if (consumed)
         {
-            if (!processDatagram(*datagram))
+            // try_consume() has already released the slot.
+            if (!processed)
             {
                 ++malformedDatagrams_;
 
@@ -491,11 +666,10 @@ void MoldItchFeedHandler::runQueued(
             continue;
         }
 
-        // Stop only after the producer has stopped
-        // AND every published datagram has been consumed.
+        // Stop only after the receiver has stopped
+        // and all published datagrams have been consumed.
         if (!receiver.running())
         {
-            // Recheck after observing producer shutdown.
             if (queue.empty())
             {
                 break;
@@ -504,16 +678,11 @@ void MoldItchFeedHandler::runQueued(
             continue;
         }
 
-        // An external stop request may terminate processing
-        // before the producer has stopped. Coordinated
-        // shutdown should stop/join the receiver first.
         if (!running_.load(std::memory_order_acquire))
         {
             break;
         }
 
-        // Temporary strategy while the queue is empty.
-        // We can benchmark spinning versus yielding later.
         std::this_thread::yield();
     }
 

@@ -8,6 +8,11 @@
 #include "types/SequenceCheckResult.h"
 #include "market_data/moldudp64/MoldDatagramQueue.h"
 
+#ifdef LLT_ENABLE_LATENCY_TRACE
+#include "market_data/utility/LatencyRecorder.h"
+#include "market_data/utility/LatencyClock.h"
+#endif
+
 namespace llt::moldudp64
 {
 
@@ -30,6 +35,40 @@ namespace llt::itch
     class MoldItchFeedHandler
     {
     public:
+#ifdef LLT_ENABLE_LATENCY_TRACE
+
+        struct ProcessingLatencyReport
+        {
+            latency::LatencyRecorder<>::Summary
+                datagramQueue;
+
+            latency::LatencyRecorder<>::Summary
+                liveMessageProcessing;
+
+            latency::LatencyRecorder<>::Summary
+                recoveredMessageProcessing;
+
+            llt::latency::LatencyRecorder<>::Summary
+                datagramProcessing{};
+
+            llt::latency::LatencyRecorder<>::Summary
+                consumerPopInterval{};
+        };
+
+        [[nodiscard]]
+        ProcessingLatencyReport latencyReport()
+        {
+            return {
+                datagramQueueLatency_.summarize(),
+                messageProcessingLatency_.summarize(),
+                recoveredMessageProcessingLatency_.summarize(),
+                datagramProcessingLatency_.summarize(),
+                consumerPopIntervalLatency_.summarize(),
+            };
+        }
+
+#endif
+
         MoldItchFeedHandler(
             llt::moldudp64::IMoldMarketDataSource &source,
             llt::moldudp64::IMoldItchSequenceRecovery &recovery,
@@ -107,6 +146,25 @@ namespace llt::itch
         }
 
     private:
+#ifdef LLT_ENABLE_LATENCY_TRACE
+
+        latency::LatencyRecorder<>
+            datagramQueueLatency_;
+
+        latency::LatencyRecorder<>
+            messageProcessingLatency_;
+
+        latency::LatencyRecorder<>
+            recoveredMessageProcessingLatency_;
+
+        llt::latency::LatencyRecorder<>
+            datagramProcessingLatency_;
+
+        llt::latency::LatencyRecorder<>
+            consumerPopIntervalLatency_;
+
+#endif
+
         [[nodiscard]]
         llt::SequenceCheckResult checkSequence(
             std::uint64_t sequence);
@@ -127,7 +185,6 @@ namespace llt::itch
 
         void finishLifecycle() noexcept;
 
-    private:
         llt::moldudp64::IMoldMarketDataSource &source_;
 
         llt::moldudp64::IMoldItchSequenceRecovery &recovery_;

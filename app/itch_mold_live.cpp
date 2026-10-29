@@ -806,6 +806,15 @@ int main(
               << timing.successfulReceivesOver1ms << '\n';
     std::cout << "  Unsuccessful calls: "
               << timing.unsuccessfulReceiveCalls << '\n';
+    std::cout
+    << "Max outside receive (ns) : "
+    << timing.maxOutsideReceiveNs << '\n'
+
+    << "Outside receive >100us   : "
+    << timing.outsideReceiveOver100us << '\n'
+
+    << "Outside receive >1ms     : "
+    << timing.outsideReceiveOver1ms << '\n';
     //
 
     std::cerr
@@ -827,6 +836,51 @@ int main(
             << "[shutdown] Feed thread joined."
             << std::endl;
     }
+
+#ifdef LLT_ENABLE_LATENCY_TRACE
+
+    const auto report = feedHandler.latencyReport();
+
+    const auto printLatency =
+        [](const char *name, const auto &s)
+    {
+        std::cout
+            << name
+            << " count=" << s.count
+            << " sampled=" << s.sampled
+            << " discarded=" << s.discarded
+            << " p50=" << s.p50Ns << " ns"
+            << " p99=" << s.p99Ns << " ns"
+            << " p99.9=" << s.p999Ns << " ns"
+            << " max=" << s.maxNs << " ns"
+            << '\n';
+    };
+
+    std::cout << "\n=== ITCH LATENCY REPORT ===\n";
+
+    printLatency(
+        "Datagram queue wait",
+        report.datagramQueue);
+
+    // NEW: Complete datagram processing duration
+    printLatency(
+        "Full datagram processing",
+        report.datagramProcessing);
+
+    // NEW: Time between successful consumer pops
+    printLatency(
+        "Consumer pop interval",
+        report.consumerPopInterval);
+
+    printLatency(
+        "Live message processing",
+        report.liveMessageProcessing);
+
+    printLatency(
+        "Recovered message processing",
+        report.recoveredMessageProcessing);
+
+#endif
 
     // 3. The feed processor can no longer publish events.
     // Now stop and drain the downstream consumer.

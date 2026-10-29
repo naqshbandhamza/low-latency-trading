@@ -11,7 +11,6 @@
 namespace llt::moldudp64
 {
 
-    // temp
     struct ReceiverTimingStats
     {
         std::uint64_t maxReceiveCallNs = 0;
@@ -38,8 +37,12 @@ namespace llt::moldudp64
 
         // Receive failures, including timeouts.
         std::uint64_t unsuccessfulReceiveCalls = 0;
+
+        //
+        std::uint64_t maxOutsideReceiveNs{0};
+        std::uint64_t outsideReceiveOver100us{0};
+        std::uint64_t outsideReceiveOver1ms{0};
     };
-    //
 
     class MoldUdpReceiver final
     {
@@ -72,13 +75,12 @@ namespace llt::moldudp64
         [[nodiscard]]
         std::uint64_t maxQueueOccupancy() const noexcept;
 
-        // temp
+        // Valid after join(); zero-filled when diagnostics are disabled.
         [[nodiscard]]
         ReceiverTimingStats timingStats() const noexcept
         {
             return timingStats_;
         }
-        //
 
     private:
         void receiveLoop() noexcept;
@@ -95,9 +97,8 @@ namespace llt::moldudp64
         std::atomic<std::uint64_t> queueFullDrops_{0};
         std::atomic<std::uint64_t> maxQueueOccupancy_{0};
 
-        // temp
+        // Read timingStats() only after join().
         ReceiverTimingStats timingStats_{};
-        //
     };
 
 } // namespace llt::moldudp64
