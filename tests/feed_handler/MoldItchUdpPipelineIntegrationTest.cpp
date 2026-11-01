@@ -18,6 +18,7 @@
 #include "MoldItchFeedHandler.h"
 
 #include "market_data/itch/ItchMarketState.h"
+#include "market_data/normalized/InstrumentStore.h"
 
 #include "market_data/moldudp64/FileMoldItchRecoverySource.h"
 #include "market_data/moldudp64/MoldItchSequenceRecovery.h"
@@ -362,8 +363,9 @@ TEST_CASE(
             1000};
 
 
+    llt::market_data::InstrumentStore instrumentStore;
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
 
     llt::itch::MoldItchFeedHandler

@@ -310,12 +310,7 @@ int main(
         << "[startup] Creating ITCH market state..."
         << std::endl;
 
-    llt::itch::ItchMarketState
-        marketState;
-
-    std::cerr
-        << "[startup] ITCH market state ready."
-        << std::endl;
+    llt::market_data::InstrumentStore instrumentStore;
 
     //
     // -----------------------------------------------------
@@ -346,7 +341,7 @@ int main(
 
     llt::itch::ItchQuotePublisher
         publisher{
-            marketState.instruments(),
+            instrumentStore,
             marketEventQueue};
 
     std::cerr
@@ -365,25 +360,16 @@ int main(
 
     llt::itch::ItchTradePublisher
         tradePublisher{
-            marketState.instruments(),
+            instrumentStore,
             marketEventQueue};
 
     std::cerr
         << "[startup] ITCH trade publisher ready."
         << std::endl;
 
-    //
-    // -----------------------------------------------------
-    // Market-state callbacks
-    // -----------------------------------------------------
-    //
 
-    std::cerr
-        << "[startup] Installing BBO callback..."
-        << std::endl;
-
-    marketState.setBboChangeHandler(
-        [&publisher](
+    llt::itch::ItchMarketState marketState{instrumentStore,
+     [&publisher](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp timestamp,
             const llt::market_data::Bbo &bbo)
@@ -392,18 +378,7 @@ int main(
                 instrumentId,
                 timestamp,
                 bbo);
-        });
-
-    std::cerr
-        << "[startup] BBO callback installed."
-        << std::endl;
-
-    std::cerr
-        << "[startup] Installing trade callback..."
-        << std::endl;
-
-    marketState.setTradeHandler(
-        [&tradePublisher](
+        },[&tradePublisher](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp timestamp,
             llt::market_data::Price price,
@@ -416,7 +391,57 @@ int main(
                 price,
                 quantity,
                 side);
-        });
+        }};
+
+    std::cerr
+        << "[startup] ITCH market state ready."
+        << std::endl;
+
+    //
+    // -----------------------------------------------------
+    // Market-state callbacks
+    // -----------------------------------------------------
+    //
+
+    // std::cerr
+    //     << "[startup] Installing BBO callback..."
+    //     << std::endl;
+
+    // marketState.setBboChangeHandler(
+    //     [&publisher](
+    //         llt::market_data::InstrumentId instrumentId,
+    //         llt::market_data::Timestamp timestamp,
+    //         const llt::market_data::Bbo &bbo)
+    //     {
+    //         publisher.onBboChange(
+    //             instrumentId,
+    //             timestamp,
+    //             bbo);
+    //     });
+
+    std::cerr
+        << "[startup] BBO callback installed."
+        << std::endl;
+
+    std::cerr
+        << "[startup] Installing trade callback..."
+        << std::endl;
+
+    // marketState.setTradeHandler(
+    //     [&tradePublisher](
+    //         llt::market_data::InstrumentId instrumentId,
+    //         llt::market_data::Timestamp timestamp,
+    //         llt::market_data::Price price,
+    //         llt::market_data::Quantity quantity,
+    //         llt::market_data::Side side)
+    //     {
+    //         tradePublisher.onOrderExecution(
+    //             instrumentId,
+    //             timestamp,
+    //             price,
+    //             quantity,
+    //             side);
+    //     });
 
     std::cerr
         << "[startup] Trade callback installed."

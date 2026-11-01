@@ -197,6 +197,8 @@ int main(
         << '\n';
 
 
+    
+    llt::market_data::InstrumentStore instrumentStore;
     //
     // Normalized market-event SPSC.
     //
@@ -208,11 +210,26 @@ int main(
     //
     llt::MarketEventQueue marketEventQueue;
 
+     llt::itch::ItchQuotePublisher
+        publisher{
+            instrumentStore,
+            marketEventQueue};
+
+
 
     //
     // ITCH order-book / market-state reconstruction.
     //
-    llt::itch::ItchMarketState marketState;
+     llt::itch::ItchMarketState marketState{
+        instrumentStore,
+        [&publisher](
+            llt::market_data::InstrumentId instrumentId,
+            llt::market_data::Timestamp timestamp,
+            const llt::market_data::Bbo &bbo) noexcept
+        {
+            publisher.onBboChange(instrumentId, timestamp, bbo);
+        }
+    };
 
 
     //
@@ -220,22 +237,22 @@ int main(
     //
     // Quote -> MarketEvent -> SPSC
     //
-    llt::itch::ItchQuotePublisher publisher{
-        marketState.instruments(),
-        marketEventQueue};
+    // llt::itch::ItchQuotePublisher publisher{
+    //     marketState.instruments(),
+    //     marketEventQueue};
 
 
-    marketState.setBboChangeHandler(
-        [&publisher](
-            llt::market_data::InstrumentId instrumentId,
-            llt::market_data::Timestamp timestamp,
-            const llt::market_data::Bbo &bbo)
-        {
-            publisher.onBboChange(
-                instrumentId,
-                timestamp,
-                bbo);
-        });
+    // marketState.setBboChangeHandler(
+    //     [&publisher](
+    //         llt::market_data::InstrumentId instrumentId,
+    //         llt::market_data::Timestamp timestamp,
+    //         const llt::market_data::Bbo &bbo)
+    //     {
+    //         publisher.onBboChange(
+    //             instrumentId,
+    //             timestamp,
+    //             bbo);
+    //     });
 
 
     //

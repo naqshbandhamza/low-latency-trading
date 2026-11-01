@@ -101,8 +101,59 @@ int main(
     //
     // Reconstructed NASDAQ ITCH market state.
     //
-    llt::itch::ItchMarketState
-        marketState;
+
+    // 1. Create the shared InstrumentStore first
+    llt::market_data::InstrumentStore instrumentStore;
+
+     //
+    // Producer -> consumer normalized event queue.
+    //
+    llt::MarketEventQueue
+        marketEventQueue;
+
+     //
+    // BBO -> Quote -> MarketEvent -> SPSC.
+    //
+    llt::itch::ItchQuotePublisher
+        quotePublisher{
+            instrumentStore,
+            marketEventQueue};
+
+    //
+    // Executions/trade reports
+    // -> Trade
+    // -> MarketEvent
+    // -> SPSC.
+    //
+    llt::itch::ItchTradePublisher
+        tradePublisher{
+            instrumentStore,
+            marketEventQueue};
+
+    llt::itch::ItchMarketState marketState{
+        instrumentStore,
+        [&quotePublisher](
+            llt::market_data::InstrumentId instrumentId,
+            llt::market_data::Timestamp timestamp,
+            const llt::market_data::Bbo &bbo) noexcept
+        {
+            quotePublisher.onBboChange(instrumentId, timestamp, bbo);
+        },
+        [&tradePublisher](
+            llt::market_data::InstrumentId instrumentId,
+            llt::market_data::Timestamp timestamp,
+            llt::market_data::Price price,
+            llt::market_data::Quantity quantity,
+            llt::market_data::Side side) noexcept
+        {
+            tradePublisher.onOrderExecution(
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side);
+        }
+    };
 
     std::cout
         << "sizeof(MarketEvent)      : "
@@ -115,62 +166,38 @@ int main(
         << sizeof(llt::MarketEvent) * 16384
         << " bytes\n";
 
-    //
-    // Producer -> consumer normalized event queue.
-    //
-    llt::MarketEventQueue
-        marketEventQueue;
-
-    //
-    // BBO -> Quote -> MarketEvent -> SPSC.
-    //
-    llt::itch::ItchQuotePublisher
-        quotePublisher{
-            marketState.instruments(),
-            marketEventQueue};
-
-    //
-    // Executions/trade reports
-    // -> Trade
-    // -> MarketEvent
-    // -> SPSC.
-    //
-    llt::itch::ItchTradePublisher
-        tradePublisher{
-            marketState.instruments(),
-            marketEventQueue};
 
     // =====================================================
     // Market-state publication callbacks
     // =====================================================
 
-    marketState.setBboChangeHandler(
-        [&quotePublisher](
-            llt::market_data::InstrumentId instrumentId,
-            llt::market_data::Timestamp timestamp,
-            const llt::market_data::Bbo &bbo)
-        {
-            quotePublisher.onBboChange(
-                instrumentId,
-                timestamp,
-                bbo);
-        });
+    // marketState.setBboChangeHandler(
+    //     [&quotePublisher](
+    //         llt::market_data::InstrumentId instrumentId,
+    //         llt::market_data::Timestamp timestamp,
+    //         const llt::market_data::Bbo &bbo)
+    //     {
+    //         quotePublisher.onBboChange(
+    //             instrumentId,
+    //             timestamp,
+    //             bbo);
+    //     });
 
-    marketState.setTradeHandler(
-        [&tradePublisher](
-            llt::market_data::InstrumentId instrumentId,
-            llt::market_data::Timestamp timestamp,
-            llt::market_data::Price price,
-            llt::market_data::Quantity quantity,
-            llt::market_data::Side side)
-        {
-            tradePublisher.onOrderExecution(
-                instrumentId,
-                timestamp,
-                price,
-                quantity,
-                side);
-        });
+    // marketState.setTradeHandler(
+    //     [&tradePublisher](
+    //         llt::market_data::InstrumentId instrumentId,
+    //         llt::market_data::Timestamp timestamp,
+    //         llt::market_data::Price price,
+    //         llt::market_data::Quantity quantity,
+    //         llt::market_data::Side side)
+    //     {
+    //         tradePublisher.onOrderExecution(
+    //             instrumentId,
+    //             timestamp,
+    //             price,
+    //             quantity,
+    //             side);
+    //     });
 
     // =====================================================
     // Consumer state

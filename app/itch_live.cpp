@@ -171,61 +171,53 @@ int main(
         recovery{
             recoverySource};
 
-    //
-    // Reconstructed ITCH market state.
-    //
-    llt::itch::ItchMarketState
-        marketState;
 
-    //
+    llt::market_data::InstrumentStore instrumentStore;
+
+     //
     // Producer -> consumer SPSC.
     //
     llt::MarketEventQueue
         marketEventQueue;
 
-    //
-    // Converts BBO changes into the generic
-    // downstream Quote representation.
+
+     //
+    // BBO -> Quote -> MarketEvent -> SPSC.
     //
     llt::itch::ItchQuotePublisher
         publisher{
-            marketState.instruments(),
+            instrumentStore,
             marketEventQueue};
 
     //
-    // Converts ITCH executions/trade reports into
-    // the generic downstream Trade representation.
+    // Executions/trade reports
+    // -> Trade
+    // -> MarketEvent
+    // -> SPSC.
     //
     llt::itch::ItchTradePublisher
         tradePublisher{
-            marketState.instruments(),
+            instrumentStore,
             marketEventQueue};
 
     //
-    // Market state -> publisher boundary.
+    // Reconstructed ITCH market state.
     //
-    marketState.setBboChangeHandler(
+    llt::itch::ItchMarketState marketState{
+        instrumentStore,
         [&publisher](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp timestamp,
-            const llt::market_data::Bbo &bbo)
+            const llt::market_data::Bbo &bbo) noexcept
         {
-            publisher.onBboChange(
-                instrumentId,
-                timestamp,
-                bbo);
-        });
-
-    //
-    // Market state -> trade publisher boundary.
-    //
-    marketState.setTradeHandler(
+            publisher.onBboChange(instrumentId, timestamp, bbo);
+        },
         [&tradePublisher](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp timestamp,
             llt::market_data::Price price,
             llt::market_data::Quantity quantity,
-            llt::market_data::Side side)
+            llt::market_data::Side side) noexcept
         {
             tradePublisher.onOrderExecution(
                 instrumentId,
@@ -233,7 +225,43 @@ int main(
                 price,
                 quantity,
                 side);
-        });
+        }
+    };
+
+
+    // //
+    // // Market state -> publisher boundary.
+    // //
+    // marketState.setBboChangeHandler(
+    //     [&publisher](
+    //         llt::market_data::InstrumentId instrumentId,
+    //         llt::market_data::Timestamp timestamp,
+    //         const llt::market_data::Bbo &bbo)
+    //     {
+    //         publisher.onBboChange(
+    //             instrumentId,
+    //             timestamp,
+    //             bbo);
+    //     });
+
+    // //
+    // // Market state -> trade publisher boundary.
+    // //
+    // marketState.setTradeHandler(
+    //     [&tradePublisher](
+    //         llt::market_data::InstrumentId instrumentId,
+    //         llt::market_data::Timestamp timestamp,
+    //         llt::market_data::Price price,
+    //         llt::market_data::Quantity quantity,
+    //         llt::market_data::Side side)
+    //     {
+    //         tradePublisher.onOrderExecution(
+    //             instrumentId,
+    //             timestamp,
+    //             price,
+    //             quantity,
+    //             side);
+    //     });
 
     //
     // Live transport / sequencing / recovery /

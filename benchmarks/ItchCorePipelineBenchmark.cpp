@@ -113,8 +113,10 @@ int main(
     // SPSC transport
     // consumer-thread processing
     //
-    llt::itch::ItchMarketState
-        marketState;
+
+    llt::market_data::InstrumentStore instrumentStore;
+
+    llt::itch::ItchMarketState marketState{instrumentStore};
 
     marketState.orders().reserve(
     2'000'000);

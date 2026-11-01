@@ -37,7 +37,8 @@ TEST_CASE(
     "ITCH Add Order creates book price level"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -72,7 +73,8 @@ TEST_CASE(
     "ITCH Add Order routes sell order to ask side"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -109,7 +111,8 @@ TEST_CASE(
     "ITCH Add Orders aggregate at same price"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -143,7 +146,8 @@ TEST_CASE(
     "ITCH Add Orders create correct BBO"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -191,7 +195,8 @@ TEST_CASE(
     "ITCH Add Orders maintain independent instrument books"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -242,7 +247,8 @@ TEST_CASE(
     "Duplicate ITCH Add Order does not duplicate book quantity"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     const auto add =
         makeAdd(
@@ -286,7 +292,8 @@ TEST_CASE(
     "ITCH Add Order with MPID updates order book"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::AddOrderWithMpidMessage message{};
 
