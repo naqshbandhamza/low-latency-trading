@@ -631,6 +631,47 @@ FileMoldItchRecoverySource::loadIndex()
 }
 
 
+// const FileMoldItchRecoverySource::RecoveryCheckpoint*
+// FileMoldItchRecoverySource::findCheckpoint(
+//     std::uint64_t sequence) const noexcept
+// {
+//     if (
+//         checkpoints_.empty() ||
+//         sequence == 0)
+//     {
+//         return nullptr;
+//     }
+
+
+//     const auto it =
+//         std::upper_bound(
+//             checkpoints_.begin(),
+//             checkpoints_.end(),
+//             sequence,
+//             [](
+//                 std::uint64_t value,
+//                 const RecoveryCheckpoint& checkpoint)
+//             {
+//                 return
+//                     value <
+//                     checkpoint.sequence;
+//             });
+
+
+//     if (
+//         it ==
+//         checkpoints_.begin())
+//     {
+//         return nullptr;
+//     }
+
+
+//     return
+//         &*(it - 1);
+// }
+
+
+
 const FileMoldItchRecoverySource::RecoveryCheckpoint*
 FileMoldItchRecoverySource::findCheckpoint(
     std::uint64_t sequence) const noexcept
@@ -642,7 +683,28 @@ FileMoldItchRecoverySource::findCheckpoint(
         return nullptr;
     }
 
+    const auto& first = checkpoints_.front();
+    const auto& last = checkpoints_.back();
 
+    //
+    // Requested sequence precedes the first checkpoint.
+    //
+    if (sequence < first.sequence)
+    {
+        return nullptr;
+    }
+
+    //
+    // Requested sequence is at or beyond the last checkpoint.
+    //
+    if (sequence >= last.sequence)
+    {
+        return &last;
+    }
+
+    //
+    // Find the first checkpoint with sequence > requested.
+    //
     const auto it =
         std::upper_bound(
             checkpoints_.begin(),
@@ -652,23 +714,15 @@ FileMoldItchRecoverySource::findCheckpoint(
                 std::uint64_t value,
                 const RecoveryCheckpoint& checkpoint)
             {
-                return
-                    value <
-                    checkpoint.sequence;
+                return value < checkpoint.sequence;
             });
 
-
-    if (
-        it ==
-        checkpoints_.begin())
-    {
-        return nullptr;
-    }
-
-
-    return
-        &*(it - 1);
+    //
+    // Return the preceding checkpoint.
+    //
+    return &*(it - 1);
 }
+
 
 
 bool
@@ -832,7 +886,10 @@ FileMoldItchRecoverySource::recover(
         }
 
 
-        SequencedItchMessage message{};
+        //SequencedItchMessage message{};
+
+        messages.emplace_back();
+        auto& message = messages.back();
 
         message.sequence =
             currentSequence;
@@ -859,8 +916,8 @@ FileMoldItchRecoverySource::recover(
             record.size);
 
 
-        messages.push_back(
-            std::move(message));
+        // messages.push_back(
+        //     std::move(message));
 
 
         ++currentSequence;
@@ -870,40 +927,40 @@ FileMoldItchRecoverySource::recover(
     //
     // Defensive count verification.
     //
-    if (
-        messages.size() !=
-        static_cast<std::size_t>(
-            expectedCount))
-    {
-        messages.clear();
+    // if (
+    //     messages.size() !=
+    //     static_cast<std::size_t>(
+    //         expectedCount))
+    // {
+    //     messages.clear();
 
-        return false;
-    }
+    //     return false;
+    // }
 
 
     //
     // Defensive sequence verification.
     //
-    for (
-        std::size_t i = 0;
-        i < messages.size();
-        ++i)
-    {
-        const auto expectedSequence =
-            fromSequence +
-            static_cast<std::uint64_t>(
-                i);
+    // for (
+    //     std::size_t i = 0;
+    //     i < messages.size();
+    //     ++i)
+    // {
+    //     const auto expectedSequence =
+    //         fromSequence +
+    //         static_cast<std::uint64_t>(
+    //             i);
 
 
-        if (
-            messages[i].sequence !=
-                expectedSequence)
-        {
-            messages.clear();
+    //     if (
+    //         messages[i].sequence !=
+    //             expectedSequence)
+    //     {
+    //         messages.clear();
 
-            return false;
-        }
-    }
+    //         return false;
+    //     }
+    // }
 
 
     recoveredMessages_ +=

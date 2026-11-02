@@ -4,3 +4,16 @@ cmake -S . -B build \
   -DCMAKE_BUILD_TYPE=Release
 
 cmake --build build --clean-first --parallel 4
+
+ctest --test-dir build --parallel 4
+ctest --test-dir build
+
+
+./build/app/itch_mold_live \ 19000 \
+    data/itch/01302019.NASDAQ_ITCH50
+
+./build/app/itch_mold_udp_load_gen \
+  data/itch/01302019.NASDAQ_ITCH50 \
+  19000 \
+  50000000 \
+  3000000
