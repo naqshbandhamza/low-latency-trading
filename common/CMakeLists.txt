@@ -31,3 +31,17 @@ target_compile_features(common
     PUBLIC
         cxx_std_17
 )
+
+
+# UDP receiver diagnostics (disabled by default)
+option(
+    LLT_RECEIVER_DIAGNOSTICS
+    "Enable UDP receiver timing diagnostics"
+    OFF
+)
+
+if(LLT_RECEIVER_DIAGNOSTICS)
+    target_compile_definitions(common PRIVATE
+        LLT_ENABLE_RECEIVER_DIAGNOSTICS
+    )
+endif()

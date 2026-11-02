@@ -8,11 +8,20 @@
 #include "market_data/normalized/InstrumentStore.h"
 #include "market_data/normalized/OrderStore.h"
 #include "market_data/book/BookStore.h"
-#include <functional>
+#include <type_traits>
 
 namespace llt::itch
 {
+    // Define a default no-op handler for templates if needed
+    struct NullBboHandler {
+        void operator()(market_data::InstrumentId, market_data::Timestamp, const market_data::Bbo &) const noexcept {}
+    };
 
+    struct NullTradeHandler {
+        void operator()(market_data::InstrumentId, market_data::Timestamp, market_data::Price, market_data::Quantity, market_data::Side) const noexcept {}
+    };
+
+    template <typename BboHandler = NullBboHandler, typename TradeHandler = NullTradeHandler>
     class ItchMarketState
     {
     public:
@@ -158,39 +167,59 @@ namespace llt::itch
         }
 
         [[nodiscard]]
-        bool hasBboChangeHandler() const noexcept
+        constexpr bool hasBboChangeHandler() const noexcept
         {
-            return static_cast<bool>(bboChangeHandler_);
+            return !std::is_same_v<BboHandler, NullBboHandler>;
         }
 
-        using BboChangeHandler =
-            std::function<void(
-                market_data::InstrumentId,
-                market_data::Timestamp,
-                const market_data::Bbo &)>;
-
-        using TradeHandler =
-            std::function<void(
-                market_data::InstrumentId,
-                market_data::Timestamp,
-                market_data::Price,
-                market_data::Quantity,
-                market_data::Side)>;
+        // [[nodiscard]]
+        // bool hasBboChangeHandler() const noexcept
+        // {
+        //     // If using NullBboHandler, you can evaluate if it's active, 
+        //     // or use concepts/if constexpr. For absolute zero overhead, 
+        //     // you can often drop the runtime check entirely if the handler is always provided.
+        //     return true; 
+        // }
 
         explicit ItchMarketState(
-            BboChangeHandler handler = {})
-            : bboChangeHandler_(
-                  std::move(handler))
+            market_data::InstrumentStore &instruments,
+            BboHandler bboHandler = {},
+            TradeHandler tradeHandler = {})
+            : instruments_(instruments),bboChangeHandler_(std::move(bboHandler)),
+              tradeHandler_(std::move(tradeHandler))
         {
         }
 
+        // using BboChangeHandler =
+        //     std::function<void(
+        //         market_data::InstrumentId,
+        //         market_data::Timestamp,
+        //         const market_data::Bbo &)>;
+
+        // using TradeHandler =
+        //     std::function<void(
+        //         market_data::InstrumentId,
+        //         market_data::Timestamp,
+        //         market_data::Price,
+        //         market_data::Quantity,
+        //         market_data::Side)>;
+
+        // explicit ItchMarketState(
+        //     BboChangeHandler handler = {})
+        //     : bboChangeHandler_(
+        //           std::move(handler))
+        // {
+        // }
+
+        // Fix setter parameter type to BboHandler
         void setBboChangeHandler(
-            BboChangeHandler handler)
+            BboHandler handler)
         {
             bboChangeHandler_ =
                 std::move(handler);
         }
 
+        // Fix setter parameter type to TradeHandler
         void setTradeHandler(
             TradeHandler handler)
         {
@@ -243,19 +272,24 @@ namespace llt::itch
             market_data::InstrumentId instrumentId,
             market_data::Timestamp timestamp,
             const market_data::Bbo &before,
-            const market_data::Bbo &after)
+            const market_data::Bbo &after) noexcept
         {
-            if (
-                before == after ||
-                !bboChangeHandler_)
+            if constexpr (std::is_same_v<BboHandler, NullBboHandler>)
             {
-                return;
+                return; // Completely optimized away at compile time if no handler is used!
             }
+            else
+            {
+                if (before == after)
+                {
+                    return;
+                }
 
-            bboChangeHandler_(
-                instrumentId,
-                timestamp,
-                after);
+                bboChangeHandler_(
+                    instrumentId,
+                    timestamp,
+                    after);
+            }
         }
 
         void notifyTrade(
@@ -263,19 +297,21 @@ namespace llt::itch
             market_data::Timestamp timestamp,
             market_data::Price price,
             market_data::Quantity quantity,
-            market_data::Side side)
+            market_data::Side side) noexcept
         {
-            if (!tradeHandler_)
+            if constexpr (std::is_same_v<TradeHandler, NullTradeHandler>)
             {
-                return;
+                return; // Completely optimized away if no trade handler is used!
             }
-
-            tradeHandler_(
-                instrumentId,
-                timestamp,
-                price,
-                quantity,
-                side);
+            else
+            {
+                tradeHandler_(
+                    instrumentId,
+                    timestamp,
+                    price,
+                    quantity,
+                    side);
+            }
         }
 
         void handle(
@@ -1020,7 +1056,7 @@ namespace llt::itch
         std::uint64_t unknownTradingActionInstruments_{0};
         std::uint64_t unknownRegShoInstruments_{0};
 
-        market_data::InstrumentStore instruments_;
+        //market_data::InstrumentStore instruments_;
         market_data::OrderStore orders_;
 
         std::uint64_t unknownOrderExecutions_{0};
@@ -1045,7 +1081,9 @@ namespace llt::itch
         std::uint64_t failedBookReductions_{0};
         std::uint64_t failedBookRemovals_{0};
 
-        BboChangeHandler bboChangeHandler_;
+        // Fix member variable types to match the template parameters
+        market_data::InstrumentStore &instruments_;
+        BboHandler bboChangeHandler_;
         TradeHandler tradeHandler_;
     };
 

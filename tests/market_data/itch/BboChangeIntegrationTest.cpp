@@ -70,7 +70,10 @@ TEST_CASE(
 {
     std::vector<BboNotification> notifications;
 
+    llt::market_data::InstrumentStore instrumentStore;
+
     llt::itch::ItchMarketState state{
+        instrumentStore,
         [&notifications](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp,
@@ -122,7 +125,10 @@ TEST_CASE(
 {
     std::vector<BboNotification> notifications;
 
+    llt::market_data::InstrumentStore instrumentStore;
+
     llt::itch::ItchMarketState state{
+        instrumentStore,
         [&notifications](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp,
@@ -178,7 +184,10 @@ TEST_CASE(
 {
     std::vector<BboNotification> notifications;
 
+    llt::market_data::InstrumentStore instrumentStore;
+
     llt::itch::ItchMarketState state{
+        instrumentStore,
         [&notifications](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp,
@@ -241,7 +250,10 @@ TEST_CASE(
 {
     std::vector<BboNotification> notifications;
 
+    llt::market_data::InstrumentStore instrumentStore;
+
     llt::itch::ItchMarketState state{
+        instrumentStore,
         [&notifications](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp,
@@ -299,7 +311,10 @@ TEST_CASE(
 {
     std::vector<BboNotification> notifications;
 
+    llt::market_data::InstrumentStore instrumentStore;
+
     llt::itch::ItchMarketState state{
+        instrumentStore,
         [&notifications](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp,
@@ -368,7 +383,10 @@ TEST_CASE(
 {
     std::vector<BboNotification> notifications;
 
+    llt::market_data::InstrumentStore instrumentStore;
+
     llt::itch::ItchMarketState state{
+        instrumentStore,
         [&notifications](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp,

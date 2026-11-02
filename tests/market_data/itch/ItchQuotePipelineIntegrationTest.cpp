@@ -196,22 +196,25 @@ struct Pipeline
 {
     llt::MarketEventQueue queue;
 
-    llt::itch::ItchMarketState marketState;
+    llt::market_data::InstrumentStore instrumentStore;
+    
+    llt::itch::ItchQuotePublisher publisher{
+        instrumentStore,
+        queue};
 
-    llt::itch::ItchQuotePublisher publisher;
+    // Explicitly provide template arguments for the non-static data member
+    llt::itch::ItchMarketState<
+        std::function<void(llt::market_data::InstrumentId, llt::market_data::Timestamp, const llt::market_data::Bbo &)>,
+        llt::itch::NullTradeHandler
+    > marketState{instrumentStore};
 
     Pipeline()
-        : queue{},
-          marketState{},
-          publisher{
-              marketState.instruments(),
-              queue}
     {
         marketState.setBboChangeHandler(
             [this](
                 llt::market_data::InstrumentId instrumentId,
                 llt::market_data::Timestamp timestamp,
-                const llt::market_data::Bbo &bbo)
+                const llt::market_data::Bbo &bbo) noexcept
             {
                 publisher.onBboChange(
                     instrumentId,

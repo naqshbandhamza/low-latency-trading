@@ -42,8 +42,8 @@ TEST_CASE(
     "Order execution reduces book quantity"
 )
 {
-    llt::itch::ItchMarketState state;
-
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
     state.onMessage(
         llt::itch::ItchMessage{
             makeAdd(100, 42, 'B', 500, 1000000)
@@ -80,8 +80,8 @@ TEST_CASE(
     "Full order execution removes price level"
 )
 {
-    llt::itch::ItchMarketState state;
-
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
     state.onMessage(
         llt::itch::ItchMessage{
             makeAdd(100, 42, 'B', 500, 1000000)
@@ -116,8 +116,8 @@ TEST_CASE(
     "Priced execution reduces resting price level"
 )
 {
-    llt::itch::ItchMarketState state;
-
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
     state.onMessage(
         llt::itch::ItchMessage{
             makeAdd(100, 42, 'S', 500, 1000100)
@@ -154,8 +154,8 @@ TEST_CASE(
     "Order cancel reduces book quantity"
 )
 {
-    llt::itch::ItchMarketState state;
-
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
     state.onMessage(
         llt::itch::ItchMessage{
             makeAdd(100, 42, 'B', 1000, 1000000)
@@ -187,8 +187,8 @@ TEST_CASE(
     "Order delete removes remaining quantity from book"
 )
 {
-    llt::itch::ItchMarketState state;
-
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
     state.onMessage(
         llt::itch::ItchMessage{
             makeAdd(100, 42, 'B', 1000, 1000000)
@@ -240,8 +240,8 @@ TEST_CASE(
     "Deleting one order preserves other quantity at same price"
 )
 {
-    llt::itch::ItchMarketState state;
-
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
     state.onMessage(
         llt::itch::ItchMessage{
             makeAdd(100, 42, 'B', 500, 1000000)
@@ -283,8 +283,8 @@ TEST_CASE(
     "Order replace moves quantity between price levels"
 )
 {
-    llt::itch::ItchMarketState state;
-
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
     state.onMessage(
         llt::itch::ItchMessage{
             makeAdd(100, 42, 'B', 500, 1000000)
@@ -345,8 +345,8 @@ TEST_CASE(
     "Order lifecycle updates BBO"
 )
 {
-    llt::itch::ItchMarketState state;
-
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
     // Best bid.
     state.onMessage(
         llt::itch::ItchMessage{
@@ -409,8 +409,8 @@ TEST_CASE(
     "Complex order lifecycle keeps order store and book synchronized"
 )
 {
-    llt::itch::ItchMarketState state;
-
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
     // 1000 @ 100.00
     state.onMessage(
         llt::itch::ItchMessage{

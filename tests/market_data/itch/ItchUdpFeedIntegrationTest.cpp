@@ -251,8 +251,9 @@ TEST_CASE(
     //
     // REAL ITCH market state.
     //
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     //
     // REAL handler.

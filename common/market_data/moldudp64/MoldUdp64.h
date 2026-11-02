@@ -36,6 +36,11 @@ struct ReceivedMoldDatagram
 {
     Datagram bytes{};
     std::size_t size{0};
+
+    #ifdef LLT_ENABLE_LATENCY_TRACE
+        std::uint64_t receivedAtNs{0};   // T0
+        std::uint64_t queuedAtNs{0};     // T1
+    #endif
 };
 
 struct Header

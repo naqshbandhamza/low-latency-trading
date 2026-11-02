@@ -129,8 +129,9 @@ TEST_CASE(
     llt::itch::test::MockItchSequenceRecovery
         recovery;
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -179,8 +180,9 @@ TEST_CASE(
     llt::itch::test::MockItchSequenceRecovery
         recovery;
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -229,8 +231,9 @@ TEST_CASE(
     llt::itch::test::MockItchSequenceRecovery
         recovery;
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -277,8 +280,9 @@ TEST_CASE(
     llt::itch::test::MockItchSequenceRecovery
         recovery;
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -338,8 +342,9 @@ TEST_CASE(
         makeSystemEventPacket(102)
     };
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -401,8 +406,9 @@ TEST_CASE(
         makeSystemEventPacket(103)
     };
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -461,8 +467,9 @@ TEST_CASE(
     recovery.result =
         llt::SequenceCheckResult::Stop;
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -516,8 +523,9 @@ TEST_CASE(
     llt::itch::test::MockItchSequenceRecovery
         recovery;
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -561,8 +569,9 @@ TEST_CASE(
         makeMalformedPacket(101)
     };
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -615,8 +624,9 @@ TEST_CASE(
     llt::itch::test::MockItchSequenceRecovery
         recovery;
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -704,8 +714,9 @@ TEST_CASE(
         makeSystemEventPacket(101)
     };
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,
@@ -797,8 +808,9 @@ TEST_CASE(
     llt::itch::test::MockItchSequenceRecovery
         recovery;
 
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::itch::ItchMarketState
-        marketState;
+        marketState{instrumentStore};
 
     llt::itch::ItchFeedHandler handler{
         source,

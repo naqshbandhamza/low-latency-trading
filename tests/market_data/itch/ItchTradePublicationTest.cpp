@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <variant>
 #include <vector>
+#include <utility>
 
 #include "market_data/MarketEvent.h"
 #include "market_data/MarketEventQueue.h"
@@ -190,26 +191,16 @@ makeTrade(
 }
 
 
-void attachTradeRecorder(
-    llt::itch::ItchMarketState& state,
-    std::vector<TradeNotification>& notifications)
+// Helper to construct ItchMarketState via constructor deduction (CTAD)
+template <typename TradeHandler>
+auto makeTestState(
+    llt::market_data::InstrumentStore& instrumentStore,
+    TradeHandler&& tradeHandler)
 {
-    state.setTradeHandler(
-        [&notifications](
-            llt::market_data::InstrumentId instrumentId,
-            llt::market_data::Timestamp timestamp,
-            llt::market_data::Price price,
-            llt::market_data::Quantity quantity,
-            llt::market_data::Side side)
-        {
-            notifications.push_back(
-                TradeNotification{
-                    instrumentId,
-                    timestamp,
-                    price,
-                    quantity,
-                    side});
-        });
+    return llt::itch::ItchMarketState{
+        instrumentStore,
+        llt::itch::NullBboHandler{},
+        std::forward<TradeHandler>(tradeHandler)};
 }
 
 } // namespace
@@ -221,11 +212,22 @@ TEST_CASE(
     std::vector<TradeNotification>
         notifications;
 
-    llt::itch::ItchMarketState state;
-
-    attachTradeRecorder(
-        state,
-        notifications);
+    llt::market_data::InstrumentStore instrumentStore;    
+    auto state = makeTestState(instrumentStore, [&notifications](
+        llt::market_data::InstrumentId instrumentId,
+        llt::market_data::Timestamp timestamp,
+        llt::market_data::Price price,
+        llt::market_data::Quantity quantity,
+        llt::market_data::Side side) noexcept
+    {
+        notifications.push_back(
+            TradeNotification{
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side});
+    });
 
     //
     // Resting SELL order:
@@ -297,11 +299,22 @@ TEST_CASE(
     std::vector<TradeNotification>
         notifications;
 
-    llt::itch::ItchMarketState state;
-
-    attachTradeRecorder(
-        state,
-        notifications);
+    llt::market_data::InstrumentStore instrumentStore;    
+    auto state = makeTestState(instrumentStore, [&notifications](
+        llt::market_data::InstrumentId instrumentId,
+        llt::market_data::Timestamp timestamp,
+        llt::market_data::Price price,
+        llt::market_data::Quantity quantity,
+        llt::market_data::Side side) noexcept
+    {
+        notifications.push_back(
+            TradeNotification{
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side});
+    });
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -349,11 +362,22 @@ TEST_CASE(
     std::vector<TradeNotification>
         notifications;
 
-    llt::itch::ItchMarketState state;
-
-    attachTradeRecorder(
-        state,
-        notifications);
+    llt::market_data::InstrumentStore instrumentStore;    
+    auto state = makeTestState(instrumentStore, [&notifications](
+        llt::market_data::InstrumentId instrumentId,
+        llt::market_data::Timestamp timestamp,
+        llt::market_data::Price price,
+        llt::market_data::Quantity quantity,
+        llt::market_data::Side side) noexcept
+    {
+        notifications.push_back(
+            TradeNotification{
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side});
+    });
 
     //
     // Resting order price:
@@ -434,11 +458,22 @@ TEST_CASE(
     std::vector<TradeNotification>
         notifications;
 
-    llt::itch::ItchMarketState state;
-
-    attachTradeRecorder(
-        state,
-        notifications);
+    llt::market_data::InstrumentStore instrumentStore;    
+    auto state = makeTestState(instrumentStore, [&notifications](
+        llt::market_data::InstrumentId instrumentId,
+        llt::market_data::Timestamp timestamp,
+        llt::market_data::Price price,
+        llt::market_data::Quantity quantity,
+        llt::market_data::Side side) noexcept
+    {
+        notifications.push_back(
+            TradeNotification{
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side});
+    });
 
     const auto ordersBefore =
         state.orders().size();
@@ -499,11 +534,22 @@ TEST_CASE(
     std::vector<TradeNotification>
         notifications;
 
-    llt::itch::ItchMarketState state;
-
-    attachTradeRecorder(
-        state,
-        notifications);
+    llt::market_data::InstrumentStore instrumentStore;    
+    auto state = makeTestState(instrumentStore, [&notifications](
+        llt::market_data::InstrumentId instrumentId,
+        llt::market_data::Timestamp timestamp,
+        llt::market_data::Price price,
+        llt::market_data::Quantity quantity,
+        llt::market_data::Side side) noexcept
+    {
+        notifications.push_back(
+            TradeNotification{
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side});
+    });
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -526,11 +572,22 @@ TEST_CASE(
     std::vector<TradeNotification>
         notifications;
 
-    llt::itch::ItchMarketState state;
-
-    attachTradeRecorder(
-        state,
-        notifications);
+    llt::market_data::InstrumentStore instrumentStore;    
+    auto state = makeTestState(instrumentStore, [&notifications](
+        llt::market_data::InstrumentId instrumentId,
+        llt::market_data::Timestamp timestamp,
+        llt::market_data::Price price,
+        llt::market_data::Quantity quantity,
+        llt::market_data::Side side) noexcept
+    {
+        notifications.push_back(
+            TradeNotification{
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side});
+    });
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -555,11 +612,22 @@ TEST_CASE(
     std::vector<TradeNotification>
         notifications;
 
-    llt::itch::ItchMarketState state;
-
-    attachTradeRecorder(
-        state,
-        notifications);
+    llt::market_data::InstrumentStore instrumentStore;    
+    auto state = makeTestState(instrumentStore, [&notifications](
+        llt::market_data::InstrumentId instrumentId,
+        llt::market_data::Timestamp timestamp,
+        llt::market_data::Price price,
+        llt::market_data::Quantity quantity,
+        llt::market_data::Side side) noexcept
+    {
+        notifications.push_back(
+            TradeNotification{
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side});
+    });
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -603,11 +671,22 @@ TEST_CASE(
     std::vector<TradeNotification>
         notifications;
 
-    llt::itch::ItchMarketState state;
-
-    attachTradeRecorder(
-        state,
-        notifications);
+    llt::market_data::InstrumentStore instrumentStore;    
+    auto state = makeTestState(instrumentStore, [&notifications](
+        llt::market_data::InstrumentId instrumentId,
+        llt::market_data::Timestamp timestamp,
+        llt::market_data::Price price,
+        llt::market_data::Quantity quantity,
+        llt::market_data::Side side) noexcept
+    {
+        notifications.push_back(
+            TradeNotification{
+                instrumentId,
+                timestamp,
+                price,
+                quantity,
+                side});
+    });
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -646,7 +725,8 @@ TEST_CASE(
 TEST_CASE(
     "ItchTradePublisher publishes normalized Trade into MarketEventQueue")
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;    
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::MarketEventQueue queue;
 
@@ -729,7 +809,8 @@ TEST_CASE(
 TEST_CASE(
     "ItchTradePublisher rejects unknown instrument")
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;    
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::MarketEventQueue queue;
 
@@ -764,21 +845,23 @@ TEST_CASE(
 TEST_CASE(
     "ItchMarketState and ItchTradePublisher publish E end to end")
 {
-    llt::itch::ItchMarketState state;
-
+    llt::market_data::InstrumentStore instrumentStore;    
     llt::MarketEventQueue queue;
 
+    // Declare publisher FIRST so it exists when state's constructor captures it
     llt::itch::ItchTradePublisher publisher{
-        state.instruments(),
+        instrumentStore,
         queue};
 
-    state.setTradeHandler(
+    llt::itch::ItchMarketState state{
+        instrumentStore,
+        llt::itch::NullBboHandler{},
         [&publisher](
             llt::market_data::InstrumentId instrumentId,
             llt::market_data::Timestamp timestamp,
             llt::market_data::Price price,
             llt::market_data::Quantity quantity,
-            llt::market_data::Side side)
+            llt::market_data::Side side) noexcept
         {
             publisher.onOrderExecution(
                 instrumentId,
@@ -786,7 +869,7 @@ TEST_CASE(
                 price,
                 quantity,
                 side);
-        });
+        }};
 
     //
     // AAPL exists.

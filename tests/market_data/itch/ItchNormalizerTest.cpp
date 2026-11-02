@@ -166,7 +166,8 @@ TEST_CASE(
     "ITCH market state creates instrument from Stock Directory"
 )
 {
-    itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     itch::StockDirectoryMessage message;
 
@@ -203,7 +204,8 @@ TEST_CASE(
     "ITCH market state stores multiple instruments"
 )
 {
-    itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     itch::StockDirectoryMessage aapl;
     aapl.stockLocate = 10;
@@ -253,7 +255,8 @@ TEST_CASE(
     "ITCH market state ignores non reference messages"
 )
 {
-    itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     itch::AddOrderMessage message{};
 
@@ -271,7 +274,8 @@ TEST_CASE(
     "ITCH market state handles duplicate Stock Directory idempotently"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::StockDirectoryMessage message{};
 
@@ -365,7 +369,8 @@ TEST_CASE(
     "ITCH market state updates instrument trading state"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::StockDirectoryMessage directory{};
 
@@ -418,7 +423,8 @@ TEST_CASE(
     "ITCH market state applies trading state transitions"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::StockDirectoryMessage directory{};
 
@@ -474,7 +480,8 @@ TEST_CASE(
     "ITCH market state ignores trading action for unknown instrument"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::StockTradingActionMessage action{};
 
@@ -558,7 +565,8 @@ TEST_CASE(
     "ITCH market state updates instrument Reg SHO state"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::StockDirectoryMessage directory{};
 
@@ -598,7 +606,8 @@ TEST_CASE(
     "ITCH market state applies Reg SHO state transitions"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::StockDirectoryMessage directory{};
 
@@ -648,7 +657,8 @@ TEST_CASE(
     "ITCH market state ignores Reg SHO update for unknown instrument"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::RegShoRestrictionMessage restriction{};
 
@@ -736,7 +746,8 @@ TEST_CASE(
     "ITCH market state stores Add Order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::AddOrderMessage message{};
 
@@ -771,7 +782,8 @@ TEST_CASE(
     "ITCH market state stores Add Order with MPID"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::AddOrderWithMpidMessage message{};
 
@@ -807,7 +819,8 @@ TEST_CASE(
     "ITCH market state partially executes order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::AddOrderMessage add{};
 
@@ -843,7 +856,8 @@ TEST_CASE(
     "ITCH market state removes fully executed order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::AddOrderMessage add{};
 
@@ -877,7 +891,8 @@ TEST_CASE(
     "ITCH market state counts execution for unknown order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::OrderExecutedMessage execution{};
 
@@ -899,7 +914,8 @@ TEST_CASE(
     "ITCH market state rejects execution larger than remaining quantity"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::AddOrderMessage add{};
 
@@ -939,7 +955,8 @@ TEST_CASE(
     "ITCH market state partially executes order with price"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::AddOrderMessage add{};
 
@@ -976,7 +993,8 @@ TEST_CASE(
     "ITCH market state removes fully executed order with price"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::AddOrderMessage add{};
 
@@ -1010,7 +1028,8 @@ TEST_CASE(
     "ITCH market state counts priced execution for unknown order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::OrderExecutedWithPriceMessage execution{};
 
@@ -1033,7 +1052,8 @@ TEST_CASE(
     "ITCH market state rejects priced execution larger than remaining quantity"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::AddOrderMessage add{};
 
@@ -1076,7 +1096,8 @@ TEST_CASE(
     "ITCH market state partially cancels order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1106,7 +1127,8 @@ TEST_CASE(
     "ITCH market state removes fully cancelled order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1136,7 +1158,8 @@ TEST_CASE(
     "ITCH market state counts cancel for unknown order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::OrderCancelMessage cancel{};
 
@@ -1163,7 +1186,8 @@ TEST_CASE(
     "ITCH market state rejects cancel larger than remaining quantity"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1202,7 +1226,8 @@ TEST_CASE(
     "ITCH market state applies multiple cancellations"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1245,7 +1270,8 @@ TEST_CASE(
     "ITCH market state can execute then cancel same order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1323,7 +1349,8 @@ TEST_CASE(
     "ITCH market state deletes order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1359,7 +1386,8 @@ TEST_CASE(
     "ITCH market state counts delete for unknown order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     llt::itch::OrderDeleteMessage deletion{};
 
@@ -1381,7 +1409,8 @@ TEST_CASE(
     "ITCH market state deletes partially executed order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1426,7 +1455,8 @@ TEST_CASE(
     "ITCH market state deletes partially cancelled order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1471,7 +1501,8 @@ TEST_CASE(
     "ITCH market state deleting one order does not affect another"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1516,7 +1547,8 @@ TEST_CASE(
     "ITCH market state replaces order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1574,7 +1606,8 @@ TEST_CASE(
     "ITCH order replace preserves sell side"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1619,7 +1652,8 @@ TEST_CASE(
     "ITCH market state counts replace for unknown order"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1648,7 +1682,8 @@ TEST_CASE(
     "ITCH market state rejects replacement when new order id already exists"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{
@@ -1715,7 +1750,8 @@ TEST_CASE(
     "ITCH replacement order participates in later lifecycle"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{

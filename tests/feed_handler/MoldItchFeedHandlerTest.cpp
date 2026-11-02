@@ -9,6 +9,7 @@
 #include "MoldItchFeedHandler.h"
 
 #include "market_data/itch/ItchMarketState.h"
+#include "market_data/normalized/InstrumentStore.h"
 
 #include "market_data/moldudp64/IMoldItchSequenceRecovery.h"
 #include "market_data/moldudp64/IMoldMarketDataSource.h"
@@ -256,7 +257,8 @@ TEST_CASE(
 
     MockMoldItchSequenceRecovery recovery;
 
-    llt::itch::ItchMarketState marketState;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState marketState{instrumentStore};
 
     source.datagrams.push_back(
         makeDatagram(
@@ -327,7 +329,8 @@ TEST_CASE(
 
     MockMoldItchSequenceRecovery recovery;
 
-    llt::itch::ItchMarketState marketState;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState marketState{instrumentStore};
 
     source.datagrams.push_back(
         makeDatagram(
@@ -403,7 +406,8 @@ TEST_CASE(
 
     MockMoldItchSequenceRecovery recovery;
 
-    llt::itch::ItchMarketState marketState;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState marketState{instrumentStore};
 
     //
     // Establish:
@@ -519,7 +523,8 @@ TEST_CASE(
 
     MockMoldItchSequenceRecovery recovery;
 
-    llt::itch::ItchMarketState marketState;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState marketState{instrumentStore};
 
     //
     // First datagram:
@@ -640,7 +645,8 @@ TEST_CASE(
 
     MockMoldItchSequenceRecovery recovery;
 
-    llt::itch::ItchMarketState marketState;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState marketState{instrumentStore};
 
     source.datagrams.push_back(
         makeDatagram(
@@ -711,7 +717,8 @@ TEST_CASE(
 
     MockMoldItchSequenceRecovery recovery;
 
-    llt::itch::ItchMarketState marketState;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState marketState{instrumentStore};
 
     auto datagram =
         makeDatagram(

@@ -581,24 +581,34 @@ TEST_CASE(
             recoverySource};
 
     //
-    // Real market state.
-    //
-    llt::itch::ItchMarketState
-        marketState;
-
-    //
     // Existing generic downstream queue.
     //
     llt::MarketEventQueue
         marketEventQueue;
 
+    llt::market_data::InstrumentStore instrumentStore;    
+    
     //
     // Existing ITCH -> generic Quote publisher.
     //
     llt::itch::ItchQuotePublisher
         publisher{
-            marketState.instruments(),
+           instrumentStore,
             marketEventQueue};
+
+    //
+    // Real market state.
+    //
+    llt::itch::ItchMarketState marketState{instrumentStore, [&publisher](
+            llt::market_data::InstrumentId instrumentId,
+            llt::market_data::Timestamp timestamp,
+            const llt::market_data::Bbo& bbo)
+        {
+            publisher.onBboChange(
+                instrumentId,
+                timestamp,
+                bbo);
+        }};
 
     //
     // IMPORTANT:
@@ -609,17 +619,17 @@ TEST_CASE(
     // ItchQuotePublisher converts that into the
     // generic strong llt::Timestamp used by Quote.
     //
-    marketState.setBboChangeHandler(
-        [&publisher](
-            llt::market_data::InstrumentId instrumentId,
-            llt::market_data::Timestamp timestamp,
-            const llt::market_data::Bbo& bbo)
-        {
-            publisher.onBboChange(
-                instrumentId,
-                timestamp,
-                bbo);
-        });
+    // marketState.setBboChangeHandler(
+    //     [&publisher](
+    //         llt::market_data::InstrumentId instrumentId,
+    //         llt::market_data::Timestamp timestamp,
+    //         const llt::market_data::Bbo& bbo)
+    //     {
+    //         publisher.onBboChange(
+    //             instrumentId,
+    //             timestamp,
+    //             bbo);
+    //     });
 
     //
     // Real feed handler.

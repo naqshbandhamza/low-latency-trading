@@ -1,0 +1,6 @@
+cmake -S . -B build \
+  -DLLT_RECEIVER_DIAGNOSTICS=OFF \
+  -DLLT_LATENCY_TRACE=OFF \
+  -DCMAKE_BUILD_TYPE=Release
+
+cmake --build build --clean-first --parallel 4

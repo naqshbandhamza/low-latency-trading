@@ -30,7 +30,8 @@ TEST_CASE(
     "Valid order execution produces no book integrity errors"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{makeAdd()}
@@ -53,7 +54,8 @@ TEST_CASE(
     "Valid full execution produces no book integrity errors"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{makeAdd()}
@@ -78,7 +80,8 @@ TEST_CASE(
     "Valid cancellation produces no book integrity errors"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{makeAdd()}
@@ -101,7 +104,8 @@ TEST_CASE(
     "Valid deletion produces no book integrity errors"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{makeAdd()}
@@ -125,7 +129,8 @@ TEST_CASE(
     "Complete lifecycle leaves no book integrity errors"
 )
 {
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
 
     state.onMessage(
         llt::itch::ItchMessage{makeAdd()}

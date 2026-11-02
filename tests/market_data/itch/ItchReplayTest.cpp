@@ -443,7 +443,9 @@ TEST_CASE(
         data,
         std::ios::binary);
 
-    llt::itch::ItchMarketState state;
+    llt::market_data::InstrumentStore instrumentStore;
+    llt::itch::ItchMarketState state{instrumentStore};
+    //llt::itch::ItchMarketState state;
 
     const auto result =
         llt::itch::ItchReplay::run(
