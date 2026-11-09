@@ -24,6 +24,11 @@ public:
                 instrument.id
             );
 
+        if (index >= Capacity)
+        {
+            return false;
+        }
+
         if (present_[index])
         {
             return false;
