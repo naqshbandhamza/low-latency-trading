@@ -490,11 +490,7 @@ namespace llt::itch
                 return;
             }
 
-            auto &stored =
-                orders_.stored(orderIt);
-
-            auto &order =
-                stored.order;
+            auto &order = orders_.order(orderIt);
 
             const auto executed =
                 static_cast<market_data::Quantity>(
@@ -538,9 +534,11 @@ namespace llt::itch
                 book->side(
                     order.side);
 
+            const auto level = orders_.level(orderIt);
+
             // Directly mutate the known price level.
             if (!side.reduce(
-                    stored.level,
+                    level,
                     executed))
             {
                 ++failedBookReductions_;
@@ -556,7 +554,7 @@ namespace llt::itch
                 // removeOrder() now removes the final order and,
                 // if empty, erases the level through its iterator.
                 if (!side.removeOrder(
-                        stored.level,
+                        level,
                         0))
                 {
                     ++failedBookRemovals_;
@@ -612,11 +610,7 @@ namespace llt::itch
                 return;
             }
 
-            auto &stored =
-                orders_.stored(orderIt);
-
-            auto &order =
-                stored.order;
+            auto &order = orders_.order(orderIt);
 
             const auto executed =
                 static_cast<market_data::Quantity>(
@@ -662,8 +656,10 @@ namespace llt::itch
                 book->side(
                     order.side);
 
+            const auto level = orders_.level(orderIt);
+
             if (!side.reduce(
-                    stored.level,
+                    level,
                     executed))
             {
                 ++failedBookReductions_;
@@ -676,7 +672,7 @@ namespace llt::itch
                     order.instrumentId;
 
                 if (!side.removeOrder(
-                        stored.level,
+                        level,
                         0))
                 {
                     ++failedBookRemovals_;
@@ -730,11 +726,7 @@ namespace llt::itch
                 return;
             }
 
-            auto &stored =
-                orders_.stored(orderIt);
-
-            auto &order =
-                stored.order;
+            auto &order = orders_.order(orderIt);
 
             const auto cancelled =
                 static_cast<market_data::Quantity>(
@@ -767,12 +759,14 @@ namespace llt::itch
                     book->bbo();
             }
 
+            const auto level = orders_.level(orderIt);
+
             auto &side =
                 book->side(
                     order.side);
 
             if (!side.reduce(
-                    stored.level,
+                    level,
                     cancelled))
             {
                 ++failedBookReductions_;
@@ -785,7 +779,7 @@ namespace llt::itch
                     order.instrumentId;
 
                 if (!side.removeOrder(
-                        stored.level,
+                        level,
                         0))
                 {
                     ++failedBookRemovals_;
@@ -839,11 +833,7 @@ namespace llt::itch
                 return;
             }
 
-            auto &stored =
-                orders_.stored(orderIt);
-
-            auto &order =
-                stored.order;
+            auto &order = orders_.order(orderIt);
 
             auto *book =
                 books_.find(
@@ -875,8 +865,8 @@ namespace llt::itch
                 order.instrumentId;
 
             if (!side.removeOrder(
-                    stored.level,
-                    order.quantity))
+                orders_.level(orderIt),
+                order.quantity))
             {
                 ++failedBookRemovals_;
                 return;
@@ -916,11 +906,7 @@ namespace llt::itch
                 return;
             }
 
-            auto &stored =
-                orders_.stored(orderIt);
-
-            auto &order =
-                stored.order;
+            auto &order = orders_.order(orderIt);
 
             if (
                 message.newOrderReferenceNumber !=
@@ -989,8 +975,8 @@ namespace llt::itch
 
             // Remove old order directly through its level handle.
             if (!side.removeOrder(
-                    stored.level,
-                    oldQuantity))
+                orders_.level(orderIt),
+                oldQuantity))
             {
                 ++failedBookRemovals_;
                 return;
