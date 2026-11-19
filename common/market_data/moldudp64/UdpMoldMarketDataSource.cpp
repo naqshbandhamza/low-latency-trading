@@ -150,6 +150,17 @@ namespace llt::moldudp64
             throw std::runtime_error(
                 "Failed to configure MoldUDP64 UDP receive timeout");
         }
+
+#if defined(__linux__)
+        for (std::size_t i = 0; i < kRxBatchSize; ++i)
+        {
+            rxIovecs_[i].iov_base = rxBatch_[i].bytes.data();
+            rxIovecs_[i].iov_len = rxBatch_[i].bytes.size();
+
+            rxMsgs_[i].msg_hdr.msg_iov = &rxIovecs_[i];
+            rxMsgs_[i].msg_hdr.msg_iovlen = 1;
+        }
+#endif
     }
 
     UdpMoldMarketDataSource::
@@ -166,55 +177,82 @@ namespace llt::moldudp64
     // UdpMoldMarketDataSource::receive(
     //     ReceivedMoldDatagram &datagram) noexcept
     // {
-    //     ssize_t receivedBytes{0};
+    //     datagram.size = 0;
+
+    //     #ifdef LLT_ENABLE_LATENCY_TRACE
+    //     datagram.receivedAtNs = 0;
+    //     #endif
 
     //     while (true)
     //     {
-    //         receivedBytes =
-    //             ::recvfrom(
+    //         iovec buffer{};
+
+    //         buffer.iov_base =
+    //             datagram.bytes.data();
+
+    //         buffer.iov_len =
+    //             datagram.bytes.size();
+
+    //         msghdr message{};
+
+    //         message.msg_iov = &buffer;
+    //         message.msg_iovlen = 1;
+
+    //         const ssize_t receivedBytes =
+    //             ::recvmsg(
     //                 socketFd_,
-    //                 datagram.bytes.data(),
-    //                 datagram.bytes.size(),
-    //                 0,
-    //                 nullptr,
-    //                 nullptr);
+    //                 &message,
+    //                 0);
 
-    //         if (receivedBytes >= 0)
-    //         {
-    //             break;
-    //         }
+    //         #ifdef LLT_ENABLE_LATENCY_TRACE
+    //         const auto receiveCompletedNs =
+    //             llt::latency::nowNs();
+    //         #endif
 
-    //         if (errno == EINTR)
+    //         if (receivedBytes < 0)
     //         {
-    //             continue;
-    //         }
+    //             const int error = errno;
 
-    //         if (
-    //             errno == EAGAIN ||
-    //             errno == EWOULDBLOCK)
-    //         {
-    //             datagram.size = 0;
+    //             if (error == EINTR)
+    //             {
+    //                 continue;
+    //             }
+
+    //             if (
+    //                 error == EAGAIN ||
+    //                 error == EWOULDBLOCK)
+    //             {
+    //                 return false;
+    //             }
+
+    //             lastReceiveError_ = error;
+    //             ++receiveErrorCount_;
 
     //             return false;
     //         }
 
-    //         datagram.size = 0;
+    //         if (message.msg_flags & MSG_TRUNC)
+    //         {
+    //             ++truncatedDatagramCount_;
 
-    //         return false;
+    //             return false;
+    //         }
+
+    //         if (receivedBytes == 0)
+    //         {
+    //             return false;
+    //         }
+
+    //         datagram.size =
+    //             static_cast<std::size_t>(
+    //                 receivedBytes);
+
+    //         #ifdef LLT_ENABLE_LATENCY_TRACE
+    //         datagram.receivedAtNs = receiveCompletedNs;
+    //         #endif
+
+    //         return true;
     //     }
-
-    //     if (receivedBytes == 0)
-    //     {
-    //         datagram.size = 0;
-
-    //         return false;
-    //     }
-
-    //     datagram.size =
-    //         static_cast<std::size_t>(
-    //             receivedBytes);
-
-    //     return true;
     // }
 
     bool
@@ -223,10 +261,98 @@ namespace llt::moldudp64
     {
         datagram.size = 0;
 
-        #ifdef LLT_ENABLE_LATENCY_TRACE
+#ifdef LLT_ENABLE_LATENCY_TRACE
         datagram.receivedAtNs = 0;
-        #endif
+#endif
 
+#if defined(__linux__)
+        while (true)
+        {
+            while (rxBatchIndex_ < rxBatchCount_)
+            {
+                const std::size_t idx = rxBatchIndex_++;
+                const auto &msg = rxMsgs_[idx];
+
+                if (msg.msg_hdr.msg_flags & MSG_TRUNC)
+                {
+                    ++truncatedDatagramCount_;
+                    continue;
+                }
+
+                if (msg.msg_len == 0)
+                {
+                    continue;
+                }
+
+                const auto receivedBytes =
+                    static_cast<std::size_t>(msg.msg_len);
+
+                std::memcpy(
+                    datagram.bytes.data(),
+                    rxBatch_[idx].bytes.data(),
+                    receivedBytes);
+
+                datagram.size = receivedBytes;
+
+#ifdef LLT_ENABLE_LATENCY_TRACE
+                datagram.receivedAtNs = rxBatchTimestampNs_;
+#endif
+
+                return true;
+            }
+
+            rxBatchIndex_ = 0;
+            rxBatchCount_ = 0;
+
+            for (std::size_t i = 0; i < kRxBatchSize; ++i)
+            {
+                rxMsgs_[i].msg_hdr.msg_flags = 0;
+            }
+
+            const int receivedCount =
+                ::recvmmsg(
+                    socketFd_,
+                    rxMsgs_.data(),
+                    static_cast<unsigned int>(kRxBatchSize),
+                    MSG_DONTWAIT,
+                    nullptr);
+
+#ifdef LLT_ENABLE_LATENCY_TRACE
+            rxBatchTimestampNs_ =
+                llt::latency::nowNs();
+#endif
+
+            if (receivedCount < 0)
+            {
+                const int error = errno;
+
+                if (error == EINTR)
+                {
+                    continue;
+                }
+
+                if (
+                    error == EAGAIN ||
+                    error == EWOULDBLOCK)
+                {
+                    return false;
+                }
+
+                lastReceiveError_ = error;
+                ++receiveErrorCount_;
+
+                return false;
+            }
+
+            if (receivedCount == 0)
+            {
+                return false;
+            }
+
+            rxBatchCount_ =
+                static_cast<std::size_t>(receivedCount);
+        }
+#else
         while (true)
         {
             iovec buffer{};
@@ -248,10 +374,10 @@ namespace llt::moldudp64
                     &message,
                     0);
 
-            #ifdef LLT_ENABLE_LATENCY_TRACE
+#ifdef LLT_ENABLE_LATENCY_TRACE
             const auto receiveCompletedNs =
                 llt::latency::nowNs();
-            #endif
+#endif
 
             if (receivedBytes < 0)
             {
@@ -291,12 +417,13 @@ namespace llt::moldudp64
                 static_cast<std::size_t>(
                     receivedBytes);
 
-            #ifdef LLT_ENABLE_LATENCY_TRACE
+#ifdef LLT_ENABLE_LATENCY_TRACE
             datagram.receivedAtNs = receiveCompletedNs;
-            #endif
+#endif
 
             return true;
         }
+#endif
     }
 
 } // namespace llt::moldudp64
