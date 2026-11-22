@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <cstring>
 
 #ifdef LLT_ENABLE_LATENCY_TRACE
 #include "market_data/utility/LatencyClock.h"

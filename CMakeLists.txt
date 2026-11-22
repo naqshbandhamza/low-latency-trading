@@ -10,6 +10,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(LLT_ENABLE_LATENCY_TRACE "Enable nanosecond latency tracing" OFF)
+if(LLT_ENABLE_LATENCY_TRACE)
+    add_compile_definitions(LLT_ENABLE_LATENCY_TRACE)
+endif()
+
 include(CTest)
 enable_testing()
 

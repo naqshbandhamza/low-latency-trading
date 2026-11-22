@@ -1,13 +1,12 @@
 cmake -S . -B build \
   -DLLT_RECEIVER_DIAGNOSTICS=OFF \
-  -DLLT_LATENCY_TRACE=OFF \
+  -DLLT_ENABLE_LATENCY_TRACE=ON \
   -DCMAKE_BUILD_TYPE=Release
 
 cmake --build build --clean-first --parallel 4
 
 ctest --test-dir build --parallel 4
 ctest --test-dir build
-
 
 ./build/app/itch_mold_live \ 19000 \
     data/itch/01302019.NASDAQ_ITCH50
@@ -17,3 +16,33 @@ ctest --test-dir build
   19000 \
   50000000 \
   3000000
+
+
+
+rm -rf ~/llt-build
+
+mkdir -p ~/llt-build
+
+cmake -S /mnt/mac-share -B ~/llt-build \
+    -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DLLT_ENABLE_LATENCY_TRACE=ON
+    
+cmake --build ~/llt-build -j2
+
+ctest --test-dir ~/llt-build --output-on-failure
+
+ulimit -s unlimited && ~/llt-build/app/itch_mold_live 19000 \
+    /mnt/mac-share/data/itch/01302019.NASDAQ_ITCH50
+
+ulimit -s unlimited && ~/llt-build/app/itch_mold_udp_load_gen \
+    /mnt/mac-share/data/itch/01302019.NASDAQ_ITCH50 \
+    19000 \
+    50000000 \
+    2000000
+
+
+
+sudo mount -t 9p -o trans=virtio,version=9p2000.L share /mnt/mac-share
+
+code /mnt/mac-share

@@ -5,6 +5,7 @@
 #include <string_view>
 #include <variant>
 
+#include <functional>
 #include "market_data/MarketEventQueue.h"
 
 #include "market_data/itch/ItchMarketState.h"
