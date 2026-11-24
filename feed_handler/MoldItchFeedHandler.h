@@ -18,6 +18,7 @@
 #include "market_data/moldudp64/MoldUdp64Codec.h"
 #include "market_data/moldudp64/SequencedItchMessage.h"
 #include "market_data/moldudp64/MoldUdpReceiver.h"
+#include "market_data/utility/ThreadAffinity.h"
 
 #ifdef LLT_ENABLE_LATENCY_TRACE
 #include "market_data/utility/LatencyRecorder.h"
@@ -31,6 +32,19 @@ namespace llt::itch
     class MoldItchFeedHandler
     {
     public:
+
+    // Add to public methods in MoldItchFeedHandler:
+    void setThreadConfig(llt::utility::ThreadRealtimeConfig config) noexcept
+    {
+        threadConfig_ = config;
+    }
+
+    [[nodiscard]]
+    llt::utility::ThreadRealtimeStatus threadStatus() const noexcept
+    {
+        return threadStatus_;
+    }
+
 #ifdef LLT_ENABLE_LATENCY_TRACE
 
         struct ProcessingLatencyReport
@@ -141,6 +155,7 @@ namespace llt::itch
             llt::moldudp64::MoldDatagramQueue &queue,
             const llt::moldudp64::MoldUdpReceiver &receiver)
         {
+            threadStatus_ = llt::utility::configureCurrentThread(threadConfig_);
             startLifecycle();
 
 #ifdef LLT_ENABLE_LATENCY_TRACE
@@ -477,6 +492,10 @@ namespace llt::itch
 
         std::atomic<bool> running_{false};
         std::atomic<llt::FeedHandlerState> state_{llt::FeedHandlerState::Stopped};
+
+        // Add to private members in MoldItchFeedHandler:
+        llt::utility::ThreadRealtimeConfig threadConfig_{};
+        llt::utility::ThreadRealtimeStatus threadStatus_{};
     };
 
 } // namespace llt::itch

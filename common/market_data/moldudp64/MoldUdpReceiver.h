@@ -7,6 +7,7 @@
 
 #include "market_data/moldudp64/IMoldMarketDataSource.h"
 #include "market_data/moldudp64/MoldDatagramQueue.h"
+#include "market_data/utility/ThreadAffinity.h"
 
 namespace llt::moldudp64
 {
@@ -82,6 +83,18 @@ namespace llt::moldudp64
             return timingStats_;
         }
 
+        // Add to public methods in MoldUdpReceiver:
+        void setThreadConfig(llt::utility::ThreadRealtimeConfig config) noexcept
+        {
+            threadConfig_ = config;
+        }
+
+        [[nodiscard]]
+        llt::utility::ThreadRealtimeStatus threadStatus() const noexcept
+        {
+            return threadStatus_;
+        }
+
     private:
         void receiveLoop() noexcept;
 
@@ -99,6 +112,10 @@ namespace llt::moldudp64
 
         // Read timingStats() only after join().
         ReceiverTimingStats timingStats_{};
+
+        // Add to private members in MoldUdpReceiver:
+        llt::utility::ThreadRealtimeConfig threadConfig_{};
+        llt::utility::ThreadRealtimeStatus threadStatus_{};
     };
 
 } // namespace llt::moldudp64

@@ -106,6 +106,8 @@ namespace llt::moldudp64
 
     void MoldUdpReceiver::receiveLoop() noexcept
     {
+        threadStatus_ = llt::utility::configureCurrentThread(threadConfig_);
+
         // Used only when the ring is full. Still drain the socket so
         // queue-full drops are counted and the receive path keeps moving.
         ReceivedMoldDatagram discard{};

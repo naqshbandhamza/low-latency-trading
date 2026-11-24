@@ -25,6 +25,8 @@
 #include "market_data/moldudp64/MoldDatagramQueue.h"
 #include "market_data/moldudp64/MoldUdpReceiver.h"
 
+#include "market_data/utility/ThreadAffinity.h"
+
 namespace
 {
 
@@ -470,6 +472,9 @@ int main(
         source,
         moldDatagramQueue};
 
+    udpReceiver.setThreadConfig({.coreId = 1, .fifoPriority = 80});
+    feedHandler.setThreadConfig({.coreId = 2, .fifoPriority = 85});
+
     std::cerr
         << "[startup] MoldDatagramQueue capacity: "
         << llt::moldudp64::MoldDatagramQueueCapacity
@@ -506,9 +511,18 @@ int main(
         << "[startup] Starting MarketEvent consumer thread..."
         << std::endl;
 
+    // Place right next to feedThreadStatus before launching consumerThread:
+    llt::utility::ThreadRealtimeStatus consumerThreadStatus{};    
+
     std::thread consumerThread(
         [&]()
         {
+            const int consumerCore =
+                std::thread::hardware_concurrency() >= 4 ? 3 : -1;
+
+            consumerThreadStatus = llt::utility::configureCurrentThread(
+                {.coreId = consumerCore, .fifoPriority = 75});
+
             std::cerr
                 << "[consumer] Consumer thread started."
                 << std::endl;
@@ -917,6 +931,24 @@ int main(
     {
         consumerThread.join();
     }
+
+    const auto printThreadStatus =
+        [](const char *name, const llt::utility::ThreadRealtimeStatus &st)
+    {
+        std::cout
+            << name
+            << " pinned=" << (st.pinned ? "YES" : "NO")
+            << " (core=" << st.assignedCore
+            << ", errno=" << st.pinErrno << ")"
+            << " SCHED_FIFO=" << (st.realtime ? "YES" : "NO")
+            << " (prio=" << st.appliedPriority
+            << ", errno=" << st.schedErrno << ")\n";
+    };
+
+    std::cout << "\n=== THREAD AFFINITY & SCHEDULER ===\n";
+    printThreadStatus("UDP receiver  ", udpReceiver.threadStatus());
+    printThreadStatus("Feed handler  ", feedHandler.threadStatus());
+    printThreadStatus("Event consumer", consumerThreadStatus);
 
     // All threads have stopped. Reading diagnostics is safe.
     std::cout
