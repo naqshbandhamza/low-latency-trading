@@ -46,3 +46,8 @@ ulimit -s unlimited && ~/llt-build/app/itch_mold_udp_load_gen \
 sudo mount -t 9p -o trans=virtio,version=9p2000.L share /mnt/mac-share
 
 code /mnt/mac-share
+
+sudo setcap -r ~/llt-build/app/itch_mold_live
+
+sudo systemd-run --pty --same-dir -p Slice=system.slice \
+    bash -c 'ulimit -s unlimited && /home/'"$USER"'/llt-build/app/itch_mold_live 19000 /mnt/mac-share/data/itch/01302019.NASDAQ_ITCH50'
